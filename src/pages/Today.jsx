@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { Flame, Footprints, ArrowUp, Bell } from 'lucide-react';
+import { DailyLogs, Meals } from '../components/storage';
 
 import WeekSelector from '../components/fitness/WeekSelector';
 import ActivityRing from '../components/fitness/ActivityRing';
@@ -22,76 +21,49 @@ export default function Today() {
   const [waterDialog, setWaterDialog] = useState(false);
   const [stepsDialog, setStepsDialog] = useState(false);
   const [exerciseDialog, setExerciseDialog] = useState(false);
-  const queryClient = useQueryClient();
+  const [tick, setTick] = useState(0); // force re-render after writes
+
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
-  const isToday = dateStr === todayStr;
 
-  // Data fetching
-  const { data: logs = [], isLoading: logsLoading } = useQuery({
-    queryKey: ['dailyLogs'],
-    queryFn: () => base44.entities.DailyLog.list('-date', 60),
-  });
+  const refresh = useCallback(() => setTick(t => t + 1), []);
 
-  const { data: meals = [] } = useQuery({
-    queryKey: ['meals', dateStr],
-    queryFn: () => base44.entities.MealEntry.filter({ date: dateStr }),
-  });
+  const allLogs = useMemo(() => DailyLogs.list(), [tick]);
+  const dayLog  = useMemo(() => allLogs.find(l => l.date === dateStr) || {}, [allLogs, dateStr]);
+  const meals   = useMemo(() => Meals.getByDate(dateStr), [tick, dateStr]);
 
-  const { data: user } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => base44.auth.me(),
-  });
-
-  const dayLog = useMemo(() => logs.find(l => l.date === dateStr) || {}, [logs, dateStr]);
-
-  // Mutations
-  const upsertLog = useMutation({
-    mutationFn: async (data) => {
-      if (dayLog.id) return base44.entities.DailyLog.update(dayLog.id, data);
-      return base44.entities.DailyLog.create({ date: dateStr, ...data });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dailyLogs'] });
-      queryClient.invalidateQueries({ queryKey: ['progressLogs'] });
-    },
-  });
-
-  const addMeal = useMutation({
-    mutationFn: (data) => base44.entities.MealEntry.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['meals', dateStr] }),
-  });
-
-  const deleteMeal = useMutation({
-    mutationFn: (id) => base44.entities.MealEntry.delete(id),
-    onSuccess: (_, id) => {
-      // Recalculate totals after delete
-      const deleted = meals.find(m => m.id === id);
-      if (deleted) {
-        upsertLog.mutate({
-          calories_consumed: Math.max((dayLog.calories_consumed || 0) - (deleted.calories || 0), 0),
-          carbs:   Math.max((dayLog.carbs   || 0) - (deleted.carbs   || 0), 0),
-          protein: Math.max((dayLog.protein || 0) - (deleted.protein || 0), 0),
-          fat:     Math.max((dayLog.fat     || 0) - (deleted.fat     || 0), 0),
-        });
-      }
-      queryClient.invalidateQueries({ queryKey: ['meals', dateStr] });
-    },
-  });
+  const upsertLog = useCallback((fields) => {
+    DailyLogs.upsert(dateStr, fields);
+    refresh();
+  }, [dateStr, refresh]);
 
   const handleAddFood = (mealType) => {
     setActiveMealType(mealType);
     setFoodDialogOpen(true);
   };
 
-  const handleSaveFood = async (data) => {
-    await addMeal.mutateAsync(data);
-    upsertLog.mutate({
+  const handleSaveFood = (data) => {
+    Meals.add(data);
+    upsertLog({
       calories_consumed: (dayLog.calories_consumed || 0) + (data.calories || 0),
       carbs:   (dayLog.carbs   || 0) + (data.carbs   || 0),
       protein: (dayLog.protein || 0) + (data.protein || 0),
       fat:     (dayLog.fat     || 0) + (data.fat     || 0),
     });
+  };
+
+  const handleDeleteMeal = (id) => {
+    const deleted = meals.find(m => m.id === id);
+    Meals.delete(id);
+    if (deleted) {
+      upsertLog({
+        calories_consumed: Math.max((dayLog.calories_consumed || 0) - (deleted.calories || 0), 0),
+        carbs:   Math.max((dayLog.carbs   || 0) - (deleted.carbs   || 0), 0),
+        protein: Math.max((dayLog.protein || 0) - (deleted.protein || 0), 0),
+        fat:     Math.max((dayLog.fat     || 0) - (deleted.fat     || 0), 0),
+      });
+    } else {
+      refresh();
+    }
   };
 
   // Derived values
@@ -103,10 +75,8 @@ export default function Today() {
   const stairs     = dayLog.stairs_climbed || 0;
   const stairsGoal = dayLog.stairs_goal || 20;
 
-  const firstName = user?.full_name?.split(' ')[0] || 'there';
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-
   const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 
   return (
@@ -123,11 +93,11 @@ export default function Today() {
         </div>
         <div className="flex items-center gap-3">
           <motion.button whileTap={{ scale: 0.9 }} className="w-9 h-9 rounded-xl bg-white/[0.04] flex items-center justify-center">
-            <Bell className="w-4.5 h-4.5 text-gray-400" />
+            <Bell className="w-4 h-4 text-gray-400" />
           </motion.button>
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black text-black"
             style={{ background: 'linear-gradient(135deg, #4ade80, #a855f7)' }}>
-            {(user?.full_name || 'S')[0].toUpperCase()}
+            S
           </div>
         </div>
       </motion.div>
@@ -145,7 +115,6 @@ export default function Today() {
         className="glass-card-green rounded-3xl p-5 mb-4"
       >
         <div className="flex items-center gap-5">
-          {/* Ring */}
           <ActivityRing
             value={cals}
             max={calsGoal}
@@ -159,7 +128,6 @@ export default function Today() {
             <span className="text-[9px] text-gray-500">left</span>
           </ActivityRing>
 
-          {/* Stats */}
           <div className="flex-1 min-w-0">
             <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Daily Calories</p>
             <p className="text-4xl font-black text-white mt-0.5 leading-none">{cals.toLocaleString()}</p>
@@ -190,7 +158,7 @@ export default function Today() {
         <MacroCard label="Fat"     value={dayLog.fat     || 0} goal={dayLog.fat_goal     || 65}  color="#f59e0b" />
       </div>
 
-      {/* Activity Rings Row — Steps & Stairs */}
+      {/* Steps & Stairs */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -249,9 +217,9 @@ export default function Today() {
       <div className="mb-4">
         <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold mb-3 px-0.5">Daily Habits</p>
         <div className="flex gap-2.5">
-          <HabitCard type="water"    value={dayLog.water_glasses    || 0} goal={dayLog.water_goal    || 8}     onTap={() => setWaterDialog(true)} />
-          <HabitCard type="exercise" value={dayLog.exercise_minutes || 0} goal={dayLog.exercise_goal || 30}    onTap={() => setExerciseDialog(true)} />
-          <HabitCard type="steps"    value={steps}                        goal={stepsGoal}                     onTap={() => setStepsDialog(true)} />
+          <HabitCard type="water"    value={dayLog.water_glasses    || 0} goal={dayLog.water_goal    || 8}  onTap={() => setWaterDialog(true)} />
+          <HabitCard type="exercise" value={dayLog.exercise_minutes || 0} goal={dayLog.exercise_goal || 30} onTap={() => setExerciseDialog(true)} />
+          <HabitCard type="steps"    value={steps}                        goal={stepsGoal}                  onTap={() => setStepsDialog(true)} />
         </div>
       </div>
 
@@ -269,7 +237,7 @@ export default function Today() {
                 entries={entries}
                 totalCalories={totalCals}
                 onAddFood={() => handleAddFood(type)}
-                onDeleteEntry={(id) => deleteMeal.mutate(id)}
+                onDeleteEntry={handleDeleteMeal}
               />
             );
           })}
@@ -279,7 +247,7 @@ export default function Today() {
       {/* Weight */}
       <div className="mb-6">
         <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold mb-3 px-0.5">Weight</p>
-        <WeightSection logs={logs} onLogWeight={() => setWeightDialog(true)} />
+        <WeightSection logs={allLogs} onLogWeight={() => setWeightDialog(true)} />
       </div>
 
       {/* Dialogs */}
@@ -290,10 +258,10 @@ export default function Today() {
         mealType={activeMealType}
         date={dateStr}
       />
-      <LogValueDialog isOpen={weightDialog}   onClose={() => setWeightDialog(false)}   title="Log Weight"   unit="kg"      value={dayLog.weight            || 70} step={0.1} min={30}  max={300} color="#10b981" onSave={(v) => upsertLog.mutate({ weight: v })} />
-      <LogValueDialog isOpen={waterDialog}    onClose={() => setWaterDialog(false)}    title="Log Water"    unit="glasses" value={dayLog.water_glasses      || 0}  step={1}   min={0}   max={20}  color="#22d3ee" onSave={(v) => upsertLog.mutate({ water_glasses: v })} />
-      <LogValueDialog isOpen={stepsDialog}    onClose={() => setStepsDialog(false)}    title="Log Steps"    unit="steps"   value={dayLog.steps              || 0}  step={100} min={0}   max={50000} color="#4ade80" onSave={(v) => upsertLog.mutate({ steps: v })} />
-      <LogValueDialog isOpen={exerciseDialog} onClose={() => setExerciseDialog(false)} title="Log Exercise" unit="min"     value={dayLog.exercise_minutes   || 0}  step={5}   min={0}   max={300} color="#f43f5e" onSave={(v) => upsertLog.mutate({ exercise_minutes: v })} />
+      <LogValueDialog isOpen={weightDialog}   onClose={() => setWeightDialog(false)}   title="Log Weight"   unit="kg"      value={dayLog.weight            || 70}  step={0.1} min={30}  max={300}   color="#10b981" onSave={(v) => upsertLog({ weight: v })} />
+      <LogValueDialog isOpen={waterDialog}    onClose={() => setWaterDialog(false)}    title="Log Water"    unit="glasses" value={dayLog.water_glasses      || 0}   step={1}   min={0}   max={20}    color="#22d3ee" onSave={(v) => upsertLog({ water_glasses: v })} />
+      <LogValueDialog isOpen={stepsDialog}    onClose={() => setStepsDialog(false)}    title="Log Steps"    unit="steps"   value={dayLog.steps              || 0}   step={100} min={0}   max={50000} color="#4ade80" onSave={(v) => upsertLog({ steps: v })} />
+      <LogValueDialog isOpen={exerciseDialog} onClose={() => setExerciseDialog(false)} title="Log Exercise" unit="min"     value={dayLog.exercise_minutes   || 0}   step={5}   min={0}   max={300}   color="#f43f5e" onSave={(v) => upsertLog({ exercise_minutes: v })} />
     </div>
   );
 }

@@ -1,13 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
-  ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine
+  ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid
 } from 'recharts';
-import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale, TrendingUp, TrendingDown, Award } from 'lucide-react';
+import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale, Award } from 'lucide-react';
+import { DailyLogs } from '../components/storage';
 import MultiRing from '../components/fitness/MultiRing';
 
 const METRICS = [
@@ -20,9 +19,9 @@ const METRICS = [
 ];
 
 const VIEWS = [
-  { key: 'W', label: 'Week',  days: 7  },
-  { key: 'M', label: 'Month', days: 30 },
-  { key: '3M', label: '3M',   days: 90 },
+  { key: 'W',  label: 'Week',  days: 7  },
+  { key: 'M',  label: 'Month', days: 30 },
+  { key: '3M', label: '3M',    days: 90 },
 ];
 
 const CustomTooltip = ({ active, payload, label, color, unit }) => {
@@ -41,32 +40,24 @@ const CustomTooltip = ({ active, payload, label, color, unit }) => {
 export default function Progress() {
   const [activeMetric, setActiveMetric] = useState(METRICS[0]);
   const [viewKey, setViewKey] = useState('W');
+  const [tick, setTick] = useState(0);
 
-  const { data: logs = [] } = useQuery({
-    queryKey: ['progressLogs'],
-    queryFn: () => base44.entities.DailyLog.list('-date', 90),
-  });
-
-  const todayLog  = logs.find(l => l.date === format(new Date(), 'yyyy-MM-dd')) || {};
-  const view      = VIEWS.find(v => v.key === viewKey);
+  const logs = useMemo(() => DailyLogs.list(), [tick]);
+  const todayLog = logs.find(l => l.date === format(new Date(), 'yyyy-MM-dd')) || {};
+  const view = VIEWS.find(v => v.key === viewKey);
 
   const chartData = useMemo(() => {
     const sorted = [...logs].sort((a, b) => new Date(a.date) - new Date(b.date));
-    const sliced = sorted.slice(-view.days);
-    return sliced.map(l => ({
-      label: view.days <= 7
-        ? format(new Date(l.date), 'EEE')
-        : view.days <= 30
-          ? format(new Date(l.date), 'MMM d')
-          : format(new Date(l.date), 'MMM d'),
+    return sorted.slice(-view.days).map(l => ({
+      label: view.days <= 7 ? format(new Date(l.date), 'EEE') : format(new Date(l.date), 'MMM d'),
       value: l[activeMetric.key] || 0,
     }));
   }, [logs, activeMetric.key, view.days]);
 
-  // Summary stats
-  const values = chartData.map(d => d.value).filter(v => v > 0);
-  const avg    = values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : 0;
-  const peak   = values.length ? Math.max(...values) : 0;
+  const values  = chartData.map(d => d.value).filter(v => v > 0);
+  const avg     = values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : 0;
+  const peak    = values.length ? Math.max(...values) : 0;
+
   const streak = useMemo(() => {
     const sorted = [...logs].sort((a, b) => new Date(b.date) - new Date(a.date));
     let s = 0;
@@ -78,13 +69,12 @@ export default function Progress() {
   }, [logs]);
 
   const weightLogs = [...logs].filter(l => l.weight).sort((a, b) => new Date(a.date) - new Date(b.date));
-  const firstW = weightLogs[0]?.weight;
-  const lastW  = weightLogs.at(-1)?.weight;
-  const lostKg = firstW && lastW ? Math.max(firstW - lastW, 0) : 0;
+  const firstW  = weightLogs[0]?.weight;
+  const lastW   = weightLogs.at(-1)?.weight;
+  const lostKg  = firstW && lastW ? Math.max(firstW - lastW, 0) : 0;
 
   return (
     <div className="px-4 pt-2">
-      {/* Header */}
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-5 pt-2">
         <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Analytics</p>
         <h1 className="text-2xl font-black text-white">Progress</h1>
@@ -97,23 +87,18 @@ export default function Progress() {
         transition={{ delay: 0.05 }}
         className="glass-card-green rounded-3xl p-5 flex items-center gap-5 mb-5"
       >
-        <MultiRing
-          size={140}
-          strokeWidth={9}
-          gap={5}
-          rings={[
-            { value: todayLog.steps || 0, max: todayLog.steps_goal || 10000, color: '#4ade80' },
-            { value: todayLog.exercise_minutes || 0, max: todayLog.exercise_goal || 30, color: '#ec4899' },
-            { value: todayLog.stairs_climbed || 0, max: todayLog.stairs_goal || 20, color: '#a855f7' },
-          ]}
-        >
+        <MultiRing size={140} strokeWidth={9} gap={5} rings={[
+          { value: todayLog.steps || 0,            max: todayLog.steps_goal    || 10000, color: '#4ade80' },
+          { value: todayLog.exercise_minutes || 0, max: todayLog.exercise_goal || 30,    color: '#ec4899' },
+          { value: todayLog.stairs_climbed || 0,   max: todayLog.stairs_goal   || 20,    color: '#a855f7' },
+        ]}>
           <Award className="w-5 h-5 text-yellow-400" />
         </MultiRing>
         <div className="flex-1 space-y-2.5">
           {[
-            { label: 'Steps',    val: `${(todayLog.steps || 0).toLocaleString()}`,       color: '#4ade80',  goal: todayLog.steps_goal || 10000,    curr: todayLog.steps || 0 },
-            { label: 'Exercise', val: `${todayLog.exercise_minutes || 0} min`,           color: '#ec4899',  goal: todayLog.exercise_goal || 30,    curr: todayLog.exercise_minutes || 0 },
-            { label: 'Stairs',   val: `${todayLog.stairs_climbed || 0} flights`,         color: '#a855f7',  goal: todayLog.stairs_goal || 20,      curr: todayLog.stairs_climbed || 0 },
+            { label: 'Steps',    val: `${(todayLog.steps || 0).toLocaleString()}`,     color: '#4ade80', goal: todayLog.steps_goal    || 10000, curr: todayLog.steps || 0 },
+            { label: 'Exercise', val: `${todayLog.exercise_minutes || 0} min`,         color: '#ec4899', goal: todayLog.exercise_goal || 30,    curr: todayLog.exercise_minutes || 0 },
+            { label: 'Stairs',   val: `${todayLog.stairs_climbed || 0} flights`,       color: '#a855f7', goal: todayLog.stairs_goal   || 20,    curr: todayLog.stairs_climbed || 0 },
           ].map(r => (
             <div key={r.label}>
               <div className="flex items-center justify-between mb-0.5">
@@ -136,15 +121,9 @@ export default function Progress() {
 
       {/* KG Lost highlight */}
       {lostKg > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card rounded-2xl p-4 flex items-center gap-4 mb-4"
-        >
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
-            style={{ background: 'rgba(74,222,128,0.12)' }}>
-            🔥
-          </div>
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="glass-card rounded-2xl p-4 flex items-center gap-4 mb-4">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: 'rgba(74,222,128,0.12)' }}>🔥</div>
           <div className="flex-1">
             <p className="text-sm font-bold text-white">Great progress!</p>
             <p className="text-xs text-gray-500 mt-0.5">You've lost <span className="text-green-400 font-bold">{lostKg.toFixed(1)} kg</span> since you started</p>
@@ -161,16 +140,12 @@ export default function Progress() {
       {/* Metric selector */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar mb-3 -mx-4 px-4">
         {METRICS.map((m) => (
-          <motion.button
-            key={m.key}
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setActiveMetric(m)}
+          <motion.button key={m.key} whileTap={{ scale: 0.92 }} onClick={() => setActiveMetric(m)}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
             style={activeMetric.key === m.key
               ? { background: `${m.color}22`, color: m.color, border: `1px solid ${m.color}35` }
               : { background: 'rgba(255,255,255,0.04)', color: '#4b5563', border: '1px solid transparent' }
-            }
-          >
+            }>
             <m.icon className="w-3.5 h-3.5" />
             {m.label}
           </motion.button>
@@ -180,14 +155,9 @@ export default function Progress() {
       {/* View toggle */}
       <div className="flex gap-1.5 p-1 rounded-xl mb-4 w-fit" style={{ background: 'rgba(255,255,255,0.04)' }}>
         {VIEWS.map(v => (
-          <button
-            key={v.key}
-            onClick={() => setViewKey(v.key)}
+          <button key={v.key} onClick={() => setViewKey(v.key)}
             className="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-            style={viewKey === v.key
-              ? { background: 'rgba(255,255,255,0.1)', color: 'white' }
-              : { color: '#4b5563' }}
-          >
+            style={viewKey === v.key ? { background: 'rgba(255,255,255,0.1)', color: 'white' } : { color: '#4b5563' }}>
             {v.label}
           </button>
         ))}
@@ -197,16 +167,13 @@ export default function Progress() {
       <AnimatePresence mode="wait">
         <motion.div
           key={`${activeMetric.key}-${viewKey}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.25 }}
           className="glass-card rounded-2xl p-5 mb-4"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: `${activeMetric.color}18` }}>
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `${activeMetric.color}18` }}>
                 <activeMetric.icon className="w-4 h-4" style={{ color: activeMetric.color }} />
               </div>
               <div>
@@ -221,7 +188,6 @@ export default function Progress() {
               </p>
             </div>
           </div>
-
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               {activeMetric.chartType === 'line' ? (
@@ -238,8 +204,8 @@ export default function Progress() {
                 <AreaChart data={chartData} margin={{ left: -10, right: 5 }}>
                   <defs>
                     <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%"   stopColor={activeMetric.color} stopOpacity={0.3} />
-                      <stop offset="95%"  stopColor={activeMetric.color} stopOpacity={0} />
+                      <stop offset="5%" stopColor={activeMetric.color} stopOpacity={0.3} />
+                      <stop offset="95%" stopColor={activeMetric.color} stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
@@ -254,11 +220,8 @@ export default function Progress() {
                   <XAxis dataKey="label" tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                   <YAxis tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip color={activeMetric.color} unit={activeMetric.unit} />} />
-                  <Bar dataKey="value" radius={[6, 6, 2, 2]}
-                    fill={activeMetric.color}
-                    fillOpacity={0.85}
-                    style={{ filter: `drop-shadow(0 0 4px ${activeMetric.color}40)` }}
-                  />
+                  <Bar dataKey="value" radius={[6, 6, 2, 2]} fill={activeMetric.color} fillOpacity={0.85}
+                    style={{ filter: `drop-shadow(0 0 4px ${activeMetric.color}40)` }} />
                 </BarChart>
               )}
             </ResponsiveContainer>
@@ -269,9 +232,9 @@ export default function Progress() {
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-2.5 mb-6">
         {[
-          { label: 'Average', value: avg.toLocaleString(), unit: activeMetric.unit, color: activeMetric.color },
-          { label: 'Peak',    value: peak.toLocaleString(), unit: activeMetric.unit, color: '#f59e0b' },
-          { label: 'Entries', value: values.length, unit: 'days', color: '#22d3ee' },
+          { label: 'Average', value: avg.toLocaleString(),    unit: activeMetric.unit, color: activeMetric.color },
+          { label: 'Peak',    value: peak.toLocaleString(),   unit: activeMetric.unit, color: '#f59e0b' },
+          { label: 'Entries', value: values.length,           unit: 'days',            color: '#22d3ee' },
         ].map(s => (
           <div key={s.label} className="glass-card rounded-2xl p-3.5 text-center">
             <p className="text-[10px] text-gray-500 uppercase tracking-wider">{s.label}</p>
