@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { format, startOfWeek, addDays, isSameDay, isToday } from 'date-fns';
 
 export default function WeekSelector({ selectedDate, onSelect }) {
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -8,33 +8,43 @@ export default function WeekSelector({ selectedDate, onSelect }) {
   const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   return (
-    <div className="flex justify-between px-2">
+    <div className="flex justify-between gap-1">
       {days.map((day, i) => {
         const isSelected = isSameDay(day, selectedDate);
-        const isToday = isSameDay(day, new Date());
+        const isTodayDate = isToday(day);
+        const isFuture = day > new Date();
+
         return (
-          <button
+          <motion.button
             key={i}
-            onClick={() => onSelect(day)}
-            className="flex flex-col items-center gap-1.5 relative"
+            whileTap={{ scale: 0.88 }}
+            onClick={() => !isFuture && onSelect(day)}
+            disabled={isFuture}
+            className="flex flex-col items-center gap-1.5 flex-1"
           >
-            <span className="text-[11px] font-medium text-gray-500">{dayLabels[i]}</span>
-            <motion.div
-              whileTap={{ scale: 0.9 }}
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300
-                ${isSelected 
-                  ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white glow-purple' 
-                  : isToday 
-                    ? 'bg-white/10 text-white ring-1 ring-purple-500/40' 
-                    : 'bg-white/[0.03] text-gray-400 hover:bg-white/[0.06]'
-                }`}
-            >
+            <span className={`text-[10px] font-semibold uppercase tracking-wider
+              ${isSelected ? 'text-green-400' : 'text-gray-600'}`}>
+              {dayLabels[i]}
+            </span>
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold relative transition-all duration-200
+              ${isSelected
+                ? 'text-white'
+                : isFuture
+                  ? 'text-gray-700'
+                  : isTodayDate
+                    ? 'text-green-400 bg-green-400/10'
+                    : 'text-gray-400 hover:bg-white/5'
+              }`}
+              style={isSelected ? {
+                background: 'linear-gradient(135deg, #4ade80, #a855f7)',
+                boxShadow: '0 0 16px rgba(74, 222, 128, 0.35)'
+              } : {}}>
               {format(day, 'd')}
-            </motion.div>
-            {isToday && !isSelected && (
-              <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-purple-500" />
-            )}
-          </button>
+              {isTodayDate && !isSelected && (
+                <span className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-green-400" />
+              )}
+            </div>
+          </motion.button>
         );
       })}
     </div>

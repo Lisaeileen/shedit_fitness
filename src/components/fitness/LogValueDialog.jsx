@@ -1,64 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
-export default function LogValueDialog({ isOpen, onClose, title, unit, value = 0, step = 1, min = 0, max = 999, onSave }) {
+export default function LogValueDialog({
+  isOpen, onClose, title, unit, value = 0,
+  step = 1, min = 0, max = 999, color = '#4ade80', onSave
+}) {
   const [val, setVal] = useState(value);
 
-  const increment = () => setVal(v => Math.min(v + step, max));
-  const decrement = () => setVal(v => Math.max(v - step, min));
+  useEffect(() => {
+    if (isOpen) setVal(value);
+  }, [isOpen, value]);
 
-  const handleSave = () => {
-    onSave(val);
-    onClose();
-  };
+  const change = (delta) => setVal(v => {
+    const next = Math.round((v + delta) * 100) / 100;
+    return Math.min(Math.max(next, min), max);
+  });
+
+  const handleSave = () => { onSave(val); onClose(); };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[80]"
           />
           <motion.div
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 p-4 pb-8"
+            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 40 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed inset-0 flex items-center justify-center z-[80] px-6"
           >
-            <div className="bg-[#1a1a1a] rounded-3xl p-6 max-w-sm mx-auto border border-white/[0.06] text-center">
+            <div className="w-full max-w-xs bg-[#111C16] rounded-3xl p-6 border border-white/[0.07] shadow-2xl">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">{title}</h3>
-                <button onClick={onClose} className="p-2 rounded-full bg-white/[0.06]">
+                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
 
-              <div className="flex items-center justify-center gap-6 my-8">
-                <button onClick={decrement} className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center hover:bg-white/[0.1]">
-                  <Minus className="w-5 h-5 text-gray-300" />
-                </button>
-                <div>
-                  <span className="text-5xl font-bold text-white">{val}</span>
-                  <span className="text-lg text-gray-500 ml-2">{unit}</span>
+              {/* Value display */}
+              <div className="flex items-center justify-between gap-4 mb-8">
+                <motion.button
+                  whileTap={{ scale: 0.88 }}
+                  onClick={() => change(-step)}
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${color}15`, border: `1px solid ${color}30` }}
+                >
+                  <Minus className="w-5 h-5" style={{ color }} />
+                </motion.button>
+
+                <div className="text-center flex-1">
+                  <div className="text-5xl font-black text-white leading-none">
+                    {step < 1 ? val.toFixed(1) : val}
+                  </div>
+                  <div className="text-sm text-gray-400 mt-1">{unit}</div>
                 </div>
-                <button onClick={increment} className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center hover:bg-white/[0.1]">
-                  <Plus className="w-5 h-5 text-gray-300" />
-                </button>
+
+                <motion.button
+                  whileTap={{ scale: 0.88 }}
+                  onClick={() => change(step)}
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${color}15`, border: `1px solid ${color}30` }}
+                >
+                  <Plus className="w-5 h-5" style={{ color }} />
+                </motion.button>
               </div>
 
-              <Button 
-                onClick={handleSave}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold rounded-xl h-12"
-              >
+              {/* Quick shortcuts */}
+              {unit === 'glasses' && (
+                <div className="grid grid-cols-4 gap-2 mb-5">
+                  {[1, 2, 4, 8].map(n => (
+                    <button key={n} onClick={() => setVal(n)}
+                      className="py-2 rounded-xl text-xs font-bold transition-all"
+                      style={val === n
+                        ? { background: `${color}25`, color }
+                        : { background: 'rgba(255,255,255,0.04)', color: '#6b7280' }}>
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <button onClick={handleSave} className="btn-primary" style={{
+                background: `linear-gradient(135deg, ${color}, ${color}99)`
+              }}>
                 Save
-              </Button>
+              </button>
             </div>
           </motion.div>
         </>

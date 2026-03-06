@@ -1,33 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function MultiRing({ rings = [], size = 140, strokeWidth = 8, children }) {
-  const gap = 3;
-
+export default function MultiRing({ rings = [], size = 160, strokeWidth = 9, gap = 5, children }) {
   return (
-    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="transform -rotate-90">
-        {rings.map((ring, index) => {
-          const r = (size - strokeWidth) / 2 - (index * (strokeWidth + gap));
+    <div className="relative flex items-center justify-center flex-shrink-0"
+      style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="transform -rotate-90" style={{ overflow: 'visible' }}>
+        {rings.map((ring, i) => {
+          const r = (size - strokeWidth) / 2 - i * (strokeWidth + gap);
+          if (r <= 0) return null;
           const circ = 2 * Math.PI * r;
-          const progress = Math.min((ring.value || 0) / (ring.max || 100), 1);
-          const off = circ - (progress * circ);
+          const progress = Math.min((ring.value || 0) / Math.max(ring.max || 100, 1), 1);
+          const off = circ - progress * circ;
+          const track = `${ring.color}18`;
 
           return (
-            <React.Fragment key={index}>
+            <React.Fragment key={i}>
               <circle
-                cx={size / 2}
-                cy={size / 2}
-                r={r}
-                fill="none"
-                stroke="rgba(255,255,255,0.06)"
-                strokeWidth={strokeWidth}
-                strokeLinecap="round"
+                cx={size / 2} cy={size / 2} r={r}
+                fill="none" stroke={track}
+                strokeWidth={strokeWidth} strokeLinecap="round"
               />
               <motion.circle
-                cx={size / 2}
-                cy={size / 2}
-                r={r}
+                cx={size / 2} cy={size / 2} r={r}
                 fill="none"
                 stroke={ring.color}
                 strokeWidth={strokeWidth}
@@ -35,8 +30,8 @@ export default function MultiRing({ rings = [], size = 140, strokeWidth = 8, chi
                 strokeDasharray={circ}
                 initial={{ strokeDashoffset: circ }}
                 animate={{ strokeDashoffset: off }}
-                transition={{ duration: 1.5, ease: "easeOut", delay: index * 0.2 }}
-                style={{ filter: `drop-shadow(0 0 6px ${ring.color}40)` }}
+                transition={{ duration: 1.6, ease: [0.34, 1.56, 0.64, 1], delay: i * 0.15 }}
+                style={{ filter: `drop-shadow(0 0 6px ${ring.color}50)` }}
               />
             </React.Fragment>
           );
