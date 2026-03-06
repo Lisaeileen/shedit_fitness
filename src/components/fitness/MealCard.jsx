@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Camera, ScanLine, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 
