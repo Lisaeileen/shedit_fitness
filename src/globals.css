@@ -3,85 +3,216 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 5%;
+  --background: 220 15% 5%;
   --foreground: 0 0% 95%;
-  --card: 0 0% 8%;
+  --card: 220 15% 7%;
   --card-foreground: 0 0% 95%;
-  --popover: 0 0% 8%;
+  --popover: 220 15% 7%;
   --popover-foreground: 0 0% 95%;
   --primary: 270 80% 60%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 12%;
+  --secondary: 220 15% 10%;
   --secondary-foreground: 0 0% 95%;
-  --muted: 0 0% 12%;
-  --muted-foreground: 0 0% 55%;
-  --accent: 270 80% 60%;
+  --muted: 220 15% 10%;
+  --muted-foreground: 0 0% 50%;
+  --accent: 160 60% 25%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 62% 50%;
   --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 15%;
-  --input: 0 0% 15%;
+  --border: 220 15% 12%;
+  --input: 220 15% 12%;
   --ring: 270 80% 60%;
-  --radius: 0.75rem;
+  --radius: 1rem;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overscroll-behavior: none;
 }
 
 body {
-  background-color: #0D0D0D;
-  color: #f5f5f5;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+  background-color: #0B1A14;
+  color: #f0f0f0;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* iOS safe area support */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 44px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+.safe-nav-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4px);
+}
+
+/* Scrollable areas */
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+}
+.scroll-snap-item {
+  scroll-snap-align: start;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
+  height: 3px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
 }
 
-/* Activity ring animation */
-@keyframes ring-fill {
-  from { stroke-dashoffset: var(--ring-circumference); }
-  to { stroke-dashoffset: var(--ring-offset); }
+/* Hide scrollbar on mobile while keeping function */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.ring-animate {
-  animation: ring-fill 1.5s ease-out forwards;
+/* Gradient backgrounds */
+.bg-app {
+  background: linear-gradient(160deg, #0B1A14 0%, #0F0B1E 50%, #0B1A14 100%);
+  min-height: 100vh;
+}
+
+.bg-app-alt {
+  background: linear-gradient(180deg, #0F1A15 0%, #130A22 100%);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #a855f7, #ec4899, #3b82f6);
+  background: linear-gradient(135deg, #4ade80, #a855f7, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Glow effect */
-.glow-purple {
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+.gradient-text-green {
+  background: linear-gradient(135deg, #4ade80, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.glow-pink {
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
-}
-
-.glow-blue {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-
-/* Glass card */
+/* Glass card variants */
 .glass-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.ql-toolbar {
-  display: none !important;
+.glass-card-green {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.06), rgba(168, 85, 247, 0.04));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(74, 222, 128, 0.1);
+}
+
+.glass-card-purple {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(236, 72, 153, 0.04));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(168, 85, 247, 0.12);
+}
+
+/* Glow effects */
+.glow-green {
+  box-shadow: 0 0 24px rgba(74, 222, 128, 0.25);
+}
+.glow-purple {
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.3);
+}
+.glow-pink {
+  box-shadow: 0 0 24px rgba(236, 72, 153, 0.25);
+}
+
+/* Bottom nav gradient */
+.nav-bg {
+  background: linear-gradient(180deg, transparent 0%, rgba(11, 26, 20, 0.95) 20%, rgba(11, 26, 20, 0.98) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Input dark style */
+.input-dark {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+.input-dark:focus {
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+.input-dark::placeholder {
+  color: rgba(255,255,255,0.25);
+}
+
+/* Pill button */
+.btn-primary {
+  background: linear-gradient(135deg, #4ade80, #a855f7);
+  color: white;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-weight: 600;
+  font-size: 15px;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+}
+
+/* Progress page metric tabs */
+.metric-tab {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+}
+.metric-tab.active {
+  color: white;
+}
+
+/* Streak badge */
+.streak-badge {
+  background: linear-gradient(135deg, #f59e0b, #f43f5e);
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
 }
