@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { DailyLogs, deleteAllData } from '../components/storage';
 import LogValueDialog from '../components/fitness/LogValueDialog';
+import { SheditIcon } from '../components/fitness/SheditLogo';
 import GoalsPanel from '../components/fitness/panels/GoalsPanel';
 import WeightPanel from '../components/fitness/panels/WeightPanel';
 import WeeklyReportPanel from '../components/fitness/panels/WeeklyReportPanel';
