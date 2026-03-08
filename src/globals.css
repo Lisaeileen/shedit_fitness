@@ -30,6 +30,15 @@
   box-sizing: border-box;
 }
 
+/* Allow text selection in inputs everywhere */
+input, textarea {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+  touch-action: manipulation;
+  caret-color: #a855f7;
+}
+
 html, body {
   height: 100%;
   overscroll-behavior: none;
