@@ -153,58 +153,45 @@ export default function Progress() {
       <AnimatePresence mode="wait">
         <motion.div key={`${activeMetric.key}-${viewKey}`}
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.25 }} className="glass-card rounded-2xl p-5 mb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `${activeMetric.color}18` }}>
-                <activeMetric.icon className="w-4 h-4" style={{ color: activeMetric.color }} />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-white">{activeMetric.label}</h3>
-                <p className="text-[10px] text-gray-500">{view.label} view</p>
-              </div>
+          transition={{ duration: 0.25 }} className="rounded-2xl p-5 mb-4"
+          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h3 className="text-base font-black text-white">{activeMetric.label}</h3>
+              <p className="text-[10px] text-gray-500">{view.label} overview</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-500">avg</p>
-              <p className="text-sm font-bold" style={{ color: activeMetric.color }}>
-                {avg.toLocaleString()} <span className="text-gray-500 text-xs font-normal">{activeMetric.unit}</span>
-              </p>
+              <p className="text-2xl font-black" style={{ color: activeMetric.color }}>{avg.toLocaleString()}</p>
+              <p className="text-[10px] text-gray-500">avg {activeMetric.unit}</p>
             </div>
           </div>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
-              {activeMetric.chartType === 'line' ? (
-                <LineChart data={chartData} margin={{ left: -10, right: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} domain={['dataMin - 1', 'dataMax + 1']} />
-                  <Tooltip content={<CustomTooltip color={activeMetric.color} unit={activeMetric.unit} />} />
-                  <Line type="monotone" dataKey="value" stroke={activeMetric.color} strokeWidth={2.5}
-                    dot={{ fill: activeMetric.color, r: 3, strokeWidth: 0 }}
-                    activeDot={{ r: 5, fill: activeMetric.color, strokeWidth: 2, stroke: 'rgba(255,255,255,0.2)' }} />
-                </LineChart>
-              ) : activeMetric.chartType === 'area' ? (
-                <AreaChart data={chartData} margin={{ left: -10, right: 5 }}>
+              {activeMetric.chartType === 'line' || activeMetric.chartType === 'area' ? (
+                <AreaChart data={chartData} margin={{ left: -20, right: 5 }}>
                   <defs>
-                    <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={activeMetric.color} stopOpacity={0.3} />
-                      <stop offset="95%" stopColor={activeMetric.color} stopOpacity={0} />
+                    <linearGradient id={`grad-${activeMetric.key}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={activeMetric.color} stopOpacity={0.45} />
+                      <stop offset="100%" stopColor={activeMetric.color} stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="label" tick={{ fill: '#374151', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                  <YAxis tick={{ fill: '#374151', fontSize: 10 }} axisLine={false} tickLine={false} domain={['dataMin - 1', 'dataMax + 1']} />
                   <Tooltip content={<CustomTooltip color={activeMetric.color} unit={activeMetric.unit} />} />
-                  <Area type="monotone" dataKey="value" stroke={activeMetric.color} strokeWidth={2} fill="url(#ag)" />
+                  <Area type="monotone" dataKey="value" stroke={activeMetric.color} strokeWidth={3}
+                    fill={`url(#grad-${activeMetric.key})`}
+                    dot={false}
+                    activeDot={{ r: 5, fill: activeMetric.color, strokeWidth: 0 }}
+                    style={{ filter: `drop-shadow(0 0 6px ${activeMetric.color}80)` }} />
                 </AreaChart>
               ) : (
-                <BarChart data={chartData} margin={{ left: -10, right: 5 }} barCategoryGap="30%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} />
+                <BarChart data={chartData} margin={{ left: -20, right: 5 }} barCategoryGap="35%">
+                  <XAxis dataKey="label" tick={{ fill: '#374151', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                  <YAxis tick={{ fill: '#374151', fontSize: 10 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip color={activeMetric.color} unit={activeMetric.unit} />} />
-                  <Bar dataKey="value" radius={[6, 6, 2, 2]} fill={activeMetric.color} fillOpacity={0.85}
-                    style={{ filter: `drop-shadow(0 0 4px ${activeMetric.color}40)` }} />
+                  <Bar dataKey="value" radius={[6, 6, 2, 2]}
+                    fill={activeMetric.color} fillOpacity={0.9}
+                    style={{ filter: `drop-shadow(0 0 6px ${activeMetric.color}60)` }} />
                 </BarChart>
               )}
             </ResponsiveContainer>
