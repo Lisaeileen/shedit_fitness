@@ -112,6 +112,13 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
           {generating ? <Loader2 className="w-3.5 h-3.5 text-purple-400 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5 text-purple-400" />}
           <span className="text-purple-400">{plans.length > 0 ? 'Regenerate' : 'Generate'}</span>
         </motion.button>
+        {onRedo && (
+          <motion.button whileTap={{ scale: 0.93 }} onClick={onRedo}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold mt-1"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <span className="text-gray-500">✏️ Redo quiz</span>
+          </motion.button>
+        )
       </div>
 
       {/* Day selector */}
