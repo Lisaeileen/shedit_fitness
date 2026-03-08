@@ -5,9 +5,9 @@ import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
   ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid
 } from 'recharts';
-import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale, Award } from 'lucide-react';
+import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale } from 'lucide-react';
 import { DailyLogs } from '../components/storage';
-import MultiRing from '../components/fitness/MultiRing';
+import ActivityRing from '../components/fitness/ActivityRing';
 
 const METRICS = [
   { key: 'calories_consumed', label: 'Calories', icon: Flame,      color: '#a855f7', unit: 'kcal', chartType: 'bar'  },
