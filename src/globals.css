@@ -134,22 +134,21 @@ body {
 .input-dark {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(168, 85, 247, 0.2);
-  color: white;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   border-radius: 14px;
   padding: 13px 16px;
   width: 100%;
   outline: none;
-  font-size: 15px;
+  font-size: max(16px, 15px);
   transition: border-color 0.2s, box-shadow 0.2s;
-  /* Critical for mobile input to work */
   -webkit-user-select: text;
   user-select: text;
   -webkit-appearance: none;
   appearance: none;
   caret-color: #a855f7;
-  /* Prevent zoom on iOS */
-  font-size: max(16px, 15px);
   touch-action: manipulation;
+  opacity: 1 !important;
 }
 .input-dark:focus {
   border-color: rgba(168, 85, 247, 0.6);
