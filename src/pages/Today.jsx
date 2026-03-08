@@ -86,14 +86,13 @@ export default function Today() {
         className="flex items-center justify-between mb-5 pt-2">
         <div>
           <p className="text-xs text-purple-300/50 font-medium">{greeting}</p>
-          <h1 className="text-2xl font-black gradient-text leading-tight">Shedit</h1>
+          <SheditWordmark size={30} />
         </div>
         <div className="flex items-center gap-3">
           <motion.button whileTap={{ scale: 0.9 }} className="w-9 h-9 rounded-xl bg-white/[0.04] flex items-center justify-center">
             <Bell className="w-4 h-4 text-purple-300/50" />
           </motion.button>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black text-white"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>S</div>
+          <SheditIcon size={36} rounded="full" />
         </div>
       </motion.div>
 
