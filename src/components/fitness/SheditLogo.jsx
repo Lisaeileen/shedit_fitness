@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LOGO_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69ab1bdf5518ce71465536ba/99d8ccb28_Screenshot2026-03-08145522.png';
+const LOGO_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69ab1bdf5518ce71465536ba/70015bd75_generated_image.png';
 
 // Full wordmark: icon + "Shedit" text
 export function SheditWordmark({ size = 32, className = '' }) {
