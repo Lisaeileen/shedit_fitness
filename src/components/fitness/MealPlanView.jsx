@@ -88,11 +88,18 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
               {detail.ingredients && (
                 <div className="mb-4">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Ingredients</p>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {detail.ingredients.map((ing, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: meal.color }} />
-                        <span className="text-sm text-gray-300">{ing}</span>
+                      <div key={i} className="flex items-center gap-3 px-2 py-1.5 rounded-xl"
+                        style={{ background: 'rgba(255,255,255,0.03)' }}>
+                        <img
+                          src={getIngredientImage(ing)}
+                          alt={ing}
+                          className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
+                          onError={e => { e.target.src = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=120&q=70'; }}
+                          loading="lazy"
+                        />
+                        <span className="text-sm text-gray-300 leading-tight">{ing}</span>
                       </div>
                     ))}
                   </div>
