@@ -9,6 +9,13 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { DailyLogs, deleteAllData } from '../components/storage';
 import LogValueDialog from '../components/fitness/LogValueDialog';
+import GoalsPanel from '../components/fitness/panels/GoalsPanel';
+import WeightPanel from '../components/fitness/panels/WeightPanel';
+import WeeklyReportPanel from '../components/fitness/panels/WeeklyReportPanel';
+import SleepPanel from '../components/fitness/panels/SleepPanel';
+import FastingPanel from '../components/fitness/panels/FastingPanel';
+import WorkoutPanel from '../components/fitness/panels/WorkoutPanel';
+import RemindersPanel from '../components/fitness/panels/RemindersPanel';
 
 export default function More() {
   const [activePanel, setActivePanel]     = useState(null);
