@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Scale, Timer, Moon, Dumbbell, Target, FileText,
   Bell, Footprints, Shield, HelpCircle, ChevronRight,
-  TrendingDown, Zap, X, Trash2
+  TrendingDown, Zap, X, Trash2, Users, Brain
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { DailyLogs, deleteAllData } from '../components/storage';
 import LogValueDialog from '../components/fitness/LogValueDialog';
 
@@ -68,6 +70,22 @@ export default function More() {
         <p className="text-[10px] text-purple-300/40 uppercase tracking-widest font-bold">Account</p>
         <h1 className="text-2xl font-black text-white">More</h1>
       </motion.div>
+
+      {/* Quick links */}
+      <div className="flex gap-2.5 mb-5">
+        <Link to={createPageUrl('Social')} className="flex-1 rounded-2xl p-4 flex flex-col items-center gap-2"
+          style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)' }}>
+          <Users className="w-6 h-6 text-purple-400" />
+          <span className="text-xs font-bold text-white">Community</span>
+          <span className="text-[10px] text-gray-600">Friends & Challenges</span>
+        </Link>
+        <Link to={createPageUrl('Coach')} className="flex-1 rounded-2xl p-4 flex flex-col items-center gap-2"
+          style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}>
+          <Brain className="w-6 h-6 text-purple-400" />
+          <span className="text-xs font-bold text-white">AI Coach</span>
+          <span className="text-[10px] text-gray-600">Your assistant</span>
+        </Link>
+      </div>
 
       {/* Profile */}
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
