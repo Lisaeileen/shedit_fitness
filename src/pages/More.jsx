@@ -99,10 +99,7 @@ export default function More() {
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
         className="glass-card-purple rounded-3xl p-5 mb-5">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 8px 24px rgba(124,58,237,0.4)' }}>
-            S
-          </div>
+          <SheditIcon size={64} rounded="2xl" />
           <div>
             <h3 className="text-lg font-bold text-white">Shedit User</h3>
             <p className="text-[10px] text-purple-300/50 mt-0.5 italic">Walk it off. Climb it up. Shed it.</p>
