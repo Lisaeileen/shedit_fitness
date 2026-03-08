@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { Flame, Footprints, ArrowUp, Bell, Zap } from 'lucide-react';
+import { Footprints, ArrowUp, Bell } from 'lucide-react';
 import { DailyLogs, Meals } from '../components/storage';
+import { SheditWordmark, SheditIcon } from '../components/fitness/SheditLogo';
 
 import WeekSelector from '../components/fitness/WeekSelector';
 import StreakCard from '../components/fitness/StreakCard';
