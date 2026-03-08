@@ -4,13 +4,11 @@ import { X, Minus, Plus } from 'lucide-react';
 
 export default function LogValueDialog({
   isOpen, onClose, title, unit, value = 0,
-  step = 1, min = 0, max = 999, color = '#4ade80', onSave
+  step = 1, min = 0, max = 999, color = '#a855f7', onSave
 }) {
   const [val, setVal] = useState(value);
 
-  useEffect(() => {
-    if (isOpen) setVal(value);
-  }, [isOpen, value]);
+  useEffect(() => { if (isOpen) setVal(value); }, [isOpen, value]);
 
   const change = (delta) => setVal(v => {
     const next = Math.round((v + delta) * 100) / 100;
@@ -23,55 +21,41 @@ export default function LogValueDialog({
     <AnimatePresence>
       {isOpen && (
         <>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={onClose} className="fixed inset-0 bg-black/75 backdrop-blur-md z-[80]" />
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[80]"
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 40 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9, y: 40 }} animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 40 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-0 flex items-center justify-center z-[80] px-6"
-          >
-            <div className="w-full max-w-xs bg-[#111C16] rounded-3xl p-6 border border-white/[0.07] shadow-2xl">
+            className="fixed inset-0 flex items-center justify-center z-[80] px-6">
+            <div className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl"
+              style={{ background: '#1A0835', borderColor: 'rgba(168,85,247,0.2)' }}>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">{title}</h3>
+                <h3 className="text-lg font-black text-white">{title}</h3>
                 <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
 
-              {/* Value display */}
               <div className="flex items-center justify-between gap-4 mb-8">
-                <motion.button
-                  whileTap={{ scale: 0.88 }}
-                  onClick={() => change(-step)}
+                <motion.button whileTap={{ scale: 0.88 }} onClick={() => change(-step)}
                   className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${color}15`, border: `1px solid ${color}30` }}
-                >
+                  style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                   <Minus className="w-5 h-5" style={{ color }} />
                 </motion.button>
-
                 <div className="text-center flex-1">
                   <div className="text-5xl font-black text-white leading-none">
                     {step < 1 ? val.toFixed(1) : val}
                   </div>
                   <div className="text-sm text-gray-400 mt-1">{unit}</div>
                 </div>
-
-                <motion.button
-                  whileTap={{ scale: 0.88 }}
-                  onClick={() => change(step)}
+                <motion.button whileTap={{ scale: 0.88 }} onClick={() => change(step)}
                   className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${color}15`, border: `1px solid ${color}30` }}
-                >
+                  style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                   <Plus className="w-5 h-5" style={{ color }} />
                 </motion.button>
               </div>
 
-              {/* Quick shortcuts */}
               {unit === 'glasses' && (
                 <div className="grid grid-cols-4 gap-2 mb-5">
                   {[1, 2, 4, 8].map(n => (
@@ -86,9 +70,8 @@ export default function LogValueDialog({
                 </div>
               )}
 
-              <button onClick={handleSave} className="btn-primary" style={{
-                background: `linear-gradient(135deg, ${color}, ${color}99)`
-              }}>
+              <button onClick={handleSave} className="btn-primary"
+                style={{ background: `linear-gradient(135deg, ${color}cc, ${color})` }}>
                 Save
               </button>
             </div>
