@@ -118,7 +118,7 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <span className="text-gray-500">✏️ Redo quiz</span>
           </motion.button>
-        )
+        )}
       </div>
 
       {/* Day selector */}
