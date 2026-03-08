@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, CalendarDays, Plus, TrendingUp, MoreHorizontal } from 'lucide-react';
+import { Home, CalendarDays, Plus, TrendingUp, Sparkles, Users } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import QuickAddModal from './components/fitness/QuickAddModal';
 
 const navItems = [
-  { label: 'Today',    icon: Home,           page: 'Today' },
-  { label: 'Plan',     icon: CalendarDays,   page: 'Plan' },
-  { label: 'Add',      icon: Plus,           page: null },
-  { label: 'Progress', icon: TrendingUp,     page: 'Progress' },
-  { label: 'More',     icon: MoreHorizontal, page: 'More' },
+  { label: 'Today',    icon: Home,        page: 'Today' },
+  { label: 'Plan',     icon: CalendarDays,page: 'Plan' },
+  { label: 'Add',      icon: Plus,        page: null },
+  { label: 'Progress', icon: TrendingUp,  page: 'Progress' },
+  { label: 'Coach',    icon: Sparkles,    page: 'Coach' },
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -46,10 +46,7 @@ export default function Layout({ children, currentPageName }) {
                       <button key="add" onClick={() => setShowQuickAdd(true)} className="relative -mt-5 flex-shrink-0">
                         <motion.div whileTap={{ scale: 0.88 }}
                           className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
-                          style={{
-                            background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
-                            boxShadow: '0 6px 24px rgba(124,58,237,0.5)'
-                          }}>
+                          style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 6px 24px rgba(124,58,237,0.5)' }}>
                           <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
                         </motion.div>
                       </button>
@@ -59,17 +56,16 @@ export default function Layout({ children, currentPageName }) {
                     (item.page === 'Today' && location.pathname === '/');
                   return (
                     <Link key={item.label} to={createPageUrl(item.page)}
-                      className="flex flex-col items-center gap-1 py-1 px-3 min-w-[48px] relative">
+                      className="flex flex-col items-center gap-1 py-1 px-2 min-w-[44px] relative">
                       <item.icon className="w-5 h-5 transition-all duration-200"
                         style={{ color: isActive ? '#a855f7' : '#3d2460' }}
                         strokeWidth={isActive ? 2.5 : 1.8} />
-                      <span className="text-[10px] font-medium transition-all duration-200"
+                      <span className="text-[9px] font-medium transition-all duration-200"
                         style={{ color: isActive ? '#a855f7' : '#3d2460' }}>
                         {item.label}
                       </span>
                       {isActive && (
-                        <motion.div layoutId="nav-dot"
-                          className="absolute -top-0.5 w-1 h-1 rounded-full"
+                        <motion.div layoutId="nav-dot" className="absolute -top-0.5 w-1 h-1 rounded-full"
                           style={{ background: '#a855f7' }} />
                       )}
                     </Link>
