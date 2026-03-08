@@ -162,8 +162,9 @@ input, textarea, select {
   -webkit-user-select: text !important;
   user-select: text !important;
   touch-action: manipulation;
-  color: white !important;
-  -webkit-text-fill-color: white !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
 }
 
 /* Number input — hide spinners */
