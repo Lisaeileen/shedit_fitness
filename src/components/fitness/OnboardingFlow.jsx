@@ -5,15 +5,25 @@ import { ChevronLeft, Check, ThumbsUp, ThumbsDown, Heart, Plus, X, Search } from
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const DIET_STYLES = [
-  { value: 'balanced',      label: 'Balanced',        desc: 'Flexible approach, thoughtful portions',  img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80' },
-  { value: 'high_protein',  label: 'High protein',    desc: 'Protein-first, satisfying meals',          img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80' },
-  { value: 'low_carb',      label: 'Low carb',        desc: 'Fewer carbs, less sugar',                  img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
-  { value: 'keto',          label: 'Keto',            desc: 'Very low carb, higher fat',                img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80' },
-  { value: 'whole_food',    label: 'Whole-food focus',desc: 'Whole, unprocessed foods',                 img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80' },
-  { value: 'mediterranean', label: 'Mediterranean',   desc: 'Plant-forward, healthy fats',              img: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&q=80' },
-  { value: 'vegetarian',    label: 'Vegetarian',      desc: 'No meat, plant-rich',                      img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80' },
-  { value: 'vegan',         label: 'Vegan',           desc: 'Fully plant-based',                        img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
-  { value: 'pescatarian',   label: 'Pescatarian',     desc: 'Fish & plants',                            img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80' },
+  { value: 'balanced',             label: 'Balanced',              desc: 'Flexible, thoughtful portions',        img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80' },
+  { value: 'high_protein',        label: 'High Protein',           desc: 'Protein-first, satisfying meals',      img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80' },
+  { value: 'low_carb',            label: 'Low Carb',               desc: 'Fewer carbs, less sugar',              img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { value: 'keto',                label: 'Keto',                   desc: 'Very low carb, higher fat',            img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80' },
+  { value: 'mediterranean',       label: 'Mediterranean',          desc: 'Plant-forward, healthy fats',          img: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&q=80' },
+  { value: 'whole_food',          label: 'Whole-Food Focus',       desc: 'Whole, unprocessed foods',             img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80' },
+  { value: 'vegetarian',          label: 'Vegetarian',             desc: 'No meat, plant-rich',                  img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80' },
+  { value: 'vegan',               label: 'Vegan',                  desc: 'Fully plant-based',                    img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { value: 'pescatarian',         label: 'Pescatarian',            desc: 'Fish & plants only',                   img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80' },
+  { value: 'gluten_free',         label: 'Gluten Free',            desc: 'No wheat, barley or rye',              img: 'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=400&q=80' },
+  { value: 'dairy_free',          label: 'Dairy Free',             desc: 'No milk, cheese or yogurt',            img: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80' },
+  { value: 'paleo',               label: 'Paleo',                  desc: 'Meat, fish, nuts & veggies',           img: 'https://images.unsplash.com/photo-1544025162-d76538b2a681?w=400&q=80' },
+  { value: 'high_fiber',          label: 'High Fiber',             desc: 'Grains, beans & vegetables',           img: 'https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80' },
+  { value: 'low_sugar',           label: 'Low Sugar',              desc: 'Minimize added sugars',                img: 'https://images.unsplash.com/photo-1505253304499-671c55fb57fe?w=400&q=80' },
+  { value: 'intermittent_fasting',label: 'Intermittent Fasting',   desc: '16:8 or 5:2 eating windows',           img: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80' },
+  { value: 'plant_based',         label: 'Plant-Based',            desc: 'Mostly plants, minimal animal',        img: 'https://images.unsplash.com/photo-1540914124281-342587941389?w=400&q=80' },
+  { value: 'anti_inflammatory',   label: 'Anti-Inflammatory',      desc: 'Foods that reduce inflammation',       img: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400&q=80' },
+  { value: 'dash',                label: 'DASH Diet',              desc: 'Lower blood pressure naturally',       img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80' },
+  { value: 'flexitarian',         label: 'Flexitarian',            desc: 'Mostly plant, occasional meat',        img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
 ];
 
 const DISLIKED_FOODS = [
