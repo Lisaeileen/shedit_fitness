@@ -1,108 +1,81 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Check, Star, Plus, X } from 'lucide-react';
+import { ChevronLeft, Check, ThumbsUp, ThumbsDown, Heart, Plus, X, Search } from 'lucide-react';
 
-// ─── Step definitions ────────────────────────────────────────────────────────
+// ─── Data ────────────────────────────────────────────────────────────────────
 
 const DIET_STYLES = [
-  { value: 'balanced',      label: 'Balanced Diet',        emoji: '⚖️',  desc: 'Well-rounded nutrients' },
-  { value: 'high_protein',  label: 'High Protein',         emoji: '💪',  desc: 'Lean meats & legumes' },
-  { value: 'low_carb',      label: 'Low Carb',             emoji: '🥩',  desc: 'Fewer grains & sugars' },
-  { value: 'keto',          label: 'Keto',                 emoji: '🥑',  desc: 'High fat, very low carb' },
-  { value: 'whole_food',    label: 'Whole Food Focus',     emoji: '🥦',  desc: 'Minimally processed' },
-  { value: 'mediterranean', label: 'Mediterranean',        emoji: '🫒',  desc: 'Olive oil, fish & veg' },
-  { value: 'vegetarian',    label: 'Vegetarian',           emoji: '🌿',  desc: 'No meat' },
-  { value: 'vegan',         label: 'Vegan',                emoji: '🌱',  desc: 'Fully plant-based' },
-  { value: 'pescatarian',   label: 'Pescatarian',          emoji: '🐟',  desc: 'Fish & plants' },
-  { value: 'italian',       label: 'Italian-style',        emoji: '🍝',  desc: 'Pasta, herbs & olive oil' },
-  { value: 'asian',         label: 'Asian-style',          emoji: '🍜',  desc: 'Rice, noodles & umami' },
-  { value: 'high_fiber',    label: 'High Fiber',           emoji: '🌾',  desc: 'Grains, beans & veg' },
-  { value: 'plant_focused', label: 'Plant-focused',        emoji: '🥗',  desc: 'Mostly plants, some animal' },
+  { value: 'balanced',      label: 'Balanced',        desc: 'Flexible approach, thoughtful portions',  img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80' },
+  { value: 'high_protein',  label: 'High protein',    desc: 'Protein-first, satisfying meals',          img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80' },
+  { value: 'low_carb',      label: 'Low carb',        desc: 'Fewer carbs, less sugar',                  img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { value: 'keto',          label: 'Keto',            desc: 'Very low carb, higher fat',                img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80' },
+  { value: 'whole_food',    label: 'Whole-food focus',desc: 'Whole, unprocessed foods',                 img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80' },
+  { value: 'mediterranean', label: 'Mediterranean',   desc: 'Plant-forward, healthy fats',              img: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&q=80' },
+  { value: 'vegetarian',    label: 'Vegetarian',      desc: 'No meat, plant-rich',                      img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80' },
+  { value: 'vegan',         label: 'Vegan',           desc: 'Fully plant-based',                        img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { value: 'pescatarian',   label: 'Pescatarian',     desc: 'Fish & plants',                            img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80' },
 ];
 
 const DISLIKED_FOODS = [
-  'Beef','Beans','Bell peppers','Broccoli','Brussels sprouts','Cilantro',
-  'Eggplant','Eggs','Fish','Chicken','Mushrooms','Onions','Garlic',
-  'Spinach','Tofu','Pork',
+  'Beef','Beets','Bell peppers','Broccoli','Brussels sprouts','Cilantro',
+  'Eggplant','Eggs','Fish','Ginger','Kale','Mayonnaise','Mushrooms',
+  'Okra','Olives','Peas','Pickles','Pork','Quinoa','Shellfish',
+  'Shrimp','Spinach','Tofu','Tomatoes','Tuna',
 ];
 
 const CUISINES = [
-  { value: 'italian',       label: 'Italian',       emoji: '🇮🇹' },
-  { value: 'american',      label: 'American',      emoji: '🇺🇸' },
-  { value: 'mexican',       label: 'Mexican',       emoji: '🇲🇽' },
-  { value: 'chinese',       label: 'Chinese',       emoji: '🇨🇳' },
-  { value: 'japanese',      label: 'Japanese',      emoji: '🇯🇵' },
-  { value: 'thai',          label: 'Thai',          emoji: '🇹🇭' },
-  { value: 'indian',        label: 'Indian',        emoji: '🇮🇳' },
-  { value: 'mediterranean', label: 'Mediterranean', emoji: '🫒' },
-  { value: 'greek',         label: 'Greek',         emoji: '🇬🇷' },
-  { value: 'middle_eastern',label: 'Middle Eastern',emoji: '🧆' },
-  { value: 'korean',        label: 'Korean',        emoji: '🇰🇷' },
-  { value: 'vietnamese',    label: 'Vietnamese',    emoji: '🇻🇳' },
-  { value: 'french',        label: 'French',        emoji: '🇫🇷' },
-  { value: 'spanish',       label: 'Spanish',       emoji: '🇪🇸' },
-  { value: 'nigerian',      label: 'Nigerian',      emoji: '🇳🇬' },
-  { value: 'caribbean',     label: 'Caribbean',     emoji: '🌴' },
-  { value: 'ethiopian',     label: 'Ethiopian',     emoji: '🇪🇹' },
-  { value: 'brazilian',     label: 'Brazilian',     emoji: '🇧🇷' },
+  { value: 'american',      label: 'American' },
+  { value: 'italian',       label: 'Italian' },
+  { value: 'mexican',       label: 'Mexican' },
+  { value: 'asian',         label: 'Asian' },
+  { value: 'chinese',       label: 'Chinese' },
+  { value: 'japanese',      label: 'Japanese' },
+  { value: 'thai',          label: 'Thai' },
+  { value: 'indian',        label: 'Indian' },
+  { value: 'mediterranean', label: 'Mediterranean' },
+  { value: 'greek',         label: 'Greek' },
+  { value: 'french',        label: 'French' },
+  { value: 'korean',        label: 'Korean' },
 ];
 
 const COOKED_VEGS = [
-  { value: 'sauteed_spinach',       label: 'Sautéed Spinach',         emoji: '🍃' },
-  { value: 'sauteed_zucchini',      label: 'Sautéed Zucchini',        emoji: '🥒' },
-  { value: 'roasted_eggplant',      label: 'Roasted Eggplant',        emoji: '🍆' },
-  { value: 'cooked_broccoli',       label: 'Cooked Broccoli',         emoji: '🥦' },
-  { value: 'sauteed_carrots',       label: 'Sautéed Carrots',         emoji: '🥕' },
-  { value: 'sauteed_cauliflower',   label: 'Sautéed Cauliflower',     emoji: '🌸' },
-  { value: 'roasted_sweet_potato',  label: 'Roasted Sweet Potatoes',  emoji: '🍠' },
-  { value: 'grilled_asparagus',     label: 'Grilled Asparagus',       emoji: '🌿' },
-  { value: 'roasted_brussels',      label: 'Roasted Brussels Sprouts',emoji: '🫛' },
+  { value: 'sauteed_spinach',      label: 'Sautéed Spinach',          img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300&q=80' },
+  { value: 'sauteed_zucchini',     label: 'Sautéed Zucchini',         img: 'https://images.unsplash.com/photo-1608032364895-84e16138b4fc?w=300&q=80' },
+  { value: 'roasted_eggplant',     label: 'Roasted Eggplant',         img: 'https://images.unsplash.com/photo-1605989920742-2e9a9d0e75b9?w=300&q=80' },
+  { value: 'cooked_broccoli',      label: 'Cooked Broccoli',          img: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=300&q=80' },
+  { value: 'sauteed_carrots',      label: 'Sautéed Carrots',          img: 'https://images.unsplash.com/photo-1582515073490-39981397c445?w=300&q=80' },
+  { value: 'sauteed_cauliflower',  label: 'Sautéed Cauliflower',      img: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=300&q=80' },
+  { value: 'roasted_sweet_potato', label: 'Roasted Sweet Potatoes',   img: 'https://images.unsplash.com/photo-1596097636487-2675b64f9cdd?w=300&q=80' },
+  { value: 'grilled_asparagus',    label: 'Grilled Asparagus',        img: 'https://images.unsplash.com/photo-1583663848850-46af132dc08e?w=300&q=80' },
 ];
 
 const RAW_VEGS = [
-  { value: 'bell_pepper',     label: 'Bell Pepper Strips',  emoji: '🫑' },
-  { value: 'baby_carrots',    label: 'Baby Carrots',        emoji: '🥕' },
-  { value: 'cherry_tomatoes', label: 'Cherry Tomatoes',     emoji: '🍅' },
-  { value: 'cucumber',        label: 'Cucumber Slices',     emoji: '🥒' },
-  { value: 'celery',          label: 'Celery Sticks',       emoji: '🌿' },
-  { value: 'snap_peas',       label: 'Snap Peas',           emoji: '🫛' },
-  { value: 'radishes',        label: 'Radishes',            emoji: '🌸' },
-  { value: 'avocado',         label: 'Avocado Slices',      emoji: '🥑' },
-  { value: 'lettuce',         label: 'Lettuce',             emoji: '🥬' },
+  { value: 'bell_pepper',     label: 'Bell Pepper Strips',  img: 'https://images.unsplash.com/photo-1525607551316-4a7b35fc5a42?w=300&q=80' },
+  { value: 'baby_carrots',    label: 'Baby Carrots',        img: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=300&q=80' },
+  { value: 'cherry_tomatoes', label: 'Cherry Tomatoes',     img: 'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&q=80' },
+  { value: 'cucumber',        label: 'Cucumber Slices',     img: 'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=300&q=80' },
+  { value: 'celery',          label: 'Celery Sticks',       img: 'https://images.unsplash.com/photo-1528150395929-9b39e73d43cb?w=300&q=80' },
+  { value: 'snap_peas',       label: 'Snap Peas',           img: 'https://images.unsplash.com/photo-1582284540020-8acbe03f4924?w=300&q=80' },
 ];
 
 const FRUITS = [
-  { value: 'apple',       label: 'Apple',        emoji: '🍎' },
-  { value: 'blueberries', label: 'Blueberries',  emoji: '🫐' },
-  { value: 'grapes',      label: 'Grapes',       emoji: '🍇' },
-  { value: 'orange',      label: 'Oranges',      emoji: '🍊' },
-  { value: 'banana',      label: 'Banana',       emoji: '🍌' },
-  { value: 'peach',       label: 'Peach',        emoji: '🍑' },
-  { value: 'strawberry',  label: 'Strawberries', emoji: '🍓' },
-  { value: 'mango',       label: 'Mango',        emoji: '🥭' },
-  { value: 'pineapple',   label: 'Pineapple',    emoji: '🍍' },
-  { value: 'kiwi',        label: 'Kiwi',         emoji: '🥝' },
-  { value: 'watermelon',  label: 'Watermelon',   emoji: '🍉' },
-  { value: 'papaya',      label: 'Papaya',       emoji: '🍈' },
+  { value: 'apple',       label: 'Apple',       img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80' },
+  { value: 'blueberries', label: 'Blueberries', img: 'https://images.unsplash.com/photo-1425934398893-310a009a77f9?w=300&q=80' },
+  { value: 'grapes',      label: 'Grapes',      img: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=300&q=80' },
+  { value: 'orange',      label: 'Orange',      img: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=300&q=80' },
+  { value: 'banana',      label: 'Banana',      img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=80' },
+  { value: 'peach',       label: 'Peach',       img: 'https://images.unsplash.com/photo-1595124046883-4b9dc3c2bbcd?w=300&q=80' },
+  { value: 'strawberry',  label: 'Strawberries',img: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=300&q=80' },
+  { value: 'mango',       label: 'Mango',       img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=300&q=80' },
 ];
 
 const RECIPES = [
-  { value: 'avocado_chicken_salad', label: 'Avocado Chicken Salad',  emoji: '🥗' },
-  { value: 'chicken_avocado_wrap',  label: 'Chicken Avocado Wrap',   emoji: '🌯' },
-  { value: 'baked_beef_nachos',     label: 'Baked Beef Nachos',      emoji: '🌮' },
-  { value: 'chicken_alfredo',       label: 'Quick Chicken Alfredo',  emoji: '🍝' },
-  { value: 'spring_veggie_pasta',   label: 'Spring Veggie Pasta',    emoji: '🍃' },
-  { value: 'jollof_rice',           label: 'Jollof Rice',            emoji: '🍚' },
-  { value: 'southwest_wrap',        label: 'Southwest Breakfast Wrap',emoji: '🌯' },
-  { value: 'grilled_salmon_bowl',   label: 'Grilled Salmon Bowl',    emoji: '🐟' },
-  { value: 'turkey_lettuce_wraps',  label: 'Turkey Lettuce Wraps',   emoji: '🥬' },
-];
-
-const MEAL_TYPES = [
-  { value: 'breakfast', label: 'Breakfast', emoji: '🌅' },
-  { value: 'lunch',     label: 'Lunch',     emoji: '☀️' },
-  { value: 'dinner',    label: 'Dinner',    emoji: '🌙' },
-  { value: 'snacks',    label: 'Snacks',    emoji: '🍎' },
+  { value: 'avocado_chicken_salad', label: 'Avocado Chicken Salad',    cal: 410, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { value: 'turkey_avocado_wrap',   label: 'Turkey Avocado Wrap',      cal: 669, img: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&q=80' },
+  { value: 'baked_beef_nachos',     label: 'Baked Beef Nachos',        cal: 710, img: 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400&q=80' },
+  { value: 'chicken_alfredo',       label: 'Quick Chicken Alfredo',    cal: 596, img: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=400&q=80' },
+  { value: 'spring_veggie_pasta',   label: 'Spring Veggie Pasta',      cal: 471, img: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80' },
+  { value: 'southwest_wrap',        label: 'Southwest Breakfast Wrap', cal: 645, img: 'https://images.unsplash.com/photo-1584208632869-05fa2b2a5934?w=400&q=80' },
 ];
 
 const PRIORITIES = [
@@ -112,34 +85,36 @@ const PRIORITIES = [
   { key: 'quick',        label: 'Quick recipes' },
   { key: 'variety',      label: 'Recipe variety' },
   { key: 'delicious',    label: 'Delicious meals' },
-  { key: 'high_protein', label: 'High protein focus' },
-  { key: 'healthy',      label: 'Healthy ingredients' },
 ];
 
 const TOTAL_STEPS = 13;
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function ChipGrid({ items, selected, onToggle, cols = 3 }) {
+function ImageCardGrid({ items, selected, onToggle }) {
   return (
-    <div className={`grid gap-2`} style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+    <div className="grid grid-cols-2 gap-3">
       {items.map((item) => {
-        const val = typeof item === 'string' ? item : item.value;
-        const label = typeof item === 'string' ? item : item.label;
-        const emoji = typeof item === 'string' ? null : item.emoji;
-        const sel = Array.isArray(selected) ? selected.includes(val) : selected === val;
+        const sel = Array.isArray(selected) ? selected.includes(item.value) : selected === item.value;
         return (
-          <motion.button key={val} whileTap={{ scale: 0.95 }} onClick={() => onToggle(val)}
-            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl text-center transition-all duration-200"
-            style={{
-              background: sel ? 'rgba(124,58,237,0.22)' : 'rgba(255,255,255,0.03)',
-              border: sel ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(255,255,255,0.07)',
-            }}>
-            {emoji && <span className="text-2xl">{emoji}</span>}
-            <span className="text-[11px] font-semibold text-white leading-tight">{label}</span>
-            {sel && <div className="w-3 h-3 rounded-full flex items-center justify-center" style={{ background: '#a855f7' }}>
-              <Check className="w-2 h-2 text-white" strokeWidth={3} />
-            </div>}
+          <motion.button key={item.value} whileTap={{ scale: 0.96 }} onClick={() => onToggle(item.value)}
+            className="relative overflow-hidden rounded-2xl text-left"
+            style={{ border: sel ? '2px solid #a855f7' : '2px solid transparent', boxShadow: sel ? '0 0 20px rgba(168,85,247,0.4)' : 'none' }}>
+            <img src={item.img} alt={item.label}
+              className="w-full object-cover"
+              style={{ height: 120 }}
+              onError={(e) => { e.target.style.background = '#1e0a40'; e.target.src = ''; }} />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,4,26,0.95) 0%, rgba(10,4,26,0.3) 60%, transparent 100%)' }} />
+            {sel && (
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: '#a855f7' }}>
+                <Heart className="w-3 h-3 text-white" fill="white" />
+              </div>
+            )}
+            <div className="absolute bottom-0 left-0 right-0 p-2.5">
+              <p className="text-sm font-bold text-white leading-tight">{item.label}</p>
+              {item.desc && <p className="text-[10px] text-gray-300 mt-0.5 leading-tight">{item.desc}</p>}
+            </div>
           </motion.button>
         );
       })}
@@ -147,51 +122,84 @@ function ChipGrid({ items, selected, onToggle, cols = 3 }) {
   );
 }
 
-function CuisineRow({ cuisine, pref, onSet }) {
-  const opts = ['Love', 'Neutral', 'Avoid'];
-  const colors = { Love: '#10b981', Neutral: '#6b7280', Avoid: '#f43f5e' };
+function ChipGrid({ items, selected, onToggle }) {
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-      <span className="text-lg flex-shrink-0">{cuisine.emoji}</span>
-      <span className="text-sm text-white font-medium flex-1">{cuisine.label}</span>
-      <div className="flex gap-1.5">
-        {opts.map(o => (
-          <button key={o} onClick={() => onSet(cuisine.value, o)}
-            className="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all"
-            style={pref === o
-              ? { background: `${colors[o]}25`, color: colors[o], border: `1px solid ${colors[o]}50` }
-              : { background: 'rgba(255,255,255,0.04)', color: '#4b5563', border: '1px solid transparent' }}>
-            {o}
-          </button>
-        ))}
-      </div>
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => {
+        const val = typeof item === 'string' ? item : item.value;
+        const label = typeof item === 'string' ? item : item.label;
+        const sel = Array.isArray(selected) ? selected.includes(val) : selected === val;
+        return (
+          <motion.button key={val} whileTap={{ scale: 0.93 }} onClick={() => onToggle(val)}
+            className="px-3.5 py-2 rounded-full text-sm font-semibold transition-all"
+            style={{
+              background: sel ? 'rgba(168,85,247,0.2)' : 'rgba(255,255,255,0.05)',
+              border: sel ? '1px solid rgba(168,85,247,0.6)' : '1px solid rgba(255,255,255,0.1)',
+              color: sel ? '#c084fc' : '#9ca3af',
+            }}>
+            {label}
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
 
-function StarRating({ value, onChange }) {
+function ImagePickGrid({ items, selected, onToggle }) {
   return (
-    <div className="flex gap-1">
-      {[1,2,3,4,5].map(s => (
-        <button key={s} onClick={() => onChange(s)}>
-          <Star className="w-5 h-5 transition-colors"
-            style={{ color: s <= value ? '#f59e0b' : '#374151', fill: s <= value ? '#f59e0b' : 'none' }} />
-        </button>
-      ))}
+    <div className="grid grid-cols-2 gap-3">
+      {items.map((item) => {
+        const sel = selected.includes(item.value);
+        return (
+          <motion.button key={item.value} whileTap={{ scale: 0.96 }} onClick={() => onToggle(item.value)}
+            className="relative overflow-hidden rounded-2xl"
+            style={{ border: sel ? '2px solid #a855f7' : '2px solid rgba(255,255,255,0.08)' }}>
+            <img src={item.img} alt={item.label} className="w-full object-cover" style={{ height: 110 }}
+              onError={(e) => { e.target.parentElement.style.background = '#1e0a40'; e.target.remove(); }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,4,26,0.8) 0%, transparent 60%)' }} />
+            {sel && (
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: '#a855f7' }}>
+                <Heart className="w-3 h-3 text-white" fill="white" />
+              </div>
+            )}
+            <p className="absolute bottom-2 left-2 text-xs font-bold text-white">{item.label}</p>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
 
-function PrioritySlider({ label, value, onChange }) {
+function RecipeRater({ recipe, rating, onRate }) {
   return (
-    <div className="mb-4">
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-sm text-white font-medium">{label}</span>
-        <span className="text-xs font-bold" style={{ color: '#a855f7' }}>{value}</span>
+    <div className="rounded-2xl overflow-hidden mb-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <img src={recipe.img} alt={recipe.label} className="w-full object-cover" style={{ height: 220 }}
+        onError={(e) => { e.target.style.display = 'none'; }} />
+      <div className="p-4">
+        <p className="text-base font-bold text-white">{recipe.label}</p>
+        <p className="text-sm text-gray-500 mb-3">{recipe.cal} cal</p>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { label: 'Dislike', icon: ThumbsDown, val: 'dislike', color: '#a855f7' },
+            { label: 'Like',    icon: ThumbsUp,   val: 'like',    color: '#a855f7' },
+          ].map(btn => {
+            const active = rating === btn.val;
+            const Icon = btn.icon;
+            return (
+              <motion.button key={btn.val} whileTap={{ scale: 0.94 }} onClick={() => onRate(btn.val)}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all"
+                style={{
+                  background: active ? 'rgba(168,85,247,0.15)' : 'rgba(255,255,255,0.04)',
+                  border: active ? '1px solid rgba(168,85,247,0.4)' : '1px solid rgba(255,255,255,0.07)',
+                  color: active ? btn.color : '#6b7280',
+                }}>
+                <Icon className="w-4 h-4" fill={active ? btn.color : 'none'} />
+                {btn.label}
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
-      <input type="range" min={0} max={100} value={value} onChange={e => onChange(Number(e.target.value))}
-        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-        style={{ background: `linear-gradient(to right, #a855f7 ${value}%, rgba(255,255,255,0.1) ${value}%)`, accentColor: '#a855f7' }} />
     </div>
   );
 }
@@ -200,6 +208,8 @@ function PrioritySlider({ label, value, onChange }) {
 
 export default function OnboardingFlow({ onComplete }) {
   const [step, setStep] = useState(0);
+  const [recipeIdx, setRecipeIdx] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const [answers, setAnswers] = useState({
     change_level: null,
     diet_styles: [],
@@ -212,114 +222,113 @@ export default function OnboardingFlow({ onComplete }) {
     fruits: [],
     recipe_ratings: {},
     user_name: '',
-    servings: null,
-    meal_types: [],
-    priorities: { budget: 50, weight_loss: 50, easy: 50, quick: 50, variety: 50, delicious: 50, high_protein: 50, healthy: 50 },
+    servings: '1 person',
+    meal_types: ['breakfast','lunch','dinner','snacks'],
+    priorities: { budget: 50, weight_loss: 70, easy: 50, quick: 50, variety: 60, delicious: 70 },
   });
   const scrollRef = useRef(null);
 
   const set = (field, value) => setAnswers(a => ({ ...a, [field]: value }));
-
   const toggleArr = (field, val) => {
     const arr = answers[field] || [];
     set(field, arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]);
   };
 
+  const showHighProtein = answers.diet_styles.includes('high_protein');
+
   const canContinue = () => {
     if (step === 0) return !!answers.change_level;
     if (step === 1) return answers.diet_styles.length > 0;
-    if (step === 2) return !answers.diet_styles.includes('high_protein') || !!answers.high_protein_experience;
+    if (step === 2) return !showHighProtein || !!answers.high_protein_experience;
     if (step === 9) return answers.user_name.trim().length > 0;
-    if (step === 10) return !!answers.servings;
-    if (step === 11) return answers.meal_types.length > 0;
     return true;
   };
 
   const next = () => {
-    if (step === 1 && !answers.diet_styles.includes('high_protein')) {
-      // skip high protein step
-      setStep(3); scrollRef.current?.scrollTo(0, 0); return;
+    if (step === 1 && !showHighProtein) { setStep(3); scrollRef.current?.scrollTo(0,0); return; }
+    if (step === 8) {
+      // recipe rating step: cycle through recipes then move on
+      if (recipeIdx < RECIPES.length - 1) { setRecipeIdx(i => i + 1); return; }
     }
-    if (step < TOTAL_STEPS - 1) { setStep(s => s + 1); scrollRef.current?.scrollTo(0, 0); }
-    else {
-      onComplete({ ...answers, onboarding_complete: true });
-    }
+    if (step < TOTAL_STEPS - 1) { setStep(s => s + 1); scrollRef.current?.scrollTo(0,0); }
+    else { onComplete({ ...answers, onboarding_complete: true }); }
   };
 
   const back = () => {
-    if (step === 3 && !answers.diet_styles.includes('high_protein')) { setStep(1); return; }
-    if (step > 0) setStep(s => s - 1);
+    if (step === 3 && !showHighProtein) { setStep(1); return; }
+    if (step === 9 && recipeIdx > 0) { setRecipeIdx(i => i - 1); return; }
+    if (step > 0) { setStep(s => s - 1); scrollRef.current?.scrollTo(0,0); }
   };
 
-  const showHighProtein = answers.diet_styles.includes('high_protein');
-  // Adjust displayed step count — if no high protein selected, step 3 is hidden
   const displayStep = step + 1;
 
   const CHANGE_OPTS = [
-    { value: 'small',     label: 'Small changes',           emoji: '🌱' },
-    { value: 'moderate',  label: 'Moderate changes',        emoji: '📈' },
-    { value: 'major',     label: 'Major lifestyle change',  emoji: '💪' },
-    { value: 'commit',    label: "I'm ready to fully commit", emoji: '🚀' },
+    { value: 'small',    label: 'Small changes',             desc: 'Minor tweaks to my current diet' },
+    { value: 'moderate', label: 'Steady change',             desc: 'Balanced progress at a sustainable pace' },
+    { value: 'major',    label: 'Major lifestyle change',    desc: 'Big commitment to healthy eating' },
+    { value: 'commit',   label: "I'm ready to fully commit", desc: 'All-in on my nutrition goals' },
   ];
 
-  const SERVINGS = ['1 person','2 people','3 people','4 people','5+ people'];
+  const filteredDislikes = DISLIKED_FOODS.filter(f =>
+    f.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #12062A 0%, #2A0A4A 100%)' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#0d0618' }}>
       {/* Header */}
-      <div className="px-5 pt-4 pb-2 flex-shrink-0">
-        <div className="mb-4">
-          <h1 className="text-2xl font-black gradient-text">Shedit</h1>
-          <p className="text-[10px] text-purple-400/50">Walk it off. Climb it up. Shed it.</p>
-        </div>
-
-        {/* Progress bar */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-white/[0.07]">
-            <motion.div className="h-full rounded-full"
-              style={{ background: 'linear-gradient(90deg, #7c3aed, #a855f7)' }}
-              animate={{ width: `${(displayStep / TOTAL_STEPS) * 100}%` }}
-              transition={{ duration: 0.4 }} />
+      <div className="px-5 pt-5 pb-2 flex-shrink-0">
+        <div className="flex items-center gap-3 mb-4">
+          {step > 0 && (
+            <motion.button whileTap={{ scale: 0.9 }} onClick={back}
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <ChevronLeft className="w-4 h-4 text-white" />
+            </motion.button>
+          )}
+          <div className="flex-1 flex gap-1.5">
+            {[0,1,2].map(seg => (
+              <div key={seg} className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                <motion.div className="h-full rounded-full"
+                  style={{ background: '#4f9ef7' }}
+                  animate={{ width: displayStep > (seg + 1) * (TOTAL_STEPS / 3) ? '100%' : displayStep > seg * (TOTAL_STEPS / 3) ? `${((displayStep - seg * (TOTAL_STEPS/3)) / (TOTAL_STEPS/3)) * 100}%` : '0%' }}
+                  transition={{ duration: 0.4 }} />
+              </div>
+            ))}
           </div>
-          <span className="text-[10px] text-purple-400/60 font-semibold flex-shrink-0">
-            {displayStep} / {TOTAL_STEPS}
-          </span>
         </div>
-
-        {step > 0 && (
-          <motion.button whileTap={{ scale: 0.92 }} onClick={back}
-            className="flex items-center gap-1 text-sm text-purple-400/60 mb-2 w-fit">
-            <ChevronLeft className="w-4 h-4" /> Back
-          </motion.button>
-        )}
       </div>
 
       {/* Scrollable content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 pb-32 no-scrollbar">
         <AnimatePresence mode="wait">
-          <motion.div key={step}
-            initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -28 }}
-            transition={{ duration: 0.22 }}>
+          <motion.div key={`${step}-${recipeIdx}`}
+            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}>
 
             {/* ── Step 0: Change level ── */}
             {step === 0 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">How much change are you ready to make?</h2>
-                <p className="text-sm text-purple-300/50 mb-5">We'll build your plan around this</p>
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">How much change are you ready for?</h2>
+                <p className="text-sm text-gray-500 mb-5">We'll build your plan around this</p>
                 <div className="space-y-2.5">
                   {CHANGE_OPTS.map(opt => {
                     const sel = answers.change_level === opt.value;
                     return (
                       <motion.button key={opt.value} whileTap={{ scale: 0.97 }}
-                        onClick={() => { set('change_level', opt.value); setTimeout(next, 200); }}
+                        onClick={() => { set('change_level', opt.value); setTimeout(next, 180); }}
                         className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all"
                         style={{
-                          background: sel ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
-                          border: sel ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                          background: sel ? 'rgba(79,158,247,0.12)' : 'rgba(255,255,255,0.04)',
+                          border: sel ? '1px solid rgba(79,158,247,0.5)' : '1px solid rgba(255,255,255,0.08)',
                         }}>
-                        <span className="text-2xl">{opt.emoji}</span>
-                        <span className="text-sm font-semibold text-white flex-1">{opt.label}</span>
-                        {sel && <Check className="w-4 h-4 text-purple-400" />}
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-white">{opt.label}</p>
+                          {sel && <p className="text-xs text-gray-400 mt-0.5">{opt.desc}</p>}
+                        </div>
+                        <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
+                          style={{ background: sel ? '#4f9ef7' : 'transparent', border: sel ? 'none' : '1.5px solid rgba(255,255,255,0.2)' }}>
+                          {sel && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                        </div>
                       </motion.button>
                     );
                   })}
@@ -327,46 +336,41 @@ export default function OnboardingFlow({ onComplete }) {
               </>
             )}
 
-            {/* ── Step 1: Diet style ── */}
+            {/* ── Step 1: Diet style with images ── */}
             {step === 1 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Which diet style do you prefer?</h2>
-                <p className="text-sm text-purple-300/50 mb-5">Select one or more</p>
-                <ChipGrid items={DIET_STYLES} selected={answers.diet_styles}
-                  onToggle={v => toggleArr('diet_styles', v)} cols={2} />
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Which diet plan do you prefer?</h2>
+                <p className="text-sm text-gray-500 mb-4">Select one or more</p>
+                <ImageCardGrid items={DIET_STYLES} selected={answers.diet_styles}
+                  onToggle={v => toggleArr('diet_styles', v)} />
               </>
             )}
 
-            {/* ── Step 2: High protein info (conditional) ── */}
+            {/* ── Step 2: High protein experience (conditional) ── */}
             {step === 2 && showHighProtein && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">High Protein Diet</h2>
-                <p className="text-sm text-purple-300/50 mb-4">Here's what to expect</p>
-                <div className="rounded-2xl p-4 mb-5 space-y-2"
-                  style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)' }}>
-                  {['💪 Lean meats (chicken, turkey, beef)', '🥚 Eggs & egg whites', '🫙 Greek yogurt & cottage cheese',
-                    '🐟 Fish & seafood', '🫘 Beans & legumes', '🥛 Protein-rich snacks & shakes'].map(t => (
-                    <p key={t} className="text-sm text-gray-300">{t}</p>
-                  ))}
-                </div>
-                <h3 className="text-base font-bold text-white mb-3">Have you tried a high protein diet before?</h3>
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Have you tried a high protein diet before?</h2>
+                <p className="text-sm text-gray-500 mb-5">This helps us calibrate your plan</p>
                 <div className="space-y-2.5">
                   {[
-                    { value: 'not_yet',    label: 'Not yet',               emoji: '🤔' },
-                    { value: 'tried',      label: 'Tried before',          emoji: '👍' },
-                    { value: 'following',  label: 'Currently following it', emoji: '🔥' },
+                    { value: 'not_yet',   label: 'Not yet' },
+                    { value: 'tried',     label: 'Tried before' },
+                    { value: 'following', label: 'Current approach' },
                   ].map(opt => {
                     const sel = answers.high_protein_experience === opt.value;
                     return (
                       <motion.button key={opt.value} whileTap={{ scale: 0.97 }}
-                        onClick={() => { set('high_protein_experience', opt.value); setTimeout(next, 200); }}
+                        onClick={() => { set('high_protein_experience', opt.value); setTimeout(next, 180); }}
                         className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all"
                         style={{
-                          background: sel ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
-                          border: sel ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                          background: sel ? 'rgba(79,158,247,0.12)' : 'rgba(255,255,255,0.04)',
+                          border: sel ? '1px solid rgba(79,158,247,0.5)' : '1px solid rgba(255,255,255,0.08)',
                         }}>
-                        <span className="text-2xl">{opt.emoji}</span>
                         <span className="text-sm font-semibold text-white flex-1">{opt.label}</span>
+                        <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
+                          style={{ background: sel ? '#4f9ef7' : 'transparent', border: sel ? 'none' : '1.5px solid rgba(255,255,255,0.2)' }}>
+                          {sel && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                        </div>
                       </motion.button>
                     );
                   })}
@@ -374,30 +378,39 @@ export default function OnboardingFlow({ onComplete }) {
               </>
             )}
 
-            {/* ── Step 3: Disliked foods ── */}
+            {/* ── Step 3: Restrictions & dislikes ── */}
             {step === 3 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Foods to avoid?</h2>
-                <p className="text-sm text-purple-300/50 mb-4">Select all you dislike or want to skip</p>
-                <ChipGrid items={DISLIKED_FOODS} selected={answers.disliked_foods}
-                  onToggle={v => toggleArr('disliked_foods', v)} cols={3} />
-                {/* Custom input */}
-                <div className="mt-4 flex gap-2">
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Restrictions and dislikes</h2>
+                <p className="text-xs text-gray-500 mb-4 leading-relaxed">Add any foods you avoid or have allergies to. Always check ingredients if you have health conditions.</p>
+                {/* Search */}
+                <div className="relative mb-4">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                  <input className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm text-white outline-none"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)} />
+                </div>
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Common dislikes</p>
+                <ChipGrid items={filteredDislikes} selected={answers.disliked_foods}
+                  onToggle={v => toggleArr('disliked_foods', v)} />
+                {/* Custom */}
+                <div className="flex gap-2 mt-4">
                   <input className="input-dark flex-1 text-sm py-2.5"
-                    placeholder="Add custom food…" value={answers.custom_disliked}
+                    placeholder="Add custom food or allergy..."
+                    value={answers.custom_disliked}
                     onChange={e => set('custom_disliked', e.target.value)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' && answers.custom_disliked.trim()) {
-                        toggleArr('disliked_foods', answers.custom_disliked.trim());
-                        set('custom_disliked', '');
+                        toggleArr('disliked_foods', answers.custom_disliked.trim()); set('custom_disliked', '');
                       }
                     }} />
                   <button onClick={() => {
                     if (answers.custom_disliked.trim()) {
-                      toggleArr('disliked_foods', answers.custom_disliked.trim());
-                      set('custom_disliked', '');
+                      toggleArr('disliked_foods', answers.custom_disliked.trim()); set('custom_disliked', '');
                     }
-                  }} className="px-3 py-2 rounded-xl" style={{ background: 'rgba(168,85,247,0.2)', border: '1px solid rgba(168,85,247,0.3)' }}>
+                  }} className="px-3 rounded-xl" style={{ background: 'rgba(168,85,247,0.2)', border: '1px solid rgba(168,85,247,0.3)' }}>
                     <Plus className="w-4 h-4 text-purple-400" />
                   </button>
                 </div>
@@ -415,17 +428,33 @@ export default function OnboardingFlow({ onComplete }) {
               </>
             )}
 
-            {/* ── Step 4: Cuisines ── */}
+            {/* ── Step 4: Cuisines (thumbs up / thumbs down) ── */}
             {step === 4 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Favourite cuisines?</h2>
-                <p className="text-sm text-purple-300/50 mb-4">Mark your preferences</p>
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Are there any cuisines you really love — or really don't love?</h2>
+                <p className="text-sm text-gray-500 mb-4">Help us personalize your plan</p>
                 <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  {CUISINES.map(c => (
-                    <CuisineRow key={c.value} cuisine={c}
-                      pref={answers.cuisine_prefs[c.value]}
-                      onSet={(val, pref) => set('cuisine_prefs', { ...answers.cuisine_prefs, [val]: pref })} />
-                  ))}
+                  {CUISINES.map((c, i) => {
+                    const pref = answers.cuisine_prefs[c.value];
+                    return (
+                      <div key={c.value} className="flex items-center gap-3 px-4 py-3.5"
+                        style={{ borderBottom: i < CUISINES.length-1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                        <span className="text-sm text-white font-medium flex-1">{c.label}</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => set('cuisine_prefs', { ...answers.cuisine_prefs, [c.value]: pref === 'dislike' ? null : 'dislike' })}
+                            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                            style={{ background: pref === 'dislike' ? 'rgba(79,158,247,0.2)' : 'rgba(255,255,255,0.05)', border: pref === 'dislike' ? '1px solid rgba(79,158,247,0.4)' : '1px solid transparent' }}>
+                            <ThumbsDown className="w-4 h-4" style={{ color: pref === 'dislike' ? '#4f9ef7' : '#4b5563' }} fill={pref === 'dislike' ? '#4f9ef7' : 'none'} />
+                          </button>
+                          <button onClick={() => set('cuisine_prefs', { ...answers.cuisine_prefs, [c.value]: pref === 'love' ? null : 'love' })}
+                            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                            style={{ background: pref === 'love' ? 'rgba(79,158,247,0.2)' : 'rgba(255,255,255,0.05)', border: pref === 'love' ? '1px solid rgba(79,158,247,0.4)' : '1px solid transparent' }}>
+                            <ThumbsUp className="w-4 h-4" style={{ color: pref === 'love' ? '#4f9ef7' : '#4b5563' }} fill={pref === 'love' ? '#4f9ef7' : 'none'} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -433,86 +462,83 @@ export default function OnboardingFlow({ onComplete }) {
             {/* ── Step 5: Cooked vegs ── */}
             {step === 5 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Cooked vegetables you enjoy?</h2>
-                <p className="text-sm text-purple-300/50 mb-4">Select all you'd like in your plan</p>
-                <ChipGrid items={COOKED_VEGS} selected={answers.cooked_vegs}
-                  onToggle={v => toggleArr('cooked_vegs', v)} cols={3} />
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Which of these cooked veggies would you like in your meal plans?</h2>
+                <p className="text-sm text-gray-500 mb-4">Select all you enjoy</p>
+                <ImagePickGrid items={COOKED_VEGS} selected={answers.cooked_vegs}
+                  onToggle={v => toggleArr('cooked_vegs', v)} />
               </>
             )}
 
             {/* ── Step 6: Raw vegs ── */}
             {step === 6 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Raw vegetables you enjoy?</h2>
-                <p className="text-sm text-purple-300/50 mb-4">Great for snacks and salads</p>
-                <ChipGrid items={RAW_VEGS} selected={answers.raw_vegs}
-                  onToggle={v => toggleArr('raw_vegs', v)} cols={3} />
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Which of these raw veggies would you like in your meal plans?</h2>
+                <p className="text-sm text-gray-500 mb-4">Great for snacks and salads</p>
+                <ImagePickGrid items={RAW_VEGS} selected={answers.raw_vegs}
+                  onToggle={v => toggleArr('raw_vegs', v)} />
               </>
             )}
 
             {/* ── Step 7: Fruits ── */}
             {step === 7 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Fruits you love?</h2>
-                <p className="text-sm text-purple-300/50 mb-4">We'll include these in snacks & breakfasts</p>
-                <ChipGrid items={FRUITS} selected={answers.fruits}
-                  onToggle={v => toggleArr('fruits', v)} cols={3} />
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Which of these fruit would you like in your meal plans?</h2>
+                <p className="text-sm text-gray-500 mb-4">We'll include these in snacks and breakfasts</p>
+                <ImagePickGrid items={FRUITS} selected={answers.fruits}
+                  onToggle={v => toggleArr('fruits', v)} />
               </>
             )}
 
             {/* ── Step 8: Rate recipes ── */}
-            {step === 8 && (
+            {step === 8 && recipeIdx < RECIPES.length && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Rate these recipes</h2>
-                <p className="text-sm text-purple-300/50 mb-4">Helps us personalize your plan</p>
-                <div className="space-y-3">
-                  {RECIPES.map(r => (
-                    <div key={r.value} className="flex items-center justify-between p-4 rounded-2xl"
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{r.emoji}</span>
-                        <span className="text-sm font-semibold text-white">{r.label}</span>
-                      </div>
-                      <StarRating value={answers.recipe_ratings[r.value] || 0}
-                        onChange={v => set('recipe_ratings', { ...answers.recipe_ratings, [r.value]: v })} />
-                    </div>
-                  ))}
-                </div>
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Rate a few recipes so we can learn more about what you like</h2>
+                <p className="text-sm text-gray-500 mb-4">{recipeIdx + 1} of {RECIPES.length}</p>
+                <RecipeRater
+                  recipe={RECIPES[recipeIdx]}
+                  rating={answers.recipe_ratings[RECIPES[recipeIdx].value]}
+                  onRate={val => set('recipe_ratings', { ...answers.recipe_ratings, [RECIPES[recipeIdx].value]: val })} />
               </>
             )}
 
             {/* ── Step 9: Name ── */}
             {step === 9 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">What should we call you?</h2>
-                <p className="text-sm text-purple-300/50 mb-5">We'll personalize your plan with your name</p>
-                <input className="input-dark text-xl font-bold text-center"
-                  placeholder="Your name…" value={answers.user_name}
-                  onChange={e => set('user_name', e.target.value)}
-                  style={{ fontSize: '1.25rem' }} />
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">What should we call you?</h2>
+                <p className="text-sm text-gray-500 mb-5">We'll personalize your plan with your name</p>
+                <p className="text-xs text-gray-600 mb-2 font-semibold uppercase tracking-widest">First name</p>
+                <input className="input-dark text-lg font-semibold"
+                  placeholder="Your name..."
+                  value={answers.user_name}
+                  onChange={e => set('user_name', e.target.value)} />
               </>
             )}
 
             {/* ── Step 10: Servings ── */}
             {step === 10 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">How many people?</h2>
-                <p className="text-sm text-purple-300/50 mb-5">How many will this meal plan serve?</p>
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">How many people would you like each meal to feed?</h2>
+                <p className="text-sm text-gray-500 mb-5">This affects ingredient quantities</p>
                 <div className="space-y-2.5">
-                  {SERVINGS.map(s => {
-                    const sel = answers.servings === s;
+                  {[
+                    { val: 'Lunch',  key: 'lunch_servings' },
+                    { val: 'Dinner', key: 'dinner_servings' },
+                  ].map(meal => {
+                    const count = answers[meal.key] || 1;
                     return (
-                      <motion.button key={s} whileTap={{ scale: 0.97 }}
-                        onClick={() => { set('servings', s); setTimeout(next, 200); }}
-                        className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all"
-                        style={{
-                          background: sel ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
-                          border: sel ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                        }}>
-                        <span className="text-2xl">{['👤','👥','👨‍👩‍👦','👨‍👩‍👧‍👦','🏡'][SERVINGS.indexOf(s)]}</span>
-                        <span className="text-sm font-semibold text-white flex-1">{s}</span>
-                        {sel && <Check className="w-4 h-4 text-purple-400" />}
-                      </motion.button>
+                      <div key={meal.val} className="flex items-center gap-4 p-4 rounded-2xl"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <span className="text-sm font-semibold text-white flex-1">{meal.val}</span>
+                        <div className="flex items-center gap-3">
+                          <button onClick={() => set(meal.key, Math.max(1, count - 1))}
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold"
+                            style={{ background: 'rgba(255,255,255,0.08)' }}>−</button>
+                          <span className="text-sm font-bold text-white w-4 text-center">{count}</span>
+                          <button onClick={() => set(meal.key, Math.min(10, count + 1))}
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold"
+                            style={{ background: 'rgba(79,158,247,0.25)', border: '1px solid rgba(79,158,247,0.4)', color: '#4f9ef7' }}>+</button>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
@@ -522,24 +548,31 @@ export default function OnboardingFlow({ onComplete }) {
             {/* ── Step 11: Meal types ── */}
             {step === 11 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Which meals to include?</h2>
-                <p className="text-sm text-purple-300/50 mb-5">Select all that apply</p>
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">Which meals to plan?</h2>
+                <p className="text-sm text-gray-500 mb-5">Select the meals you want included</p>
                 <div className="space-y-2.5">
-                  {MEAL_TYPES.map(m => {
+                  {[
+                    { value: 'breakfast', label: 'Breakfast', time: 'Morning meal' },
+                    { value: 'lunch',     label: 'Lunch',     time: 'Midday meal' },
+                    { value: 'dinner',    label: 'Dinner',    time: 'Evening meal' },
+                    { value: 'snacks',    label: 'Snacks',    time: 'Between meals' },
+                  ].map(m => {
                     const sel = answers.meal_types.includes(m.value);
                     return (
                       <motion.button key={m.value} whileTap={{ scale: 0.97 }}
                         onClick={() => toggleArr('meal_types', m.value)}
                         className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all"
                         style={{
-                          background: sel ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
-                          border: sel ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                          background: sel ? 'rgba(79,158,247,0.1)' : 'rgba(255,255,255,0.04)',
+                          border: sel ? '1px solid rgba(79,158,247,0.4)' : '1px solid rgba(255,255,255,0.08)',
                         }}>
-                        <span className="text-2xl">{m.emoji}</span>
-                        <span className="text-sm font-semibold text-white flex-1">{m.label}</span>
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{ background: sel ? '#a855f7' : 'rgba(255,255,255,0.08)', border: sel ? 'none' : '1px solid rgba(255,255,255,0.15)' }}>
-                          {sel && <Check className="w-3 h-3 text-white" />}
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-white">{m.label}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{m.time}</p>
+                        </div>
+                        <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
+                          style={{ background: sel ? '#4f9ef7' : 'transparent', border: sel ? 'none' : '1.5px solid rgba(255,255,255,0.2)' }}>
+                          {sel && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                         </div>
                       </motion.button>
                     );
@@ -551,12 +584,26 @@ export default function OnboardingFlow({ onComplete }) {
             {/* ── Step 12: Priorities ── */}
             {step === 12 && (
               <>
-                <h2 className="text-2xl font-black text-white mb-1">Meal plan priorities</h2>
-                <p className="text-sm text-purple-300/50 mb-5">Slide to set importance (0–100)</p>
-                {PRIORITIES.map(p => (
-                  <PrioritySlider key={p.key} label={p.label} value={answers.priorities[p.key]}
-                    onChange={v => set('priorities', { ...answers.priorities, [p.key]: v })} />
-                ))}
+                <h2 className="text-2xl font-black text-white mb-1 mt-2">How important are these factors to your meal plans?</h2>
+                <p className="text-sm text-gray-500 mb-5">Drag to set your priorities</p>
+                <div className="space-y-5">
+                  {PRIORITIES.map(p => {
+                    const val = answers.priorities[p.key];
+                    const label = val < 35 ? 'Less important' : val < 65 ? 'Important' : 'Very important';
+                    return (
+                      <div key={p.key}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-white font-medium">{p.label}</span>
+                          <span className="text-xs font-bold" style={{ color: '#4f9ef7' }}>{label}</span>
+                        </div>
+                        <input type="range" min={0} max={100} value={val}
+                          onChange={e => set('priorities', { ...answers.priorities, [p.key]: Number(e.target.value) })}
+                          className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                          style={{ background: `linear-gradient(to right, #4f9ef7 ${val}%, rgba(255,255,255,0.1) ${val}%)`, accentColor: '#4f9ef7' }} />
+                      </div>
+                    );
+                  })}
+                </div>
               </>
             )}
 
@@ -564,13 +611,18 @@ export default function OnboardingFlow({ onComplete }) {
         </AnimatePresence>
       </div>
 
-      {/* Sticky footer button — hidden on auto-advance steps */}
-      {![0, 2, 10].includes(step) && !(step === 2 && !showHighProtein) && (
+      {/* Footer button — hidden on auto-advance steps */}
+      {![0, 2].includes(step) && (
         <div className="fixed bottom-0 left-0 right-0 px-5 pb-8 pt-4 max-w-md mx-auto"
-          style={{ background: 'linear-gradient(to top, #12062A 60%, transparent)' }}>
+          style={{ background: 'linear-gradient(to top, #0d0618 60%, transparent)' }}>
           <motion.button whileTap={{ scale: 0.97 }} onClick={next} disabled={!canContinue()}
-            className="btn-primary">
-            {step < TOTAL_STEPS - 1 ? 'Continue →' : '✨ Build My Plan'}
+            className="w-full py-4 rounded-2xl font-bold text-base transition-all"
+            style={{
+              background: canContinue() ? '#4f9ef7' : 'rgba(79,158,247,0.2)',
+              color: 'white',
+              boxShadow: canContinue() ? '0 6px 24px rgba(79,158,247,0.35)' : 'none',
+            }}>
+            {step < TOTAL_STEPS - 1 ? 'Next' : 'Build My Plan'}
           </motion.button>
         </div>
       )}
