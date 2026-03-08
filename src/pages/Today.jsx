@@ -5,6 +5,7 @@ import { Flame, Footprints, ArrowUp, Bell, Zap } from 'lucide-react';
 import { DailyLogs, Meals } from '../components/storage';
 
 import WeekSelector from '../components/fitness/WeekSelector';
+import StreakCard from '../components/fitness/StreakCard';
 import ActivityRing from '../components/fitness/ActivityRing';
 import MacroCard from '../components/fitness/MacroCard';
 import MealCard from '../components/fitness/MealCard';
