@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, RefreshCw, ShoppingCart, MessageCircle, Heart, RefreshCcw, ChevronDown, ChevronUp, X, Send, Sparkles } from 'lucide-react';
 import { MealPlans } from '../storage';
 import { base44 } from '@/api/base44Client';
+import { getIngredientImage } from './ingredientImages';
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
