@@ -540,10 +540,17 @@ export default function OnboardingFlow({ onComplete }) {
                 <h2 className="text-2xl font-black text-white mb-1 mt-2">What should we call you?</h2>
                 <p className="text-sm text-gray-500 mb-5">We'll personalize your plan with your name</p>
                 <p className="text-xs text-gray-600 mb-2 font-semibold uppercase tracking-widest">First name</p>
-                <input className="input-dark text-lg font-semibold"
+                <input
+                  className="input-dark text-lg font-semibold"
                   placeholder="Your name..."
                   value={answers.user_name}
-                  onChange={e => set('user_name', e.target.value)} />
+                  onChange={e => set('user_name', e.target.value)}
+                  autoFocus
+                  autoComplete="given-name"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  style={{ fontSize: 18, fontWeight: 600, caretColor: '#a855f7' }}
+                />
               </>
             )}
 
