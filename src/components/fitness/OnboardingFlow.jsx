@@ -333,10 +333,10 @@ export default function OnboardingFlow({ onComplete }) {
 
       {/* Scrollable content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 pb-32 no-scrollbar">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false}>
           <motion.div key={`${step}-${recipeIdx}`}
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}>
+            initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24, position: 'absolute' }}
+            transition={{ duration: 0.18 }}>
 
             {/* ── Step 0: Change level ── */}
             {step === 0 && (
