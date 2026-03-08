@@ -103,33 +103,39 @@ export default function Today() {
 
       {/* Calorie Hero */}
       <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.05 }} className="glass-card-purple rounded-3xl p-5 mb-4">
-        <div className="flex items-center gap-5">
-          <ActivityRing value={cals} max={calsGoal} size={118} strokeWidth={11}
-            color="#a855f7" trackColor="rgba(168,85,247,0.1)">
-            <Flame className="w-4 h-4 text-purple-400 -mt-0.5" />
-            <span className="text-[22px] font-black text-white leading-none">{remaining}</span>
-            <span className="text-[9px] text-gray-500">left</span>
+        transition={{ delay: 0.05 }} className="rounded-3xl p-5 mb-4"
+        style={{ background: 'linear-gradient(145deg, rgba(124,58,237,0.18) 0%, rgba(168,85,247,0.08) 100%)', border: '1px solid rgba(168,85,247,0.25)', backdropFilter: 'blur(24px)' }}>
+        <p className="text-[10px] text-purple-300/50 uppercase tracking-widest font-bold mb-4">Today's Calories</p>
+        <div className="flex items-center gap-6">
+          <ActivityRing value={cals} max={calsGoal} size={130} strokeWidth={13}
+            color="#a855f7" trackColor="rgba(168,85,247,0.08)" glowIntensity={1.5}>
+            <span className="text-[10px] text-gray-500 mb-0.5">kcal</span>
+            <span className="text-[26px] font-black text-white leading-none">{cals > 999 ? `${(cals/1000).toFixed(1)}k` : cals}</span>
+            <span className="text-[9px] text-gray-600 mt-0.5">{remaining} left</span>
           </ActivityRing>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] text-purple-300/50 uppercase tracking-widest font-bold">Daily Calories</p>
-            <p className="text-4xl font-black text-white mt-0.5 leading-none">{cals.toLocaleString()}</p>
-            <p className="text-xs text-gray-500 mt-1">of {calsGoal.toLocaleString()} kcal</p>
-            <div className="mt-3 h-1.5 rounded-full overflow-hidden bg-white/[0.06]">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min((cals / calsGoal) * 100, 100)}%` }}
-                transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
-                className="h-full rounded-full"
-                style={{ background: cals > calsGoal
-                  ? 'linear-gradient(90deg, #f43f5e, #f43f5e80)'
-                  : 'linear-gradient(90deg, #7c3aed, #a855f7)' }}
-              />
+          <div className="flex-1 min-w-0 space-y-3">
+            <div>
+              <div className="flex justify-between items-baseline mb-1.5">
+                <span className="text-[10px] text-gray-500 uppercase tracking-wider">Goal</span>
+                <span className="text-sm font-black text-white">{calsGoal.toLocaleString()}</span>
+              </div>
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(168,85,247,0.1)' }}>
+                <motion.div initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((cals / calsGoal) * 100, 100)}%` }}
+                  transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
+                  className="h-full rounded-full"
+                  style={{ background: cals > calsGoal ? 'linear-gradient(90deg,#f43f5e,#fb7185)' : 'linear-gradient(90deg,#7c3aed,#c084fc)', boxShadow: '0 0 8px rgba(168,85,247,0.6)' }} />
+              </div>
             </div>
-            <div className="flex gap-3 mt-2">
-              <span className="text-[10px] text-gray-600">
-                Burned: <span className="text-purple-400">{(dayLog.exercise_minutes || 0) * 6} kcal</span>
-              </span>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-xl p-2.5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <p className="text-[9px] text-gray-600 uppercase tracking-wider">Consumed</p>
+                <p className="text-base font-black text-white mt-0.5">{cals.toLocaleString()}</p>
+              </div>
+              <div className="rounded-xl p-2.5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <p className="text-[9px] text-gray-600 uppercase tracking-wider">Burned</p>
+                <p className="text-base font-black" style={{ color: '#ec4899', marginTop: 2 }}>{(dayLog.exercise_minutes || 0) * 6}</p>
+              </div>
             </div>
           </div>
         </div>
