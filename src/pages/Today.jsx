@@ -184,6 +184,9 @@ export default function Today() {
         </motion.button>
       </motion.div>
 
+      {/* Streak */}
+      <StreakCard />
+
       {/* Daily Habits */}
       <div className="mb-4">
         <p className="text-[10px] text-purple-300/40 uppercase tracking-widest font-bold mb-3 px-0.5">Daily Habits</p>
