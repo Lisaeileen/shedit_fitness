@@ -74,7 +74,7 @@ function EditableField({ value, onChange }) {
   );
 }
 
-export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRefresh }) {
+export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRefresh, onRedo }) {
   const [selectedDay, setSelectedDay] = useState(DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]);
   const [generating, setGenerating]   = useState(false);
   const [plans, setPlans]             = useState(initialPlans);
