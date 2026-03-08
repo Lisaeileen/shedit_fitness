@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, RefreshCw, ShoppingCart, MessageCircle, Heart, RefreshCcw, ChevronDown, ChevronUp, X, Send, Sparkles } from 'lucide-react';
 import { MealPlans } from '../storage';
