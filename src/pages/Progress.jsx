@@ -77,35 +77,43 @@ export default function Progress() {
         <h1 className="text-2xl font-black text-white">Progress</h1>
       </motion.div>
 
-      {/* Activity Rings */}
+      {/* Steps Ring Hero */}
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.05 }} className="glass-card-purple rounded-3xl p-5 flex items-center gap-5 mb-5">
-        <MultiRing size={140} strokeWidth={9} gap={5} rings={[
-          { value: todayLog.steps || 0,            max: todayLog.steps_goal    || 10000, color: '#a855f7' },
-          { value: todayLog.exercise_minutes || 0, max: todayLog.exercise_goal || 30,    color: '#ec4899' },
-          { value: todayLog.stairs_climbed || 0,   max: todayLog.stairs_goal   || 20,    color: '#c084fc' },
-        ]}>
-          <Award className="w-5 h-5 text-yellow-400" />
-        </MultiRing>
-        <div className="flex-1 space-y-2.5">
-          {[
-            { label: 'Steps',    val: `${(todayLog.steps || 0).toLocaleString()}`,   color: '#a855f7', goal: todayLog.steps_goal    || 10000, curr: todayLog.steps || 0 },
-            { label: 'Exercise', val: `${todayLog.exercise_minutes || 0} min`,        color: '#ec4899', goal: todayLog.exercise_goal || 30,    curr: todayLog.exercise_minutes || 0 },
-            { label: 'Stairs',   val: `${todayLog.stairs_climbed || 0} flights`,      color: '#c084fc', goal: todayLog.stairs_goal   || 20,    curr: todayLog.stairs_climbed || 0 },
-          ].map(r => (
-            <div key={r.label}>
-              <div className="flex items-center justify-between mb-0.5">
-                <span className="text-[10px] text-gray-500">{r.label}</span>
-                <span className="text-xs font-bold" style={{ color: r.color }}>{r.val}</span>
-              </div>
-              <div className="h-1 rounded-full overflow-hidden bg-white/[0.06]">
-                <motion.div initial={{ width: 0 }}
-                  animate={{ width: `${Math.min((r.curr / r.goal) * 100, 100)}%` }}
-                  transition={{ duration: 1.2 }} className="h-full rounded-full"
-                  style={{ background: r.color, boxShadow: `0 0 6px ${r.color}50` }} />
-              </div>
-            </div>
-          ))}
+        transition={{ delay: 0.05 }} className="rounded-3xl p-5 mb-5 flex flex-col items-center"
+        style={{ background: 'linear-gradient(145deg, rgba(124,58,237,0.18) 0%, rgba(168,85,247,0.08) 100%)', border: '1px solid rgba(168,85,247,0.25)' }}>
+        <p className="text-[10px] text-purple-300/50 uppercase tracking-widest font-bold mb-4">Today's Steps</p>
+        <ActivityRing
+          value={todayLog.steps || 0}
+          max={todayLog.steps_goal || 10000}
+          size={160} strokeWidth={14}
+          color="#a855f7" trackColor="rgba(168,85,247,0.08)"
+          glowIntensity={2}
+        >
+          <span className="text-[10px] text-gray-500 mb-0.5">steps</span>
+          <span className="text-[30px] font-black text-white leading-none">
+            {(todayLog.steps || 0) >= 1000
+              ? `${((todayLog.steps || 0) / 1000).toFixed(1)}k`
+              : (todayLog.steps || 0)}
+          </span>
+          <span className="text-[9px] text-gray-600 mt-1">
+            of {((todayLog.steps_goal || 10000) / 1000).toFixed(0)}k goal
+          </span>
+        </ActivityRing>
+        <div className="flex gap-6 mt-5">
+          <div className="text-center">
+            <p className="text-xl font-black text-white">{(todayLog.steps || 0).toLocaleString()}</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Current</p>
+          </div>
+          <div className="w-px bg-white/[0.08]" />
+          <div className="text-center">
+            <p className="text-xl font-black" style={{ color: '#a855f7' }}>{(todayLog.steps_goal || 10000).toLocaleString()}</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Goal</p>
+          </div>
+          <div className="w-px bg-white/[0.08]" />
+          <div className="text-center">
+            <p className="text-xl font-black text-white">{Math.round(Math.min(((todayLog.steps || 0) / (todayLog.steps_goal || 10000)) * 100, 100))}%</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Done</p>
+          </div>
         </div>
       </motion.div>
 
