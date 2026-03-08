@@ -129,12 +129,36 @@ body {
   outline: none;
   font-size: 15px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  /* Critical for mobile input to work */
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-appearance: none;
+  appearance: none;
+  caret-color: #a855f7;
+  /* Prevent zoom on iOS */
+  font-size: max(16px, 15px);
+  touch-action: manipulation;
 }
 .input-dark:focus {
   border-color: rgba(168, 85, 247, 0.6);
   box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
 }
 .input-dark::placeholder { color: rgba(255,255,255,0.22); }
+
+/* Ensure all inputs are interactive */
+input, textarea, select {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  touch-action: manipulation;
+}
+
+/* Number input — hide spinners */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] { -moz-appearance: textfield; }
 
 /* Primary button */
 .btn-primary {
