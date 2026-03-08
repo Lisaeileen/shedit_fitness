@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import {
@@ -11,7 +11,7 @@ import MultiRing from '../components/fitness/MultiRing';
 
 const METRICS = [
   { key: 'calories_consumed', label: 'Calories', icon: Flame,      color: '#a855f7', unit: 'kcal', chartType: 'bar'  },
-  { key: 'steps',             label: 'Steps',    icon: Footprints,  color: '#4ade80', unit: '',     chartType: 'bar'  },
+  { key: 'steps',             label: 'Steps',    icon: Footprints,  color: '#c084fc', unit: '',     chartType: 'bar'  },
   { key: 'stairs_climbed',    label: 'Stairs',   icon: ArrowUp,     color: '#ec4899', unit: 'fl',   chartType: 'bar'  },
   { key: 'weight',            label: 'Weight',   icon: Scale,       color: '#10b981', unit: 'kg',   chartType: 'line' },
   { key: 'exercise_minutes',  label: 'Exercise', icon: Dumbbell,    color: '#f59e0b', unit: 'min',  chartType: 'bar'  },
@@ -27,8 +27,9 @@ const VIEWS = [
 const CustomTooltip = ({ active, payload, label, color, unit }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#1a2e24] border border-white/10 rounded-xl px-3 py-2 shadow-xl">
-      <p className="text-[10px] text-gray-500 mb-0.5">{label}</p>
+    <div className="rounded-xl px-3 py-2 shadow-xl"
+      style={{ background: '#2A0A4A', border: '1px solid rgba(168,85,247,0.2)' }}>
+      <p className="text-[10px] text-purple-300/60 mb-0.5">{label}</p>
       <p className="text-sm font-bold" style={{ color }}>
         {typeof payload[0].value === 'number' ? payload[0].value.toLocaleString() : payload[0].value}
         <span className="text-xs text-gray-500 ml-1 font-normal">{unit}</span>
@@ -39,12 +40,12 @@ const CustomTooltip = ({ active, payload, label, color, unit }) => {
 
 export default function Progress() {
   const [activeMetric, setActiveMetric] = useState(METRICS[0]);
-  const [viewKey, setViewKey] = useState('W');
-  const [tick, setTick] = useState(0);
+  const [viewKey, setViewKey]           = useState('W');
+  const [tick]                          = useState(0);
 
-  const logs = useMemo(() => DailyLogs.list(), [tick]);
+  const logs     = useMemo(() => DailyLogs.list(), [tick]);
   const todayLog = logs.find(l => l.date === format(new Date(), 'yyyy-MM-dd')) || {};
-  const view = VIEWS.find(v => v.key === viewKey);
+  const view     = VIEWS.find(v => v.key === viewKey);
 
   const chartData = useMemo(() => {
     const sorted = [...logs].sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -61,44 +62,36 @@ export default function Progress() {
   const streak = useMemo(() => {
     const sorted = [...logs].sort((a, b) => new Date(b.date) - new Date(a.date));
     let s = 0;
-    for (const l of sorted) {
-      if ((l.calories_consumed || 0) > 0) s++;
-      else break;
-    }
+    for (const l of sorted) { if ((l.calories_consumed || 0) > 0) s++; else break; }
     return s;
   }, [logs]);
 
   const weightLogs = [...logs].filter(l => l.weight).sort((a, b) => new Date(a.date) - new Date(b.date));
-  const firstW  = weightLogs[0]?.weight;
-  const lastW   = weightLogs.at(-1)?.weight;
-  const lostKg  = firstW && lastW ? Math.max(firstW - lastW, 0) : 0;
+  const lostKg = weightLogs.length >= 2
+    ? Math.max(weightLogs[0].weight - weightLogs.at(-1).weight, 0) : 0;
 
   return (
     <div className="px-4 pt-2">
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-5 pt-2">
-        <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Analytics</p>
+        <p className="text-[10px] text-purple-300/40 uppercase tracking-widest font-bold">Analytics</p>
         <h1 className="text-2xl font-black text-white">Progress</h1>
       </motion.div>
 
-      {/* Triple Activity Rings */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.05 }}
-        className="glass-card-green rounded-3xl p-5 flex items-center gap-5 mb-5"
-      >
+      {/* Activity Rings */}
+      <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.05 }} className="glass-card-purple rounded-3xl p-5 flex items-center gap-5 mb-5">
         <MultiRing size={140} strokeWidth={9} gap={5} rings={[
-          { value: todayLog.steps || 0,            max: todayLog.steps_goal    || 10000, color: '#4ade80' },
+          { value: todayLog.steps || 0,            max: todayLog.steps_goal    || 10000, color: '#a855f7' },
           { value: todayLog.exercise_minutes || 0, max: todayLog.exercise_goal || 30,    color: '#ec4899' },
-          { value: todayLog.stairs_climbed || 0,   max: todayLog.stairs_goal   || 20,    color: '#a855f7' },
+          { value: todayLog.stairs_climbed || 0,   max: todayLog.stairs_goal   || 20,    color: '#c084fc' },
         ]}>
           <Award className="w-5 h-5 text-yellow-400" />
         </MultiRing>
         <div className="flex-1 space-y-2.5">
           {[
-            { label: 'Steps',    val: `${(todayLog.steps || 0).toLocaleString()}`,     color: '#4ade80', goal: todayLog.steps_goal    || 10000, curr: todayLog.steps || 0 },
-            { label: 'Exercise', val: `${todayLog.exercise_minutes || 0} min`,         color: '#ec4899', goal: todayLog.exercise_goal || 30,    curr: todayLog.exercise_minutes || 0 },
-            { label: 'Stairs',   val: `${todayLog.stairs_climbed || 0} flights`,       color: '#a855f7', goal: todayLog.stairs_goal   || 20,    curr: todayLog.stairs_climbed || 0 },
+            { label: 'Steps',    val: `${(todayLog.steps || 0).toLocaleString()}`,   color: '#a855f7', goal: todayLog.steps_goal    || 10000, curr: todayLog.steps || 0 },
+            { label: 'Exercise', val: `${todayLog.exercise_minutes || 0} min`,        color: '#ec4899', goal: todayLog.exercise_goal || 30,    curr: todayLog.exercise_minutes || 0 },
+            { label: 'Stairs',   val: `${todayLog.stairs_climbed || 0} flights`,      color: '#c084fc', goal: todayLog.stairs_goal   || 20,    curr: todayLog.stairs_climbed || 0 },
           ].map(r => (
             <div key={r.label}>
               <div className="flex items-center justify-between mb-0.5">
@@ -106,34 +99,29 @@ export default function Progress() {
                 <span className="text-xs font-bold" style={{ color: r.color }}>{r.val}</span>
               </div>
               <div className="h-1 rounded-full overflow-hidden bg-white/[0.06]">
-                <motion.div
-                  initial={{ width: 0 }}
+                <motion.div initial={{ width: 0 }}
                   animate={{ width: `${Math.min((r.curr / r.goal) * 100, 100)}%` }}
-                  transition={{ duration: 1.2 }}
-                  className="h-full rounded-full"
-                  style={{ background: r.color, boxShadow: `0 0 6px ${r.color}50` }}
-                />
+                  transition={{ duration: 1.2 }} className="h-full rounded-full"
+                  style={{ background: r.color, boxShadow: `0 0 6px ${r.color}50` }} />
               </div>
             </div>
           ))}
         </div>
       </motion.div>
 
-      {/* KG Lost highlight */}
+      {/* Progress banner */}
       {lostKg > 0 && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className="glass-card rounded-2xl p-4 flex items-center gap-4 mb-4">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: 'rgba(74,222,128,0.12)' }}>🔥</div>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: 'rgba(168,85,247,0.12)' }}>🔥</div>
           <div className="flex-1">
             <p className="text-sm font-bold text-white">Great progress!</p>
-            <p className="text-xs text-gray-500 mt-0.5">You've lost <span className="text-green-400 font-bold">{lostKg.toFixed(1)} kg</span> since you started</p>
+            <p className="text-xs text-gray-500 mt-0.5">Lost <span className="text-purple-400 font-bold">{lostKg.toFixed(1)} kg</span> since you started</p>
           </div>
-          {streak > 0 && (
-            <div className="text-center">
-              <p className="text-xl font-black text-orange-400">{streak}</p>
-              <p className="text-[10px] text-gray-500">day streak</p>
-            </div>
-          )}
+          {streak > 0 && <div className="text-center">
+            <p className="text-xl font-black text-orange-400">{streak}</p>
+            <p className="text-[10px] text-gray-500">day streak</p>
+          </div>}
         </motion.div>
       )}
 
@@ -144,10 +132,8 @@ export default function Progress() {
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
             style={activeMetric.key === m.key
               ? { background: `${m.color}22`, color: m.color, border: `1px solid ${m.color}35` }
-              : { background: 'rgba(255,255,255,0.04)', color: '#4b5563', border: '1px solid transparent' }
-            }>
-            <m.icon className="w-3.5 h-3.5" />
-            {m.label}
+              : { background: 'rgba(255,255,255,0.04)', color: '#4b5563', border: '1px solid transparent' }}>
+            <m.icon className="w-3.5 h-3.5" />{m.label}
           </motion.button>
         ))}
       </div>
@@ -157,7 +143,7 @@ export default function Progress() {
         {VIEWS.map(v => (
           <button key={v.key} onClick={() => setViewKey(v.key)}
             className="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
-            style={viewKey === v.key ? { background: 'rgba(255,255,255,0.1)', color: 'white' } : { color: '#4b5563' }}>
+            style={viewKey === v.key ? { background: 'rgba(168,85,247,0.2)', color: '#c084fc' } : { color: '#4b5563' }}>
             {v.label}
           </button>
         ))}
@@ -165,12 +151,9 @@ export default function Progress() {
 
       {/* Chart */}
       <AnimatePresence mode="wait">
-        <motion.div
-          key={`${activeMetric.key}-${viewKey}`}
+        <motion.div key={`${activeMetric.key}-${viewKey}`}
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.25 }}
-          className="glass-card rounded-2xl p-5 mb-4"
-        >
+          transition={{ duration: 0.25 }} className="glass-card rounded-2xl p-5 mb-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `${activeMetric.color}18` }}>
@@ -203,7 +186,7 @@ export default function Progress() {
               ) : activeMetric.chartType === 'area' ? (
                 <AreaChart data={chartData} margin={{ left: -10, right: 5 }}>
                   <defs>
-                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor={activeMetric.color} stopOpacity={0.3} />
                       <stop offset="95%" stopColor={activeMetric.color} stopOpacity={0} />
                     </linearGradient>
@@ -212,7 +195,7 @@ export default function Progress() {
                   <XAxis dataKey="label" tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                   <YAxis tick={{ fill: '#4b5563', fontSize: 10 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip color={activeMetric.color} unit={activeMetric.unit} />} />
-                  <Area type="monotone" dataKey="value" stroke={activeMetric.color} strokeWidth={2} fill="url(#areaGrad)" />
+                  <Area type="monotone" dataKey="value" stroke={activeMetric.color} strokeWidth={2} fill="url(#ag)" />
                 </AreaChart>
               ) : (
                 <BarChart data={chartData} margin={{ left: -10, right: 5 }} barCategoryGap="30%">
@@ -229,12 +212,11 @@ export default function Progress() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Summary stats */}
       <div className="grid grid-cols-3 gap-2.5 mb-6">
         {[
-          { label: 'Average', value: avg.toLocaleString(),    unit: activeMetric.unit, color: activeMetric.color },
-          { label: 'Peak',    value: peak.toLocaleString(),   unit: activeMetric.unit, color: '#f59e0b' },
-          { label: 'Entries', value: values.length,           unit: 'days',            color: '#22d3ee' },
+          { label: 'Average', value: avg.toLocaleString(),  unit: activeMetric.unit, color: activeMetric.color },
+          { label: 'Peak',    value: peak.toLocaleString(), unit: activeMetric.unit, color: '#f59e0b' },
+          { label: 'Entries', value: values.length,         unit: 'days',            color: '#22d3ee' },
         ].map(s => (
           <div key={s.label} className="glass-card rounded-2xl p-3.5 text-center">
             <p className="text-[10px] text-gray-500 uppercase tracking-wider">{s.label}</p>
