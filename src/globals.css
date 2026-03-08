@@ -161,6 +161,8 @@ input, textarea, select {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   opacity: 1 !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
 }
 
 /* Number input — hide spinners */
