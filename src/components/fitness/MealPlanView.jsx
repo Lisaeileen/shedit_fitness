@@ -194,15 +194,21 @@ function GroceryListModal({ plans, onClose }) {
                     <span className="text-base">{CATEGORY_ICONS[cat] || '📦'}</span>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{cat}</p>
                   </div>
-                  <div className="space-y-1.5">
-                    {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-xl"
-                        style={{ background: 'rgba(255,255,255,0.03)' }}>
-                        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#a855f7' }} />
-                        <span className="text-sm text-gray-300">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <div className="space-y-2">
+                     {items.map((item, i) => (
+                       <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-xl"
+                         style={{ background: 'rgba(255,255,255,0.03)' }}>
+                         <img
+                           src={getIngredientImage(item)}
+                           alt={item}
+                           className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
+                           onError={e => { e.target.src = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=120&q=70'; }}
+                           loading="lazy"
+                         />
+                         <span className="text-sm text-gray-300">{item}</span>
+                       </div>
+                     ))}
+                   </div>
                 </div>
               ))}
             </div>
