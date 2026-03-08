@@ -143,7 +143,7 @@ body {
   user-select: text;
   -webkit-appearance: none;
   appearance: none;
-  caret-color: #a855f7;
+  caret-color: #000000;
   touch-action: manipulation;
   opacity: 1 !important;
 }
