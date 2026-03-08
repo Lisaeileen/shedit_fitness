@@ -418,12 +418,16 @@ export default function OnboardingFlow({ onComplete }) {
                 <p className="text-xs text-gray-500 mb-4 leading-relaxed">Add any foods you avoid or have allergies to. Always check ingredients if you have health conditions.</p>
                 {/* Search */}
                 <div className="relative mb-4">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
-                  <input className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm text-white outline-none"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
+                  <input
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm text-white outline-none input-dark"
                     placeholder="Search"
                     value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)} />
+                    onChange={e => setSearchQuery(e.target.value)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
+                  />
                 </div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Common dislikes</p>
                 <ChipGrid items={filteredDislikes} selected={answers.disliked_foods}
