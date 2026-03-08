@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, CalendarDays, Plus, TrendingUp, Sparkles, Users } from 'lucide-react';
+import { Home, CalendarDays, Plus, TrendingUp, MoreHorizontal } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import QuickAddModal from './components/fitness/QuickAddModal';
 
 const navItems = [
-  { label: 'Today',    icon: Home,        page: 'Today' },
-  { label: 'Plan',     icon: CalendarDays,page: 'Plan' },
-  { label: 'Add',      icon: Plus,        page: null },
-  { label: 'Progress', icon: TrendingUp,  page: 'Progress' },
-  { label: 'Coach',    icon: Sparkles,    page: 'Coach' },
+  { label: 'Today',    icon: Home,          page: 'Today' },
+  { label: 'Plan',     icon: CalendarDays,  page: 'Plan' },
+  { label: 'Add',      icon: Plus,          page: null },
+  { label: 'Progress', icon: TrendingUp,    page: 'Progress' },
+  { label: 'More',     icon: MoreHorizontal,page: 'More' },
 ];
 
 export default function Layout({ children, currentPageName }) {
