@@ -220,13 +220,14 @@ export default function More() {
                     </div>
                   )}
 
-                  {['goals', 'kglost', 'report', 'sleep', 'fasting', 'workout', 'reminders', 'weight'].includes(activePanel) && (
-                    <div className="text-center py-8">
-                      <div className="text-5xl mb-4">🚀</div>
-                      <h3 className="text-lg font-bold text-white mb-2">Coming Soon</h3>
-                      <p className="text-sm text-gray-500">This feature is in development.</p>
-                    </div>
-                  )}
+                  {activePanel === 'goals'     && <GoalsPanel onClose={() => setActivePanel(null)} />}
+                  {activePanel === 'kglost'    && <WeightPanel onClose={() => setActivePanel(null)} />}
+                  {activePanel === 'weight'    && <WeightPanel onClose={() => setActivePanel(null)} />}
+                  {activePanel === 'report'    && <WeeklyReportPanel />}
+                  {activePanel === 'sleep'     && <SleepPanel />}
+                  {activePanel === 'fasting'   && <FastingPanel />}
+                  {activePanel === 'workout'   && <WorkoutPanel />}
+                  {activePanel === 'reminders' && <RemindersPanel />}
                 </div>
               </div>
             </motion.div>
