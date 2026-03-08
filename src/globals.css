@@ -37,8 +37,9 @@ input, textarea {
   -webkit-touch-callout: default !important;
   touch-action: manipulation;
   caret-color: #a855f7;
-  color: white !important;
-  -webkit-text-fill-color: white !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
 }
 
 html, body {
