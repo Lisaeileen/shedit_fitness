@@ -199,3 +199,23 @@ input[type=number] { -moz-appearance: textfield; }
   font-weight: 700;
   color: white;
 }
+
+/* ── CRITICAL: Force all inputs to show text — must stay at end of file ── */
+input,
+input:focus,
+input:active,
+textarea,
+textarea:focus,
+textarea:active {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  opacity: 1 !important;
+}
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.3) !important;
+  opacity: 1 !important;
+}
