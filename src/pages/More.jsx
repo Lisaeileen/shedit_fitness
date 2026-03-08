@@ -165,7 +165,17 @@ export default function More() {
                 <div className="w-10 h-1 rounded-full bg-white/20 mx-auto mb-4" />
                 <div className="px-5">
                   <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-lg font-bold text-white capitalize">{activePanel.replace(/_/g, ' ')}</h3>
+                    <h3 className="text-lg font-bold text-white capitalize">
+                      {activePanel === 'kglost' ? 'Weight Loss Tracker'
+                        : activePanel === 'weight' ? 'Weight Tracker'
+                        : activePanel === 'report' ? 'Weekly Report'
+                        : activePanel === 'fasting' ? 'Intermittent Fasting'
+                        : activePanel === 'workout' ? 'Workout Routines'
+                        : activePanel === 'reminders' ? 'Reminders'
+                        : activePanel === 'goals' ? 'My Goals'
+                        : activePanel === 'sleep' ? 'Sleep Tracking'
+                        : activePanel.replace(/_/g, ' ')}
+                    </h3>
                     <button onClick={() => setActivePanel(null)} className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
                       <X className="w-4 h-4 text-gray-400" />
                     </button>
