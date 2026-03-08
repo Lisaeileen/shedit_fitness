@@ -51,6 +51,8 @@ import More from './pages/More';
 import Plan from './pages/Plan';
 import Progress from './pages/Progress';
 import Today from './pages/Today';
+import Coach from './pages/Coach';
+import Social from './pages/Social';
 import __Layout from './Layout.jsx';
 
 
@@ -59,6 +61,8 @@ export const PAGES = {
     "Plan": Plan,
     "Progress": Progress,
     "Today": Today,
+    "Coach": Coach,
+    "Social": Social,
 }
 
 export const pagesConfig = {
