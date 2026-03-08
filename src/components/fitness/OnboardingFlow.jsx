@@ -434,10 +434,14 @@ export default function OnboardingFlow({ onComplete }) {
                   onToggle={v => toggleArr('disliked_foods', v)} />
                 {/* Custom */}
                 <div className="flex gap-2 mt-4">
-                  <input className="input-dark flex-1 text-sm py-2.5"
+                  <input
+                    className="input-dark flex-1 text-sm py-2.5"
                     placeholder="Add custom food or allergy..."
                     value={answers.custom_disliked}
                     onChange={e => set('custom_disliked', e.target.value)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
                     onKeyDown={e => {
                       if (e.key === 'Enter' && answers.custom_disliked.trim()) {
                         toggleArr('disliked_foods', answers.custom_disliked.trim()); set('custom_disliked', '');
