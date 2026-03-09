@@ -234,6 +234,30 @@ export default function Today() {
         </div>
       </div>
 
+      {/* Smart Goals Banner */}
+      <SmartGoalsBanner steps={steps} stepsGoal={stepsGoal} calorieGoal={calsGoal} />
+
+      {/* Smart Meal Suggestions */}
+      <SmartMealSuggestions
+        calorieGoal={calsGoal}
+        protein={dayLog.protein || 0}
+        proteinGoal={dayLog.protein_goal || 120}
+        carbs={dayLog.carbs || 0}
+        fat={dayLog.fat || 0}
+        onAddMeal={(meal) => {
+          handleSaveFood({
+            date: dateStr,
+            meal_type: meal.type || 'snack',
+            food_name: meal.name,
+            calories: meal.calories || 0,
+            protein: meal.protein || 0,
+            carbs: meal.carbs || 0,
+            fat: meal.fat || 0,
+            serving_size: meal.serving || '1 serving',
+          });
+        }}
+      />
+
       {/* Food Diary */}
       <div className="mb-4">
         <p className="text-[10px] text-purple-300/40 uppercase tracking-widest font-bold mb-3 px-0.5">Food Diary</p>
