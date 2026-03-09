@@ -265,7 +265,7 @@ export default function Today() {
       />
       <LogValueDialog isOpen={weightDialog}   onClose={() => setWeightDialog(false)}   title="Log Weight"   unit="kg"      value={dayLog.weight          || 70}  step={0.1} min={30}  max={300}   color="#a855f7" onSave={(v) => upsertLog({ weight: v })} />
       <LogValueDialog isOpen={waterDialog}    onClose={() => setWaterDialog(false)}    title="Log Water"    unit="glasses" value={dayLog.water_glasses    || 0}   step={1}   min={0}   max={20}    color="#22d3ee" onSave={(v) => upsertLog({ water_glasses: v })} />
-      <LogValueDialog isOpen={stepsDialog}    onClose={() => setStepsDialog(false)}    title="Log Steps"    unit="steps"   value={dayLog.steps            || 0}   step={100} min={0}   max={50000} color="#a855f7" onSave={(v) => upsertLog({ steps: v })} />
+      <LogValueDialog isOpen={stepsDialog}    onClose={() => setStepsDialog(false)}    title="Log Steps"    unit="steps"   value={steps}   step={100} min={0}   max={50000} color="#a855f7" onSave={(v) => { updateStepsManually(v); refresh(); }} />
       <LogValueDialog isOpen={exerciseDialog} onClose={() => setExerciseDialog(false)} title="Log Exercise" unit="min"     value={dayLog.exercise_minutes || 0}   step={5}   min={0}   max={300}   color="#f43f5e" onSave={(v) => upsertLog({ exercise_minutes: v })} />
     </div>
   );
