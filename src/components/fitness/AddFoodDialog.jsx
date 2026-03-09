@@ -256,12 +256,17 @@ If you can see the food, name it specifically.`,
             <img src={capturedImage} alt="captured" className="w-full object-cover" style={{ maxHeight: 200 }} />
           )}
           <div className="px-5 py-4">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-5 h-5 text-green-400" />
               <p className="text-base font-bold text-white">
                 {detectedFoods.length} food{detectedFoods.length !== 1 ? 's' : ''} detected
               </p>
             </div>
+            {lowConfidence && (
+              <div className="rounded-xl p-3 mb-3" style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)' }}>
+                <p className="text-xs text-amber-400">⚠️ {lowConfidence}</p>
+              </div>
+            )}
 
             {/* Detected foods list */}
             <div className="space-y-2.5 mb-4">
