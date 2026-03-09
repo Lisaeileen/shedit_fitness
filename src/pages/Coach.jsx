@@ -204,18 +204,62 @@ export default function Coach() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, typing]);
 
-  const send = (text) => {
+  const send = async (text) => {
     if (!text.trim()) return;
     const userMsg = CoachMessages.add({ role: 'user', text });
     setMessages(m => [...m, userMsg]);
     setInput('');
     setTyping(true);
-    setTimeout(() => {
+
+    // Build context snapshot for AI
+    const cals      = todayLog.calories_consumed || 0;
+    const calsGoal  = todayLog.calories_goal || 2000;
+    const protein   = todayLog.protein || 0;
+    const proteinGoal = todayLog.protein_goal || 120;
+    const steps     = todayLog.steps || 0;
+    const stepsGoal = todayLog.steps_goal || 10000;
+    const water     = todayLog.water_glasses || 0;
+    const weightLogs = [...logs].filter(l => l.weight).sort((a, b) => new Date(a.date) - new Date(b.date));
+    const currentWeight = weightLogs.at(-1)?.weight;
+    const startWeight   = weightLogs[0]?.weight;
+    const lostKg        = currentWeight && startWeight ? Math.max(startWeight - currentWeight, 0).toFixed(1) : '0';
+    const recent7 = logs.slice(-7);
+    const avgCals = recent7.length
+      ? Math.round(recent7.reduce((s, l) => s + (l.calories_consumed || 0), 0) / recent7.length)
+      : cals;
+
+    const contextSummary = `
+User's data today (${format(new Date(), 'MMM d, yyyy')}):
+- Calories consumed: ${cals} / ${calsGoal} kcal goal
+- Protein: ${protein}g / ${proteinGoal}g goal
+- Steps: ${steps.toLocaleString()} / ${stepsGoal.toLocaleString()} goal
+- Water: ${water} glasses
+- Weight: ${currentWeight ? `${currentWeight} kg` : 'not logged'}
+- Total weight lost: ${lostKg} kg
+- 7-day average calories: ${avgCals} kcal
+- User's target weight: ${goals?.target_weight ? `${goals.target_weight} kg` : 'not set'}
+    `.trim();
+
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are Shedit Coach, a friendly and knowledgeable personal nutrition and fitness AI assistant.
+
+${contextSummary}
+
+User message: "${text}"
+
+Respond in 2-4 sentences. Be specific, data-driven, and encouraging. Reference their actual numbers when relevant. Use **bold** for key numbers/recommendations. Keep it concise and actionable.`,
+      });
+      const coachMsg = CoachMessages.add({ role: 'coach', text: result });
+      setMessages(m => [...m, coachMsg]);
+    } catch {
+      // Fallback to local logic
       const responseText = generateCoachResponse(text, { todayLog, logs, goals });
       const coachMsg = CoachMessages.add({ role: 'coach', text: responseText });
       setMessages(m => [...m, coachMsg]);
+    } finally {
       setTyping(false);
-    }, 900 + Math.random() * 600);
+    }
   };
 
   // Readiness score
