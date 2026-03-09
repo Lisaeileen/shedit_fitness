@@ -72,12 +72,19 @@ body {
   min-height: 100vh;
 }
 
-/* Gradient text — explicitly excluded from inputs/textareas */
-.gradient-text:not(input):not(textarea) {
+/* Gradient text — never applied to inputs/textareas */
+.gradient-text {
   background: linear-gradient(135deg, #c084fc, #a855f7, #7c3aed);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+input.gradient-text,
+textarea.gradient-text {
+  background: transparent !important;
+  -webkit-background-clip: padding-box !important;
+  background-clip: padding-box !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .gradient-text-accent:not(input):not(textarea) {
