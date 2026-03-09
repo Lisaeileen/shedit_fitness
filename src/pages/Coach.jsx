@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles, TrendingDown, Droplets, Footprints, Flame, Brain } from 'lucide-react';
+import { Send, Sparkles, TrendingDown, Droplets, Footprints, Flame, Brain, Loader2 } from 'lucide-react';
 import { DailyLogs, Meals, CoachMessages, UserGoals } from '../components/storage';
 import { format } from 'date-fns';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
+import { base44 } from '@/api/base44Client';
 
 // ── AI Coach logic (local, no API) ──────────────────────────────────────────
 function generateCoachResponse(userMessage, context) {
