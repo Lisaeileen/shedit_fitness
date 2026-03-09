@@ -233,6 +233,7 @@ export default function Plan() {
       onRedo={() => { UserGoals.clear(); MealPlans.deleteAll(); setPhase('onboarding'); }}
       onRegenerate={handleRegenerate}
     />
+    </>
   );
 }
 
