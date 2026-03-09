@@ -48,6 +48,7 @@ export default function More() {
         { id: 'steps_goal', label: 'Steps Goal',           icon: Footprints, color: '#a855f7', action: () => setStepsGoalDialog(true) },
         { id: 'cal_goal',   label: 'Calorie Target',       icon: Zap,        color: '#c084fc', action: () => setCalsGoalDialog(true) },
         { id: 'weight',     label: 'Weight & Measures',    icon: Scale,      color: '#10b981', action: () => setActivePanel('weight') },
+        { id: 'body',       label: 'Body Transformation',  icon: Camera,     color: '#ec4899', action: () => setActivePanel('body') },
         { id: 'sleep',      label: 'Sleep Tracking',       icon: Moon,       color: '#6366f1', action: () => setActivePanel('sleep') },
         { id: 'fasting',    label: 'Intermittent Fasting', icon: Timer,      color: '#f59e0b', action: () => setActivePanel('fasting') },
         { id: 'workout',    label: 'Workout Routine',      icon: Dumbbell,   color: '#ec4899', action: () => setActivePanel('workout') },
