@@ -217,23 +217,23 @@ export default function Plan() {
   );
 
   return (
-    <>
-    <div className="px-4 pt-2">
-      <div className="flex items-center justify-between mb-5 pt-2">
-        <div>
-          <p className="text-[10px] text-purple-300/50 font-medium">Your weekly</p>
-          <SheditWordmark size={30} />
+    <div>
+      <div className="px-4 pt-2">
+        <div className="flex items-center justify-between mb-5 pt-2">
+          <div>
+            <p className="text-[10px] text-purple-300/50 font-medium">Your weekly</p>
+            <SheditWordmark size={30} />
+          </div>
         </div>
       </div>
+      <MealPlanView
+        goals={currentGoals}
+        mealPlans={MealPlans.list()}
+        onRefresh={refresh}
+        onRedo={() => { UserGoals.clear(); MealPlans.deleteAll(); setPhase('onboarding'); }}
+        onRegenerate={handleRegenerate}
+      />
     </div>
-    <MealPlanView
-      goals={currentGoals}
-      mealPlans={MealPlans.list()}
-      onRefresh={refresh}
-      onRedo={() => { UserGoals.clear(); MealPlans.deleteAll(); setPhase('onboarding'); }}
-      onRegenerate={handleRegenerate}
-    />
-    </>
   );
 }
 
