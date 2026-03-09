@@ -205,38 +205,20 @@ input,
 input:focus,
 input:active,
 input:hover,
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="password"],
-input[type="search"],
-input[type="tel"],
-input[type="url"],
 textarea,
 textarea:focus,
 textarea:active,
 textarea:hover {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  background-clip: padding-box !important;
   -webkit-background-clip: padding-box !important;
+  background-clip: padding-box !important;
   background-image: none !important;
   opacity: 1 !important;
-  visibility: visible !important;
 }
 input::placeholder,
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.3) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.3) !important;
   opacity: 1 !important;
-}
-/* Prevent gradient-text from leaking into inputs */
-input.gradient-text,
-textarea.gradient-text,
-input *,
-textarea * {
-  background: none !important;
-  -webkit-background-clip: padding-box !important;
-  background-clip: padding-box !important;
-  -webkit-text-fill-color: #ffffff !important;
 }
