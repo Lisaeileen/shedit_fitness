@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Check, ThumbsUp, ThumbsDown, Heart, Plus, X, Search } from 'lucide-react';
+import { SheditWordmark } from './SheditLogo';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 

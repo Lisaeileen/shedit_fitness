@@ -5,6 +5,7 @@ import OnboardingFlow from '../components/fitness/OnboardingFlow';
 import MealPlanView from '../components/fitness/MealPlanView';
 import { Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { SheditWordmark } from '../components/fitness/SheditLogo';
 
 // ── Generating Screen ────────────────────────────────────────────────────────
 
