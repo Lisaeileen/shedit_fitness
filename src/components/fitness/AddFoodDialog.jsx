@@ -74,6 +74,7 @@ function AIScanModal({ onConfirm, onClose }) {
   const [phase, setPhase] = useState('camera'); // camera | analyzing | results
   const [capturedImage, setCapturedImage] = useState(null);
   const [detectedFoods, setDetectedFoods] = useState([]);
+  const [lowConfidence, setLowConfidence] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
