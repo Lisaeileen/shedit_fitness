@@ -82,7 +82,8 @@ export default function Today() {
   const cals      = dayLog.calories_consumed || 0;
   const calsGoal  = dayLog.calories_goal || 2000;
   const remaining = Math.max(calsGoal - cals, 0);
-  const steps     = dayLog.steps || 0;
+  // Use health hook steps (auto-updated) or fall back to stored log
+  const steps     = healthSteps || dayLog.steps || 0;
   const stepsGoal = dayLog.steps_goal || 10000;
   const stairs    = dayLog.stairs_climbed || 0;
   const stairsGoal = dayLog.stairs_goal || 20;
