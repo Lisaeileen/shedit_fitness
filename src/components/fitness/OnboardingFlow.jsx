@@ -311,6 +311,9 @@ export default function OnboardingFlow({ onComplete }) {
     <div className="min-h-screen flex flex-col" style={{ background: '#0d0618' }}>
       {/* Header */}
       <div className="px-5 pt-5 pb-2 flex-shrink-0">
+        <div className="flex justify-center mb-3">
+          <SheditWordmark size={28} />
+        </div>
         <div className="flex items-center gap-3 mb-4">
           {step > 0 && (
             <motion.button whileTap={{ scale: 0.9 }} onClick={back}
