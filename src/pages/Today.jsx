@@ -161,6 +161,16 @@ export default function Today() {
         <MacroCard label="Fat"     value={dayLog.fat     || 0} goal={dayLog.fat_goal     || 65}  color="#f59e0b" />
       </div>
 
+      {/* Health Permission Prompt — shown once when permission is needed */}
+      <AnimatePresence>
+        {motionPermission === 'prompt' && (
+          <HealthPermissionPrompt
+            onAllow={requestPermission}
+            onDeny={denyPermission}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Steps & Stairs */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }} className="glass-card rounded-2xl p-4 flex items-center gap-4 mb-4">
@@ -171,13 +181,19 @@ export default function Today() {
             <div className="flex justify-between items-center mb-1">
               <span className="text-xs text-gray-400 flex items-center gap-1.5">
                 <Footprints className="w-3.5 h-3.5 text-purple-400" /> Steps
+                {stepsSource === 'motion' && (
+                  <span className="flex items-center gap-0.5 text-[9px] text-green-400 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+                    Live
+                  </span>
+                )}
               </span>
               <span className="text-xs font-bold text-white">{steps.toLocaleString()} / {stepsGoal.toLocaleString()}</span>
             </div>
             <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-              <motion.div initial={{ width: 0 }}
+              <motion.div
                 animate={{ width: `${Math.min((steps / stepsGoal) * 100, 100)}%` }}
-                transition={{ duration: 1.2, delay: 0.2 }}
+                transition={{ duration: 0.6 }}
                 className="h-full rounded-full" style={{ background: '#a855f7', boxShadow: '0 0 8px rgba(168,85,247,0.5)' }} />
             </div>
           </div>
