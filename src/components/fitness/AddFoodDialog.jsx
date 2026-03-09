@@ -99,22 +99,35 @@ function AIScanModal({ onConfirm, onClose }) {
     setPhase('analyzing');
 
     try {
+      // Convert base64 dataUrl to a Blob/File for upload
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], 'meal.jpg', { type: 'image/jpeg' });
+
+      // Upload image to get a real URL the AI can access
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+      // Now send the real URL to the vision AI
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a nutrition analysis assistant. Analyze this food image and identify all foods visible.
+        prompt: `You are a precise nutrition analysis assistant. Carefully analyze this food image.
 
-For each detected food item return:
-- food name
-- estimated portion size (e.g. "1 cup", "150g")
-- calories
-- protein (g)
-- carbs (g)
-- fat (g)
+Identify EVERY distinct food item you can see. Be specific — for example:
+- "Grilled Chicken Breast" not "meat"
+- "Jasmine Rice" or "Brown Rice" not "grain"
+- "Broccoli" not "vegetables"
+- "Caesar Salad" not "salad"
 
-If multiple foods are visible, list each separately.
-Calculate a total nutrition summary for the full meal.
+For EACH food item provide:
+- name: the specific food name (be as specific as possible)
+- portion: estimated portion size (e.g. "150g", "1 cup", "1 medium")
+- calories: estimated kcal
+- protein_g: protein in grams
+- carbs_g: carbohydrates in grams  
+- fat_g: fat in grams
 
-Return structured JSON only.`,
-        file_urls: [dataUrl],
+Only use a generic name like "Mixed Meal" as an absolute last resort if you truly cannot identify anything.
+If you can see the food, name it specifically.`,
+        file_urls: [file_url],
         response_json_schema: {
           type: 'object',
           properties: {
@@ -132,23 +145,23 @@ Return structured JSON only.`,
                 }
               }
             },
-            meal_totals: {
-              type: 'object',
-              properties: {
-                calories: { type: 'number' },
-                protein_g: { type: 'number' },
-                carbs_g: { type: 'number' },
-                fat_g: { type: 'number' },
-              }
-            }
+            confidence: { type: 'string', description: 'high, medium, or low' },
+            low_confidence_message: { type: 'string', description: 'message to show user if confidence is low' }
           }
         }
       });
-      setDetectedFoods(result.foods || []);
+
+      const foods = result.foods || [];
+      if (foods.length === 0) {
+        setDetectedFoods([{ name: 'Food not confidently identified', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, unidentified: true }]);
+      } else {
+        setDetectedFoods(foods);
+      }
+      setLowConfidence(result.confidence === 'low' ? (result.low_confidence_message || 'Food not confidently identified. Please confirm or edit.') : '');
       setPhase('results');
     } catch (err) {
-      // Fallback: show a generic detected food
-      setDetectedFoods([{ name: 'Mixed Meal', portion: '1 plate', calories: 450, protein_g: 30, carbs_g: 40, fat_g: 15 }]);
+      setDetectedFoods([{ name: 'Food not confidently identified', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, unidentified: true }]);
+      setLowConfidence('Could not analyze image. Please confirm or edit the food name.');
       setPhase('results');
     }
   };
