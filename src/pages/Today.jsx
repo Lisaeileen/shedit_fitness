@@ -31,6 +31,16 @@ export default function Today() {
   const dateStr  = format(selectedDate, 'yyyy-MM-dd');
   const refresh  = useCallback(() => setTick(t => t + 1), []);
 
+  // Health / step tracking
+  const {
+    steps: healthSteps,
+    source: stepsSource,
+    permission: motionPermission,
+    requestPermission,
+    denyPermission,
+    updateStepsManually,
+  } = useHealthSteps(dateStr);
+
   const allLogs  = useMemo(() => DailyLogs.list(), [tick]);
   const dayLog   = useMemo(() => allLogs.find(l => l.date === dateStr) || {}, [allLogs, dateStr]);
   const meals    = useMemo(() => Meals.getByDate(dateStr), [tick, dateStr]);
