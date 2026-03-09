@@ -579,8 +579,8 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                       <label className="text-[10px] font-bold uppercase tracking-widest" style={{ color: f.color }}>{f.label}</label>
                       <div className="flex items-baseline gap-1 mt-1">
                         <input type="number" inputMode="decimal" value={f.val} onChange={(e) => f.set(e.target.value)}
-                          placeholder="0" className="bg-transparent text-xl font-black outline-none w-full min-w-0"
-                          style={{ WebkitAppearance: 'none', MozAppearance: 'textfield', color: '#ffffff !important', WebkitTextFillColor: '#ffffff', backgroundClip: 'padding-box', WebkitBackgroundClip: 'padding-box', caretColor: '#a855f7' }} />
+                         placeholder="0" className="text-xl font-black outline-none w-full min-w-0"
+                         style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', WebkitAppearance: 'none', MozAppearance: 'textfield', caretColor: '#a855f7' }} />
                         <span className="text-xs text-gray-500 flex-shrink-0">{f.unit}</span>
                       </div>
                     </div>
