@@ -326,7 +326,7 @@ If you can see the food, name it specifically.`,
             <button onClick={handleConfirm} disabled={detectedFoods.length === 0} className="btn-primary">
               Log This Meal
             </button>
-            <button onClick={() => { setPhase('camera'); setCapturedImage(null); setDetectedFoods([]); }}
+            <button onClick={() => { setPhase('camera'); setCapturedImage(null); setDetectedFoods([]); setLowConfidence(''); }}
               className="w-full text-center text-sm text-gray-500 mt-3 py-2">
               Retake photo
             </button>
