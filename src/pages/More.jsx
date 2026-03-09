@@ -238,6 +238,7 @@ export default function More() {
                   {activePanel === 'fasting'   && <FastingPanel />}
                   {activePanel === 'workout'   && <WorkoutPanel />}
                   {activePanel === 'reminders' && <RemindersPanel />}
+                  {activePanel === 'body'      && <BodyTransformationPanel />}
                 </div>
               </div>
             </motion.div>
