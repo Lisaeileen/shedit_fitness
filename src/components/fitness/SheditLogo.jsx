@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LOGO_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69ab1bdf5518ce71465536ba/70015bd75_generated_image.png';
+const LOGO_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69ab1bdf5518ce71465536ba/3d03fca99_generated_image.png';
 
 // Full wordmark: icon + "Shedit" text
 export function SheditWordmark({ size = 32, className = '' }) {
@@ -16,7 +16,7 @@ export function SheditWordmark({ size = 32, className = '' }) {
         className="font-black tracking-tight"
         style={{
           fontSize: size * 0.65,
-          background: 'linear-gradient(135deg, #22c55e, #f97316)',
+          background: 'linear-gradient(135deg, #c084fc, #7c3aed)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
