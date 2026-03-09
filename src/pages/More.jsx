@@ -17,6 +17,7 @@ import SleepPanel from '../components/fitness/panels/SleepPanel';
 import FastingPanel from '../components/fitness/panels/FastingPanel';
 import WorkoutPanel from '../components/fitness/panels/WorkoutPanel';
 import RemindersPanel from '../components/fitness/panels/RemindersPanel';
+import BodyTransformationPanel from '../components/fitness/panels/BodyTransformationPanel';
 
 export default function More() {
   const [activePanel, setActivePanel]     = useState(null);
