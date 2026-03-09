@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Scale, Timer, Moon, Dumbbell, Target, FileText,
   Bell, Footprints, Shield, HelpCircle, ChevronRight,
-  TrendingDown, Zap, X, Trash2, Users, Brain
+  TrendingDown, Zap, X, Trash2, Users, Brain, Camera
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
