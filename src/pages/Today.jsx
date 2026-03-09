@@ -1,9 +1,11 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { format } from 'date-fns';
-import { motion } from 'framer-motion';
-import { Footprints, ArrowUp, Bell } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Footprints, ArrowUp, Bell, Smartphone } from 'lucide-react';
 import { DailyLogs, Meals } from '../components/storage';
 import { SheditWordmark, SheditIcon } from '../components/fitness/SheditLogo';
+import { useHealthSteps } from '../components/fitness/useHealthSteps';
+import HealthPermissionPrompt from '../components/fitness/HealthPermissionPrompt';
 
 import WeekSelector from '../components/fitness/WeekSelector';
 import StreakCard from '../components/fitness/StreakCard';
