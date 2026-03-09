@@ -6,6 +6,8 @@ import { DailyLogs, Meals } from '../components/storage';
 import { SheditWordmark, SheditIcon } from '../components/fitness/SheditLogo';
 import { useHealthSteps } from '../components/fitness/useHealthSteps';
 import HealthPermissionPrompt from '../components/fitness/HealthPermissionPrompt';
+import SmartGoalsBanner from '../components/fitness/SmartGoalsBanner';
+import SmartMealSuggestions from '../components/fitness/SmartMealSuggestions';
 
 import WeekSelector from '../components/fitness/WeekSelector';
 import StreakCard from '../components/fitness/StreakCard';
