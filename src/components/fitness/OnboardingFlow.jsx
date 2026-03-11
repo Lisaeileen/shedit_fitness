@@ -47,6 +47,7 @@ const CUISINES = [
   { value: 'greek',         label: 'Greek' },
   { value: 'french',        label: 'French' },
   { value: 'korean',        label: 'Korean' },
+  { value: 'nigerian',      label: 'Nigerian' },
 ];
 
 const COOKED_VEGS = [
