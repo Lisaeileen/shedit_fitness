@@ -22,7 +22,7 @@ const INGREDIENT_IMAGES = {
   'asparagus':        BASE + '2201d15f6_generated_image.png',
   'eggplant':         'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=300&q=80',
   'potato':           'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&q=80',
-  'sweet potato':     'https://images.unsplash.com/photo-1596097635121-14b38c5d7a20?w=300&q=80',
+  'sweet potato':     BASE + 'e62242714_generated_image.png',
   'corn':             'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=300&q=80',
   'cauliflower':      BASE + 'e2f993518_generated_image.png',
   'cabbage':          'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=300&q=80',

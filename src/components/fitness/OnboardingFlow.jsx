@@ -59,7 +59,7 @@ const COOKED_VEGS = [
   { value: 'cooked_broccoli',      label: 'Cooked Broccoli',          img: BASE + '5450459ca_generated_image.png' },
   { value: 'sauteed_carrots',      label: 'Sautéed Carrots',          img: BASE + '560498206_generated_image.png' },
   { value: 'sauteed_cauliflower',  label: 'Sautéed Cauliflower',      img: BASE + 'e2f993518_generated_image.png' },
-  { value: 'roasted_sweet_potato', label: 'Roasted Sweet Potatoes',   img: 'https://images.unsplash.com/photo-1596097635121-14b38c5d7a20?w=300&q=80' },
+  { value: 'roasted_sweet_potato', label: 'Roasted Sweet Potatoes',   img: BASE + 'e62242714_generated_image.png' },
   { value: 'grilled_asparagus',    label: 'Grilled Asparagus',        img: BASE + '2201d15f6_generated_image.png' },
   { value: 'sauteed_mushrooms',    label: 'Sautéed Mushrooms',        img: BASE + 'ff171f3f3_generated_image.png' },
 ];
