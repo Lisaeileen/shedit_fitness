@@ -22,7 +22,7 @@ const INGREDIENT_IMAGES = {
   'potato':           'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=120&q=70',
   'sweet potato':     'https://images.unsplash.com/photo-1596097635121-14b38c5d7a20?w=120&q=70',
   'corn':             'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=120&q=70',
-  'cauliflower':      'https://images.unsplash.com/photo-1568584711271-6bf7699c3ce9?w=120&q=70',
+  'cauliflower':      'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f5bf5bf69_82aaa967-023d-4685-a3ff-64b56c836486.jpeg',
   'cabbage':          'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=120&q=70',
   'green beans':      'https://images.unsplash.com/photo-1567375698348-5d9d5ae99de0?w=120&q=70',
   'artichoke':        'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=120&q=70',
