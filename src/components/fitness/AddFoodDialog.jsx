@@ -670,7 +670,7 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
   const resetForm = () => {
     setFoodName(''); setCalories(''); setCarbs(''); setProtein(''); setFat('');
     setAiSuggested(false); setServing('1 serving'); setSuggestions([]);
-    setShowCamera(false); setShowVoice(false);
+    setShowCamera(false); setShowVoice(false); setShowBarcode(false);
   };
 
   const handleClose = () => { resetForm(); onClose(); };
