@@ -625,6 +625,7 @@ function BarcodeScanModal({ onConfirm, onClose }) {
 export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'snack', date, initialMode = 'manual' }) {
   const [showCamera, setShowCamera] = useState(false);
   const [showVoice, setShowVoice]   = useState(false);
+  const [showBarcode, setShowBarcode] = useState(false);
   const [foodName, setFoodName]     = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(mealType);
