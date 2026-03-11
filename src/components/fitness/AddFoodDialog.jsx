@@ -675,8 +675,9 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
 
   const handleClose = () => { resetForm(); onClose(); };
 
-  if (showCamera) return <AIScanModal onConfirm={(r) => { applyFood(r); setShowCamera(false); }} onClose={() => setShowCamera(false)} />;
-  if (showVoice)  return <VoiceModal  onResult={(r) => { applyFood(r); setShowVoice(false); }}  onClose={() => setShowVoice(false)} />;
+  if (showCamera)  return <AIScanModal    onConfirm={(r) => { applyFood(r); setShowCamera(false); }}  onClose={() => setShowCamera(false)} />;
+  if (showVoice)   return <VoiceModal     onResult={(r)  => { applyFood(r); setShowVoice(false); }}   onClose={() => setShowVoice(false)} />;
+  if (showBarcode) return <BarcodeScanModal onConfirm={(r) => { applyFood(r); setShowBarcode(false); }} onClose={() => setShowBarcode(false)} />;
 
   return (
     <AnimatePresence>
