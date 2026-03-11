@@ -641,6 +641,7 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
   useEffect(() => {
     if (isOpen && initialMode === 'scan') setShowCamera(true);
     else if (isOpen && initialMode === 'voice') setShowVoice(true);
+    else if (isOpen && initialMode === 'barcode') setShowBarcode(true);
   }, [initialMode, isOpen]);
 
   const handleSearch = (val) => {
