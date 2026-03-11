@@ -405,6 +405,221 @@ function VoiceModal({ onResult, onClose }) {
   );
 }
 
+// ── Barcode Scanner Modal ─────────────────────────────────────────────────────
+
+function BarcodeScanModal({ onConfirm, onClose }) {
+  const videoRef  = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
+  const intervalRef = useRef(null);
+  const [phase, setPhase] = useState('camera'); // camera | looking | found | notfound
+  const [product, setProduct] = useState(null);
+  const [error, setError] = useState('');
+  const [manualCode, setManualCode] = useState('');
+  const [scanAttempts, setScanAttempts] = useState(0);
+
+  useEffect(() => {
+    navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(s => {
+        streamRef.current = s;
+        if (videoRef.current) { videoRef.current.srcObject = s; }
+      })
+      .catch(() => setError('Camera access denied. Please enter barcode manually.'));
+    return () => {
+      streamRef.current?.getTracks().forEach(t => t.stop());
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  const lookupBarcode = async (barcode) => {
+    if (!barcode || barcode.length < 8) return;
+    setPhase('looking');
+    try {
+      const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+      const data = await res.json();
+      if (data.status === 1 && data.product) {
+        const p = data.product;
+        const nutriments = p.nutriments || {};
+        const servingSize = p.serving_size || p.quantity || '100g';
+        const per100 = nutriments['energy-kcal_100g'] || nutriments['energy_100g'] / 4.184 || 0;
+        const calories = nutriments['energy-kcal_serving'] || nutriments['energy-kcal'] || Math.round(per100);
+        setProduct({
+          food_name: p.product_name || p.product_name_en || 'Unknown Product',
+          calories: Math.round(calories) || 0,
+          protein: Math.round(nutriments.proteins_serving || nutriments.proteins || 0),
+          carbs: Math.round(nutriments.carbohydrates_serving || nutriments.carbohydrates || 0),
+          fat: Math.round(nutriments.fat_serving || nutriments.fat || 0),
+          serving_size: servingSize,
+        });
+        setPhase('found');
+      } else {
+        setPhase('notfound');
+      }
+    } catch {
+      setPhase('notfound');
+    }
+  };
+
+  const captureAndDecode = async () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || video.readyState < 2) return;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    setScanAttempts(n => n + 1);
+
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({
+        file: await (async () => { const r = await fetch(dataUrl); const b = await r.blob(); return new File([b], 'barcode.jpg', { type: 'image/jpeg' }); })()
+      });
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: 'Look at this image and extract any barcode or QR code number you can see. Return ONLY the numeric barcode digits, nothing else. If there is no barcode visible, return "none".',
+        file_urls: [file_url],
+        response_json_schema: { type: 'object', properties: { barcode: { type: 'string' } } }
+      });
+      const code = result?.barcode?.replace(/\D/g, '');
+      if (code && code.length >= 8) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        streamRef.current?.getTracks().forEach(t => t.stop());
+        await lookupBarcode(code);
+      }
+    } catch { /* keep trying */ }
+  };
+
+  const startScanning = () => {
+    intervalRef.current = setInterval(captureAndDecode, 3000);
+  };
+
+  useEffect(() => {
+    if (!error) {
+      const t = setTimeout(startScanning, 1500);
+      return () => clearTimeout(t);
+    }
+  }, [error]);
+
+  const handleManualLookup = () => {
+    if (manualCode.trim()) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      streamRef.current?.getTracks().forEach(t => t.stop());
+      lookupBarcode(manualCode.trim());
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[90] flex flex-col" style={{ background: '#000' }}>
+      <div className="flex items-center justify-between p-4 pt-10 flex-shrink-0" style={{ background: 'rgba(0,0,0,0.6)' }}>
+        <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+          <X className="w-5 h-5 text-white" />
+        </button>
+        <div className="flex items-center gap-2">
+          <ScanLine className="w-4 h-4 text-purple-400" />
+          <p className="text-sm font-bold text-white">Barcode Scanner</p>
+        </div>
+        <div className="w-9" />
+      </div>
+
+      {phase === 'camera' && (
+        <>
+          <div className="flex-1 relative overflow-hidden">
+            <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="relative w-72 h-36">
+                <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-purple-400 rounded-tl-xl" />
+                <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-purple-400 rounded-tr-xl" />
+                <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-purple-400 rounded-bl-xl" />
+                <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-purple-400 rounded-br-xl" />
+                <motion.div className="absolute left-0 right-0 h-0.5 bg-purple-400"
+                  animate={{ top: ['10%', '90%', '10%'] }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} />
+              </div>
+            </div>
+            {scanAttempts > 0 && (
+              <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: 'rgba(0,0,0,0.6)' }}>
+                  <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+                  <p className="text-xs text-white">Scanning for barcode...</p>
+                </div>
+              </div>
+            )}
+            {error && (
+              <div className="absolute bottom-6 left-4 right-4">
+                <p className="text-xs text-amber-400 text-center">{error}</p>
+              </div>
+            )}
+          </div>
+          <div className="px-5 pb-10 pt-4 flex-shrink-0" style={{ background: 'rgba(0,0,0,0.8)' }}>
+            <p className="text-xs text-gray-500 text-center mb-3">Or enter barcode manually</p>
+            <div className="flex gap-2">
+              <input
+                className="flex-1 rounded-2xl px-4 py-3 text-sm outline-none"
+                style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', WebkitTextFillColor: '#fff', border: '1px solid rgba(168,85,247,0.3)', caretColor: '#a855f7' }}
+                placeholder="e.g. 0123456789012"
+                value={manualCode}
+                onChange={e => setManualCode(e.target.value)}
+                inputMode="numeric"
+                onKeyDown={e => e.key === 'Enter' && handleManualLookup()}
+              />
+              <button onClick={handleManualLookup}
+                className="px-4 py-3 rounded-2xl text-sm font-bold text-white"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>
+                Search
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {phase === 'looking' && (
+        <div className="flex-1 flex flex-col items-center justify-center gap-4">
+          <Loader2 className="w-12 h-12 text-purple-400 animate-spin" />
+          <p className="text-white font-bold">Looking up product...</p>
+          <p className="text-sm text-gray-500">Searching food database</p>
+        </div>
+      )}
+
+      {phase === 'found' && product && (
+        <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-6" style={{ background: '#120630' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <CheckCircle className="w-5 h-5 text-green-400" />
+            <p className="text-base font-bold text-white">Product Found!</p>
+          </div>
+          <div className="rounded-2xl p-4 mb-5" style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)' }}>
+            <p className="text-lg font-black text-white mb-1">{product.food_name}</p>
+            <p className="text-xs text-gray-400 mb-4">Serving: {product.serving_size}</p>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { l: 'Calories', v: product.calories, c: '#a855f7', u: 'kcal' },
+                { l: 'Protein',  v: product.protein,  c: '#ec4899', u: 'g' },
+                { l: 'Carbs',    v: product.carbs,    c: '#3b82f6', u: 'g' },
+                { l: 'Fat',      v: product.fat,      c: '#f59e0b', u: 'g' },
+              ].map(m => (
+                <div key={m.l} className="text-center">
+                  <p className="text-base font-black" style={{ color: m.c }}>{m.v}<span className="text-[10px] font-normal">{m.u}</span></p>
+                  <p className="text-[10px] text-gray-500">{m.l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <button onClick={() => { onConfirm(product); }} className="btn-primary mb-3">Add to Log</button>
+          <button onClick={onClose} className="w-full text-center text-sm text-gray-500 py-2">Cancel</button>
+        </div>
+      )}
+
+      {phase === 'notfound' && (
+        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
+          <AlertCircle className="w-12 h-12 text-amber-400" />
+          <p className="text-white font-bold text-lg">Product not found</p>
+          <p className="text-sm text-gray-400">This product isn't in our database. Please add it manually.</p>
+          <button onClick={onClose} className="btn-primary max-w-xs mt-2">Add Manually</button>
+        </div>
+      )}
+
+      <canvas ref={canvasRef} className="hidden" />
+    </div>
+  );
+}
+
 // ── Main AddFoodDialog ─────────────────────────────────────────────────────────
 
 export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'snack', date, initialMode = 'manual' }) {
