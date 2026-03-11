@@ -74,10 +74,10 @@ const RAW_VEGS = [
 ];
 
 const FRUITS = [
-  { value: 'apple',        label: 'Apple',        img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/036ad3ec0_54fb5beb-4f23-4810-94c4-663a5a01d106.jpg' },
-  { value: 'banana',       label: 'Banana',       img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=80' },
-  { value: 'blueberries',  label: 'Blueberries',  img: 'https://images.unsplash.com/photo-1425934398893-310a009a77f9?w=300&q=80' },
-  { value: 'strawberry',   label: 'Strawberries', img: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=300&q=80' },
+  { value: 'apple',        label: 'Apple',        img: BASE + '0b2d462ca_generated_image.png' },
+  { value: 'banana',       label: 'Banana',       img: BASE + '0f7b7132d_generated_image.png' },
+  { value: 'blueberries',  label: 'Blueberries',  img: BASE + 'c628cb9e9_generated_image.png' },
+  { value: 'strawberry',   label: 'Strawberries', img: BASE + 'dcfa2d232_generated_image.png' },
   { value: 'blackberries', label: 'Blackberries', img: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&q=80' },
   { value: 'raspberries',  label: 'Raspberries',  img: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=300&q=80' },
   { value: 'grapes',       label: 'Grapes',       img: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=300&q=80' },
