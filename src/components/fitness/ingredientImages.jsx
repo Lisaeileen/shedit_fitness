@@ -30,7 +30,7 @@ const INGREDIENT_IMAGES = {
   // Fruits
   'avocado':          'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=120&q=70',
   'banana':           'https://images.unsplash.com/photo-1528825871115-3581a5387919?w=120&q=70',
-  'apple':            'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=120&q=70',
+  'apple':            'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/036ad3ec0_54fb5beb-4f23-4810-94c4-663a5a01d106.jpg',
   'orange':           'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=120&q=70',
   'lemon':            'https://images.unsplash.com/photo-1587496679742-bad502958fbf?w=120&q=70',
   'lime':             'https://images.unsplash.com/photo-1590502160462-58b41354f588?w=120&q=70',
