@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2, CheckCircle, Search, Mic, MicOff, Camera, Plus, Minus, Sparkles } from 'lucide-react';
+import { X, Loader2, CheckCircle, Search, Mic, MicOff, Camera, Plus, Minus, Sparkles, ScanLine, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
