@@ -65,12 +65,12 @@ const COOKED_VEGS = [
 ];
 
 const RAW_VEGS = [
-  { value: 'bell_pepper',     label: 'Bell Pepper Strips',  img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f5ff88e24_8282495c-026a-42fe-b7ed-228b7ea49e6a.jpg' },
-  { value: 'baby_carrots',    label: 'Baby Carrots',        img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/d36b70b08_b3377c56-7fe3-42d6-91a9-b33c81cbb6dd.jpg' },
+  { value: 'bell_pepper',     label: 'Bell Pepper Strips',  img: BASE + 'bd8551348_generated_image.png' },
+  { value: 'baby_carrots',    label: 'Baby Carrots',        img: BASE + '560498206_generated_image.png' },
   { value: 'cherry_tomatoes', label: 'Cherry Tomatoes',     img: 'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&q=80' },
-  { value: 'cucumber',        label: 'Cucumber Slices',     img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/6027f0c17_74efd447-689b-4a83-8656-628b80f5fa4b.jpg' },
-  { value: 'celery',          label: 'Celery Sticks',       img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/0939c56f6_510d3688-6aa4-4985-86f1-ac80861e4003.jpeg' },
-  { value: 'snap_peas',       label: 'Snap Peas',           img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/b031ec3b0_5a0dfdcd-7b68-4ebf-94a4-5d59d1a992b8.jpg' },
+  { value: 'cucumber',        label: 'Cucumber Slices',     img: BASE + '14413b069_generated_image.png' },
+  { value: 'celery',          label: 'Celery Sticks',       img: BASE + '1544e4aad_generated_image.png' },
+  { value: 'snap_peas',       label: 'Snap Peas',           img: BASE + '7393b7c8b_generated_image.png' },
 ];
 
 const FRUITS = [
