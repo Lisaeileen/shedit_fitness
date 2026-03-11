@@ -51,14 +51,15 @@ const CUISINES = [
 ];
 
 const COOKED_VEGS = [
-  { value: 'sauteed_spinach',      label: 'Sautéed Spinach',          img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=300&q=80' },
-  { value: 'sauteed_zucchini',     label: 'Sautéed Zucchini',         img: 'https://images.unsplash.com/photo-1608032364895-84e16138b4fc?w=300&q=80' },
-  { value: 'roasted_eggplant',     label: 'Roasted Eggplant',         img: 'https://images.unsplash.com/photo-1605989920742-2e9a9d0e75b9?w=300&q=80' },
-  { value: 'cooked_broccoli',      label: 'Cooked Broccoli',          img: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=300&q=80' },
-  { value: 'sauteed_carrots',      label: 'Sautéed Carrots',          img: 'https://images.unsplash.com/photo-1582515073490-39981397c445?w=300&q=80' },
-  { value: 'sauteed_cauliflower',  label: 'Sautéed Cauliflower',      img: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=300&q=80' },
-  { value: 'roasted_sweet_potato', label: 'Roasted Sweet Potatoes',   img: 'https://images.unsplash.com/photo-1596097636487-2675b64f9cdd?w=300&q=80' },
-  { value: 'grilled_asparagus',    label: 'Grilled Asparagus',        img: 'https://images.unsplash.com/photo-1583663848850-46af132dc08e?w=300&q=80' },
+  { value: 'sauteed_spinach',      label: 'Sautéed Spinach',          img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f658cb60f_6a5ddec2-abcc-42c0-bac4-f93e5947e2a4.jpg' },
+  { value: 'sauteed_zucchini',     label: 'Sautéed Zucchini',         img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/9c68bcb0d_d2a04780-e8e4-4bae-ae10-63067358a886.jpg' },
+  { value: 'roasted_eggplant',     label: 'Roasted Eggplant',         img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/ebece95c0_9689c021-b4aa-4548-91f0-efcff9f45035.jpeg' },
+  { value: 'cooked_broccoli',      label: 'Cooked Broccoli',          img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/119e6907e_95651b4f-c821-4412-aff2-1de0204219c3.jpg' },
+  { value: 'sauteed_carrots',      label: 'Sautéed Carrots',          img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/77aaf287c_bea6c331-5604-4e1f-8c07-016696c62036.jpg' },
+  { value: 'sauteed_cauliflower',  label: 'Sautéed Cauliflower',      img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f5bf5bf69_82aaa967-023d-4685-a3ff-64b56c836486.jpeg' },
+  { value: 'roasted_sweet_potato', label: 'Roasted Sweet Potatoes',   img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/00c50438c_7bb6edb7-937a-491c-b2af-f256cb17980f.jpg' },
+  { value: 'grilled_asparagus',    label: 'Grilled Asparagus',        img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/fdd806c41_a5ac90b6-c5e4-4419-9163-34430ba6d2c5.jpeg' },
+  { value: 'sauteed_mushrooms',    label: 'Sautéed Mushrooms',        img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/027d1647d_d6807cea-077e-4e45-b668-4a61139fd869.jpg' },
 ];
 
 const RAW_VEGS = [
