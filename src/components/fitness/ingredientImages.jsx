@@ -45,6 +45,16 @@ const INGREDIENT_IMAGES = {
   'grape':            'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=300&q=80',
   'peach':            'https://images.unsplash.com/photo-1595743825637-cd8f30e70e86?w=300&q=80',
   'cherry':           'https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=300&q=80',
+  'mandarin':         BASE + '1a6bd348f_generated_image.png',
+  'cantaloupe':       BASE + 'c90262de5_generated_image.png',
+  'honeydew':         BASE + 'edd60a1af_generated_image.png',
+  'apricot':          BASE + '75702dc4a_generated_image.png',
+  'plum':             BASE + 'd945e0102_generated_image.png',
+  'passion fruit':    BASE + '510dbff5f_generated_image.png',
+  'fig':              BASE + '33c058810_generated_image.png',
+  'guava':            BASE + 'b52f3a35c_generated_image.png',
+  'coconut':          BASE + 'a55123d8c_generated_image.png',
+  'lychee':           BASE + 'ee277b276_generated_image.png',
 
   // Proteins
   'chicken breast':   BASE + '485aa6541_generated_image.png',
