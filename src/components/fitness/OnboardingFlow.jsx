@@ -17,7 +17,7 @@ const DIET_STYLES = [
   { value: 'pescatarian',         label: 'Pescatarian',            desc: 'Fish & plants only',                   img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80' },
   { value: 'gluten_free',         label: 'Gluten Free',            desc: 'No wheat, barley or rye',              img: 'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=400&q=80' },
   { value: 'dairy_free',          label: 'Dairy Free',             desc: 'No milk, cheese or yogurt',            img: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80' },
-  { value: 'paleo',               label: 'Paleo',                  desc: 'Meat, fish, nuts & veggies',           img: 'https://images.unsplash.com/photo-1544025162-d76538b2a681?w=400&q=80' },
+  { value: 'paleo',               label: 'Paleo',                  desc: 'Meat, fish, nuts & veggies',           img: BASE + '5439fb505_generated_image.png' },
   { value: 'high_fiber',          label: 'High Fiber',             desc: 'Grains, beans & vegetables',           img: 'https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80' },
   { value: 'low_sugar',           label: 'Low Sugar',              desc: 'Minimize added sugars',                img: 'https://images.unsplash.com/photo-1505253304499-671c55fb57fe?w=400&q=80' },
   { value: 'intermittent_fasting',label: 'Intermittent Fasting',   desc: '16:8 or 5:2 eating windows',           img: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80' },
@@ -109,11 +109,11 @@ const FRUITS = [
 
 const RECIPES = [
   { value: 'avocado_chicken_salad', label: 'Avocado Chicken Salad',    cal: 410, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
-  { value: 'turkey_avocado_wrap',   label: 'Turkey Avocado Wrap',      cal: 669, img: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&q=80' },
+  { value: 'turkey_avocado_wrap',   label: 'Turkey Avocado Wrap',      cal: 669, img: BASE + '439399f57_generated_image.png' },
   { value: 'baked_beef_nachos',     label: 'Baked Beef Nachos',        cal: 710, img: 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400&q=80' },
   { value: 'chicken_alfredo',       label: 'Quick Chicken Alfredo',    cal: 596, img: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=400&q=80' },
   { value: 'spring_veggie_pasta',   label: 'Spring Veggie Pasta',      cal: 471, img: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80' },
-  { value: 'southwest_wrap',        label: 'Southwest Breakfast Wrap', cal: 645, img: 'https://images.unsplash.com/photo-1584208632869-05fa2b2a5934?w=400&q=80' },
+  { value: 'southwest_wrap',        label: 'Southwest Breakfast Wrap', cal: 645, img: BASE + '6833faec5_generated_image.png' },
 ];
 
 const PRIORITIES = [
