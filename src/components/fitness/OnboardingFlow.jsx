@@ -72,7 +72,7 @@ const RAW_VEGS = [
 ];
 
 const FRUITS = [
-  { value: 'apple',        label: 'Apple',        img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&q=80' },
+  { value: 'apple',        label: 'Apple',        img: 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/036ad3ec0_54fb5beb-4f23-4810-94c4-663a5a01d106.jpg' },
   { value: 'banana',       label: 'Banana',       img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&q=80' },
   { value: 'blueberries',  label: 'Blueberries',  img: 'https://images.unsplash.com/photo-1425934398893-310a009a77f9?w=300&q=80' },
   { value: 'strawberry',   label: 'Strawberries', img: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=300&q=80' },
