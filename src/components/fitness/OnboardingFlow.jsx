@@ -82,7 +82,7 @@ const FRUITS = [
   { value: 'raspberries',  label: 'Raspberries',  img: BASE + '98f59f2d6_generated_image.png' },
   { value: 'grapes',       label: 'Grapes',       img: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=300&q=80' },
   { value: 'orange',       label: 'Orange',       img: BASE + '3040c51c2_generated_image.png' },
-  { value: 'mandarin',     label: 'Mandarin',     img: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?w=300&q=80' },
+  { value: 'mandarin',     label: 'Mandarin',     img: BASE + '1a6bd348f_generated_image.png' },
   { value: 'pineapple',    label: 'Pineapple',    img: 'https://images.unsplash.com/photo-1490885578174-acda8905c2c6?w=300&q=80' },
   { value: 'mango',        label: 'Mango',        img: BASE + '388eb1792_generated_image.png' },
   { value: 'papaya',       label: 'Papaya',       img: 'https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?w=300&q=80' },

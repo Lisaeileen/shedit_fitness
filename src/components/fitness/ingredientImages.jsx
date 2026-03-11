@@ -38,6 +38,8 @@ const INGREDIENT_IMAGES = {
   'lime':             'https://images.unsplash.com/photo-1590502160462-58b41354f588?w=300&q=80',
   'strawberry':       BASE + 'dcfa2d232_generated_image.png',
   'blueberry':        BASE + 'c628cb9e9_generated_image.png',
+  'blackberry':       BASE + '230c67229_generated_image.png',
+  'raspberry':        BASE + '98f59f2d6_generated_image.png',
   'mango':            BASE + '388eb1792_generated_image.png',
   'pineapple':        'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=300&q=80',
   'grape':            'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=300&q=80',
