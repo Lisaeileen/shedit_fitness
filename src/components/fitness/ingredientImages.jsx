@@ -10,7 +10,7 @@ const INGREDIENT_IMAGES = {
   'onion':            'https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=120&q=70',
   'garlic':           'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=120&q=70',
   'tomato':           'https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=120&q=70',
-  'cucumber':         'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=120&q=70',
+  'cucumber':         'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/6027f0c17_74efd447-689b-4a83-8656-628b80f5fa4b.jpg',
   'spinach':          'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f658cb60f_6a5ddec2-abcc-42c0-bac4-f93e5947e2a4.jpg',
   'broccoli':         'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/119e6907e_95651b4f-c821-4412-aff2-1de0204219c3.jpg',
   'lettuce':          'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=120&q=70',
