@@ -702,12 +702,13 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                 {/* Mode selector */}
                 <div className="flex gap-2 mb-5">
                   {[
-                    { label: 'Manual', action: null },
-                    { label: 'AI Scan', action: () => setShowCamera(true) },
-                    { label: 'Voice',   action: () => setShowVoice(true) },
+                    { label: 'Manual',   action: null },
+                    { label: 'AI Scan',  action: () => setShowCamera(true) },
+                    { label: 'Barcode',  action: () => setShowBarcode(true) },
+                    { label: 'Voice',    action: () => setShowVoice(true) },
                   ].map((m, i) => (
                     <button key={i} onClick={() => m.action ? m.action() : null}
-                      className="flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all"
+                      className="flex-1 py-2 rounded-xl text-xs font-semibold transition-all"
                       style={!m.action
                         ? { background: 'rgba(168,85,247,0.2)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.4)' }
                         : { background: 'rgba(255,255,255,0.04)', color: '#6b7280', border: '1px solid transparent' }
