@@ -1,104 +1,110 @@
 // ── Ingredient Image Mapping ──────────────────────────────────────────────────
-// All images are from Unsplash (valid, fast-loading URLs)
+// All images are AI-generated, HD food photography style
+
+const BASE = 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/';
 
 const INGREDIENT_IMAGES = {
   // Vegetables
-  'bell pepper':      'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=120&q=70',
-  'peas':             'https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=120&q=70',
-  'celery':           'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=120&q=70',
-  'carrot':           'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/77aaf287c_bea6c331-5604-4e1f-8c07-016696c62036.jpg',
-  'onion':            'https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=120&q=70',
-  'garlic':           'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=120&q=70',
-  'tomato':           'https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=120&q=70',
-  'cucumber':         'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/6027f0c17_74efd447-689b-4a83-8656-628b80f5fa4b.jpg',
-  'spinach':          'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f658cb60f_6a5ddec2-abcc-42c0-bac4-f93e5947e2a4.jpg',
-  'broccoli':         'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/119e6907e_95651b4f-c821-4412-aff2-1de0204219c3.jpg',
-  'lettuce':          'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=120&q=70',
-  'kale':             'https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=120&q=70',
-  'zucchini':         'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=120&q=70',
-  'mushroom':         'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/027d1647d_d6807cea-077e-4e45-b668-4a61139fd869.jpg',
-  'asparagus':        'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/fdd806c41_a5ac90b6-c5e4-4419-9163-34430ba6d2c5.jpeg',
-  'eggplant':         'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=120&q=70',
-  'potato':           'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=120&q=70',
-  'sweet potato':     'https://images.unsplash.com/photo-1596097635121-14b38c5d7a20?w=120&q=70',
-  'corn':             'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=120&q=70',
-  'cauliflower':      'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/f5bf5bf69_82aaa967-023d-4685-a3ff-64b56c836486.jpeg',
-  'cabbage':          'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=120&q=70',
-  'green beans':      'https://images.unsplash.com/photo-1567375698348-5d9d5ae99de0?w=120&q=70',
-  'artichoke':        'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=120&q=70',
+  'bell pepper':      BASE + 'bd8551348_generated_image.png',
+  'peas':             BASE + '7393b7c8b_generated_image.png',
+  'celery':           BASE + '1544e4aad_generated_image.png',
+  'carrot':           BASE + '560498206_generated_image.png',
+  'onion':            'https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=300&q=80',
+  'garlic':           'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=300&q=80',
+  'tomato':           'https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=300&q=80',
+  'cucumber':         BASE + '14413b069_generated_image.png',
+  'spinach':          BASE + 'f86d93fe0_generated_image.png',
+  'broccoli':         BASE + '5450459ca_generated_image.png',
+  'lettuce':          'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=300&q=80',
+  'kale':             'https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=300&q=80',
+  'zucchini':         'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&q=80',
+  'mushroom':         BASE + 'ff171f3f3_generated_image.png',
+  'asparagus':        BASE + '2201d15f6_generated_image.png',
+  'eggplant':         'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=300&q=80',
+  'potato':           'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&q=80',
+  'sweet potato':     'https://images.unsplash.com/photo-1596097635121-14b38c5d7a20?w=300&q=80',
+  'corn':             'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=300&q=80',
+  'cauliflower':      BASE + 'e2f993518_generated_image.png',
+  'cabbage':          'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=300&q=80',
+  'green beans':      'https://images.unsplash.com/photo-1567375698348-5d9d5ae99de0?w=300&q=80',
+  'artichoke':        'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300&q=80',
 
   // Fruits
-  'avocado':          'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=120&q=70',
-  'banana':           'https://images.unsplash.com/photo-1528825871115-3581a5387919?w=120&q=70',
-  'apple':            'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/036ad3ec0_54fb5beb-4f23-4810-94c4-663a5a01d106.jpg',
-  'orange':           'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=120&q=70',
-  'lemon':            'https://images.unsplash.com/photo-1587496679742-bad502958fbf?w=120&q=70',
-  'lime':             'https://images.unsplash.com/photo-1590502160462-58b41354f588?w=120&q=70',
-  'strawberry':       'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=120&q=70',
-  'blueberry':        'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=120&q=70',
-  'mango':            'https://images.unsplash.com/photo-1553279768-865429fa0078?w=120&q=70',
-  'pineapple':        'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=120&q=70',
-  'grape':            'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=120&q=70',
-  'peach':            'https://images.unsplash.com/photo-1595743825637-cd8f30e70e86?w=120&q=70',
-  'cherry':           'https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=120&q=70',
+  'avocado':          BASE + 'ad1f7f8f5_generated_image.png',
+  'banana':           BASE + '0f7b7132d_generated_image.png',
+  'apple':            BASE + '0b2d462ca_generated_image.png',
+  'orange':           BASE + '3040c51c2_generated_image.png',
+  'lemon':            'https://images.unsplash.com/photo-1587496679742-bad502958fbf?w=300&q=80',
+  'lime':             'https://images.unsplash.com/photo-1590502160462-58b41354f588?w=300&q=80',
+  'strawberry':       BASE + 'dcfa2d232_generated_image.png',
+  'blueberry':        BASE + 'c628cb9e9_generated_image.png',
+  'mango':            BASE + '388eb1792_generated_image.png',
+  'pineapple':        'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=300&q=80',
+  'grape':            'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=300&q=80',
+  'peach':            'https://images.unsplash.com/photo-1595743825637-cd8f30e70e86?w=300&q=80',
+  'cherry':           'https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=300&q=80',
 
   // Proteins
-  'chicken breast':   'https://images.unsplash.com/photo-1604503468506-a8da13d11bea?w=120&q=70',
-  'chicken':          'https://images.unsplash.com/photo-1604503468506-a8da13d11bea?w=120&q=70',
-  'salmon':           'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=120&q=70',
-  'tuna':             'https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?w=120&q=70',
-  'shrimp':           'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=120&q=70',
-  'beef':             'https://images.unsplash.com/photo-1558030006-450675393462?w=120&q=70',
-  'ground beef':      'https://images.unsplash.com/photo-1558030006-450675393462?w=120&q=70',
-  'turkey':           'https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=120&q=70',
-  'pork':             'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=120&q=70',
-  'egg':              'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=120&q=70',
-  'eggs':             'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=120&q=70',
-  'tofu':             'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120&q=70',
-  'lentils':          'https://images.unsplash.com/photo-1605640840605-14ac1855827b?w=120&q=70',
-  'chickpeas':        'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=120&q=70',
-  'black beans':      'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=120&q=70',
-  'beans':            'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=120&q=70',
+  'chicken breast':   BASE + '485aa6541_generated_image.png',
+  'chicken':          BASE + '485aa6541_generated_image.png',
+  'salmon':           'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&q=80',
+  'tuna':             'https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?w=300&q=80',
+  'shrimp':           'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300&q=80',
+  'beef':             'https://images.unsplash.com/photo-1558030006-450675393462?w=300&q=80',
+  'ground beef':      'https://images.unsplash.com/photo-1558030006-450675393462?w=300&q=80',
+  'turkey':           'https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=300&q=80',
+  'pork':             'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=300&q=80',
+  'egg':              BASE + 'b451f7867_generated_image.png',
+  'eggs':             BASE + 'b451f7867_generated_image.png',
+  'tofu':             'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80',
+  'lentils':          'https://images.unsplash.com/photo-1605640840605-14ac1855827b?w=300&q=80',
+  'chickpeas':        'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=300&q=80',
+  'black beans':      'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=300&q=80',
+  'beans':            'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=300&q=80',
 
   // Grains & Pantry
-  'rice':             'https://images.unsplash.com/photo-1536304993881-ff86e0c9b22f?w=120&q=70',
-  'brown rice':       'https://images.unsplash.com/photo-1536304993881-ff86e0c9b22f?w=120&q=70',
-  'white rice':       'https://images.unsplash.com/photo-1536304993881-ff86e0c9b22f?w=120&q=70',
-  'quinoa':           'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=120&q=70',
-  'oats':             'https://images.unsplash.com/photo-1517673408984-a46153dd75db?w=120&q=70',
-  'oatmeal':          'https://images.unsplash.com/photo-1517673408984-a46153dd75db?w=120&q=70',
-  'pasta':            'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=120&q=70',
-  'bread':            'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=120&q=70',
-  'whole wheat bread':'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=120&q=70',
-  'tortilla':         'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70',
+  'rice':             'https://images.unsplash.com/photo-1536304993881-ff86e0c9b22f?w=300&q=80',
+  'brown rice':       'https://images.unsplash.com/photo-1536304993881-ff86e0c9b22f?w=300&q=80',
+  'white rice':       'https://images.unsplash.com/photo-1536304993881-ff86e0c9b22f?w=300&q=80',
+  'quinoa':           'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&q=80',
+  'oats':             BASE + '1ca92bde3_generated_image.png',
+  'oatmeal':          BASE + '1ca92bde3_generated_image.png',
+  'pasta':            BASE + 'b1d1d7b90_generated_image.png',
+  'bread':            'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&q=80',
+  'whole wheat bread':'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&q=80',
+  'tortilla':         'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=300&q=80',
 
   // Dairy
-  'milk':             'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=120&q=70',
-  'cheese':           'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=120&q=70',
-  'yogurt':           'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70',
-  'greek yogurt':     'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70',
-  'butter':           'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=120&q=70',
-  'cream':            'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=120&q=70',
+  'milk':             'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80',
+  'cheese':           'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=300&q=80',
+  'yogurt':           'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&q=80',
+  'greek yogurt':     'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&q=80',
+  'butter':           'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&q=80',
+  'cream':            'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&q=80',
 
   // Oils & Condiments
-  'olive oil':        'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=120&q=70',
-  'oil':              'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=120&q=70',
-  'soy sauce':        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=120&q=70',
-  'honey':            'https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=120&q=70',
+  'olive oil':        'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&q=80',
+  'oil':              'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&q=80',
+  'soy sauce':        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=300&q=80',
+  'honey':            'https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&q=80',
 
   // Nuts & Seeds
-  'almonds':          'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=120&q=70',
-  'walnuts':          'https://images.unsplash.com/photo-1563412580-fdfe4e7de3f4?w=120&q=70',
-  'peanut butter':    'https://images.unsplash.com/photo-1542990253-0b4a3b12d8ca?w=120&q=70',
-  'chia seeds':       'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=120&q=70',
-  'flax seeds':       'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=120&q=70',
+  'almonds':          'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=300&q=80',
+  'walnuts':          'https://images.unsplash.com/photo-1563412580-fdfe4e7de3f4?w=300&q=80',
+  'peanut butter':    'https://images.unsplash.com/photo-1542990253-0b4a3b12d8ca?w=300&q=80',
+  'chia seeds':       'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=300&q=80',
+  'flax seeds':       'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=300&q=80',
+
+  // Meals (cooked)
+  'salad':            BASE + '8c59e2ee9_generated_image.png',
+  'jollof rice':      BASE + '3b7e28397_generated_image.png',
+  'beans and plantain': BASE + '3a5035f4e_generated_image.png',
 };
 
-// Default fallback image if no match found
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=120&q=70';
+// Default fallback image
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=300&q=80';
 
 // ── Normalization rules ───────────────────────────────────────────────────────
-// Maps raw ingredient text patterns → canonical key in INGREDIENT_IMAGES
 const NORMALIZE_RULES = [
   // Bell pepper variants
   [/\bred\s+bell\s+pepper/i,    'bell pepper'],
@@ -115,11 +121,11 @@ const NORMALIZE_RULES = [
   [/\bcarrots?/i,          'carrot'],
 
   // Pea variants
-  [/\bgreen\s+peas?/i,   'peas'],
-  [/\bfrozen\s+peas?/i,  'peas'],
-  [/\bsnow\s+peas?/i,    'peas'],
+  [/\bgreen\s+peas?/i,        'peas'],
+  [/\bfrozen\s+peas?/i,       'peas'],
+  [/\bsnow\s+peas?/i,         'peas'],
   [/\bsugar\s+snap\s+peas?/i, 'peas'],
-  [/\bpeas?/i,           'peas'],
+  [/\bpeas?/i,                'peas'],
 
   // Celery
   [/\bcelery\s+stalks?/i, 'celery'],
@@ -149,10 +155,10 @@ const NORMALIZE_RULES = [
   [/\bonions?/i,           'onion'],
 
   // Garlic
-  [/\bgarlic\s+cloves?/i,    'garlic'],
-  [/\bminced\s+garlic/i,     'garlic'],
-  [/\bgarlic\s+powder/i,     'garlic'],
-  [/\bgarlic\b/i,            'garlic'],
+  [/\bgarlic\s+cloves?/i,   'garlic'],
+  [/\bminced\s+garlic/i,    'garlic'],
+  [/\bgarlic\s+powder/i,    'garlic'],
+  [/\bgarlic\b/i,           'garlic'],
 
   // Spinach
   [/\bbaby\s+spinach/i, 'spinach'],
@@ -249,11 +255,11 @@ const NORMALIZE_RULES = [
   [/\blettuce\b/i,         'lettuce'],
 
   // Cheese
-  [/\bparmesan\b/i,     'cheese'],
-  [/\bcheddar\b/i,      'cheese'],
-  [/\bmozzarella\b/i,   'cheese'],
+  [/\bparmesan\b/i,      'cheese'],
+  [/\bcheddar\b/i,       'cheese'],
+  [/\bmozzarella\b/i,    'cheese'],
   [/\bcottage\s+cheese/i,'cheese'],
-  [/\bcheese\b/i,       'cheese'],
+  [/\bcheese\b/i,        'cheese'],
 
   // Milk
   [/\balmond\s+milk/i, 'milk'],
@@ -303,13 +309,13 @@ const NORMALIZE_RULES = [
   [/\bhoney\b/i, 'honey'],
 
   // Soy sauce
-  [/\bsoy\s+sauce\b/i,   'soy sauce'],
-  [/\btamari\b/i,        'soy sauce'],
+  [/\bsoy\s+sauce\b/i,  'soy sauce'],
+  [/\btamari\b/i,       'soy sauce'],
 
   // Oil
-  [/\bcoconut\s+oil/i, 'oil'],
-  [/\bvegetable\s+oil/i, 'oil'],
-  [/\boil\b/i,           'oil'],
+  [/\bcoconut\s+oil/i,  'oil'],
+  [/\bvegetable\s+oil/i,'oil'],
+  [/\boil\b/i,          'oil'],
 
   // Butter
   [/\bbutter\b/i, 'butter'],
@@ -343,19 +349,23 @@ const NORMALIZE_RULES = [
 
   // Walnuts
   [/\bwalnuts?\b/i, 'walnuts'],
+
+  // Salad
+  [/\bsalad\b/i, 'salad'],
+
+  // Jollof rice
+  [/\bjollof\s+rice/i, 'jollof rice'],
+
+  // Beans and plantain
+  [/\bbeans\s+and\s+plantain/i, 'beans and plantain'],
+  [/\bplantain/i, 'beans and plantain'],
 ];
 
-/**
- * Normalizes an ingredient string to a canonical key.
- * Strips leading quantities, measurements, and prep words before matching.
- */
 function normalizeIngredient(raw) {
-  // Remove quantities and measurements from the start
-  // e.g. "1 cup diced bell pepper" → "bell pepper"
   const cleaned = raw
-    .replace(/^\d+[\d./]*\s*/,  '')                         // leading numbers
-    .replace(/^(cup|tbsp?|tsp?|oz|lb|g|kg|ml|l|clove|slice|handful|pinch)s?\s+/i, '') // units
-    .replace(/^(diced|chopped|sliced|minced|cooked|raw|fresh|frozen|canned|dried|shredded|grated|peeled|halved|quartered|steamed|roasted|boiled|grilled|whole)\s+/i, '') // prep words
+    .replace(/^\d+[\d./]*\s*/,  '')
+    .replace(/^(cup|tbsp?|tsp?|oz|lb|g|kg|ml|l|clove|slice|handful|pinch)s?\s+/i, '')
+    .replace(/^(diced|chopped|sliced|minced|cooked|raw|fresh|frozen|canned|dried|shredded|grated|peeled|halved|quartered|steamed|roasted|boiled|grilled|whole)\s+/i, '')
     .trim()
     .toLowerCase();
 
@@ -365,7 +375,6 @@ function normalizeIngredient(raw) {
     }
   }
 
-  // Last attempt: direct key lookup on first 2 words
   const words = cleaned.split(' ');
   for (let len = Math.min(words.length, 3); len >= 1; len--) {
     const attempt = words.slice(0, len).join(' ');
@@ -375,10 +384,6 @@ function normalizeIngredient(raw) {
   return null;
 }
 
-/**
- * Returns the best Unsplash image URL for a given ingredient string.
- * Falls back to a generic food image if no match is found.
- */
 export function getIngredientImage(ingredientText) {
   const key = normalizeIngredient(ingredientText || '');
   return (key && INGREDIENT_IMAGES[key]) || DEFAULT_IMAGE;
