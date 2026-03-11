@@ -6,7 +6,7 @@ const INGREDIENT_IMAGES = {
   'bell pepper':      'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=120&q=70',
   'peas':             'https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=120&q=70',
   'celery':           'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=120&q=70',
-  'carrot':           'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=120&q=70',
+  'carrot':           'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/77aaf287c_bea6c331-5604-4e1f-8c07-016696c62036.jpg',
   'onion':            'https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=120&q=70',
   'garlic':           'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=120&q=70',
   'tomato':           'https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=120&q=70',
