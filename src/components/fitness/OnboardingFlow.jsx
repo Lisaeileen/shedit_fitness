@@ -52,8 +52,6 @@ const CUISINES = [
   { value: 'nigerian',      label: 'Nigerian' },
 ];
 
-const BASE = 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/';
-
 const COOKED_VEGS = [
   { value: 'sauteed_spinach',      label: 'Sautéed Spinach',          img: BASE + 'f86d93fe0_generated_image.png' },
   { value: 'sauteed_zucchini',     label: 'Sautéed Zucchini',         img: 'https://images.unsplash.com/photo-1627483298235-f3bac2567c1c?w=300&q=80' },
