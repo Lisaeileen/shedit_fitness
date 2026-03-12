@@ -207,19 +207,13 @@ input[type=number] { -moz-appearance: textfield; }
   color: white;
 }
 
-/* ── CRITICAL: Force all inputs to show text — must stay at end of file ── */
+/* ── Force inputs to show text clearly ── */
 input,
-input:focus,
-input:active,
-input:hover,
-textarea,
-textarea:focus,
-textarea:active,
-textarea:hover {
+textarea {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  -webkit-background-clip: padding-box !important;
   background-clip: padding-box !important;
+  -webkit-background-clip: padding-box !important;
   background-image: none !important;
   opacity: 1 !important;
 }
