@@ -5,6 +5,8 @@ import { SheditWordmark } from './SheditLogo';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
+const BASE = 'https://media.base44.com/images/public/69ab1bdf5518ce71465536ba/';
+
 const DIET_STYLES = [
   { value: 'balanced',             label: 'Balanced',              desc: 'Flexible, thoughtful portions',        img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80' },
   { value: 'high_protein',        label: 'High Protein',           desc: 'Protein-first, satisfying meals',      img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80' },
