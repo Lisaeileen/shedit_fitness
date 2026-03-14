@@ -182,6 +182,7 @@ export default function More() {
                         : activePanel === 'goals' ? 'My Goals'
                         : activePanel === 'sleep' ? 'Sleep Tracking'
                         : activePanel === 'body' ? 'Body Transformation'
+                        : activePanel === 'achievements' ? 'Achievements'
                         : activePanel.replace(/_/g, ' ')}
                     </h3>
                     <button onClick={() => setActivePanel(null)} className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
