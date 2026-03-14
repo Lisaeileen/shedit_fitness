@@ -5,7 +5,8 @@ import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
   ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid
 } from 'recharts';
-import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale } from 'lucide-react';
+import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale, TrendingDown } from 'lucide-react';
+import { AreaChart, Area, ResponsiveContainer as RC2, XAxis as XA2, YAxis as YA2 } from 'recharts';
 import { DailyLogs } from '../components/storage';
 import ActivityRing from '../components/fitness/ActivityRing';
 
@@ -206,6 +207,49 @@ export default function Progress() {
           </div>
         </motion.div>
       </AnimatePresence>
+
+      {/* Transformation Timeline */}
+      {weightLogs.length >= 2 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }} className="rounded-2xl p-5 mb-4"
+          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingDown className="w-4 h-4 text-green-400" />
+            <p className="text-sm font-black text-white">Transformation Timeline</p>
+          </div>
+          <div className="space-y-3">
+            {weightLogs.slice(-5).map((l, i, arr) => {
+              const prev = arr[i - 1];
+              const diff = prev ? +(prev.weight - l.weight).toFixed(1) : 0;
+              return (
+                <div key={l.date} className="flex items-center gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{ background: diff > 0 ? '#10b981' : diff < 0 ? '#f43f5e' : '#a855f7' }} />
+                    {i < arr.length - 1 && <div className="w-px flex-1 mt-1" style={{ height: 28, background: 'rgba(255,255,255,0.08)' }} />}
+                  </div>
+                  <div className="flex-1 pb-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-gray-400">{format(new Date(l.date), 'MMM d, yyyy')}</p>
+                      <div className="flex items-center gap-2">
+                        {diff > 0 && <span className="text-[10px] font-bold text-green-400">-{diff} kg 🔥</span>}
+                        {diff < 0 && <span className="text-[10px] font-bold text-red-400">+{Math.abs(diff)} kg</span>}
+                        <p className="text-sm font-black text-white">{l.weight} kg</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {lostKg > 0 && (
+            <div className="rounded-xl p-3 mt-2"
+              style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+              <p className="text-xs font-bold text-green-400">🏆 Total lost: {lostKg.toFixed(1)} kg since you started!</p>
+            </div>
+          )}
+        </motion.div>
+      )}
 
       <div className="grid grid-cols-3 gap-2.5 mb-6">
         {[
