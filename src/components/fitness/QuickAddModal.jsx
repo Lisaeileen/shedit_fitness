@@ -27,7 +27,7 @@ export default function QuickAddModal({ isOpen, onClose }) {
     if (id === 'food')     { setFoodDialogMode('manual'); setTimeout(() => setFoodDialogOpen(true), 300); }
     if (id === 'scan')     { setFoodDialogMode('scan');   setTimeout(() => setFoodDialogOpen(true), 300); }
     if (id === 'voice')    { setFoodDialogMode('voice');  setTimeout(() => setFoodDialogOpen(true), 300); }
-    if (id === 'barcode')  { setFoodDialogMode('manual'); setTimeout(() => setFoodDialogOpen(true), 300); }
+    if (id === 'barcode')  { setFoodDialogMode('barcode'); setTimeout(() => setFoodDialogOpen(true), 300); }
     if (id === 'water')    { setTimeout(() => setWaterDialogOpen(true), 300); }
     if (id === 'weight')   { setTimeout(() => setWeightDialogOpen(true), 300); }
     if (id === 'exercise') { setTimeout(() => setExerciseDialogOpen(true), 300); }

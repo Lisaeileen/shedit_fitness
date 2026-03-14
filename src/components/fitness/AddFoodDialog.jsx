@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2, CheckCircle, Search, Mic, MicOff, Camera, Plus, Minus, Sparkles, ScanLine, AlertCircle } from 'lucide-react';
+import { X, Loader2, CheckCircle, Search, Mic, MicOff, Camera, Plus, Minus, Sparkles, ScanLine, AlertCircle, Trash2, Edit2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
@@ -10,9 +10,8 @@ const FOOD_DB = [
   { name: 'Chicken Thigh', calories: 209, protein: 26, carbs: 0, fat: 11, serving: '100g' },
   { name: 'Chicken Salad', calories: 290, protein: 28, carbs: 8, fat: 16, serving: '1 bowl' },
   { name: 'Chicken Wrap', calories: 380, protein: 30, carbs: 34, fat: 12, serving: '1 wrap' },
-  { name: 'Chicken Rice Bowl', calories: 520, protein: 38, carbs: 42, fat: 18, serving: '1 bowl' },
-  { name: 'Chicken Alfredo', calories: 596, protein: 34, carbs: 48, fat: 22, serving: '1 serving' },
   { name: 'Grilled Chicken', calories: 187, protein: 35, carbs: 0, fat: 4, serving: '100g' },
+  { name: 'Chicken Alfredo', calories: 596, protein: 34, carbs: 48, fat: 22, serving: '1 serving' },
   { name: 'Oats / Porridge', calories: 389, protein: 17, carbs: 66, fat: 7, serving: '100g dry' },
   { name: 'Banana', calories: 89, protein: 1.1, carbs: 23, fat: 0.3, serving: '1 medium' },
   { name: 'Apple', calories: 52, protein: 0.3, carbs: 14, fat: 0.2, serving: '1 medium' },
@@ -26,23 +25,22 @@ const FOOD_DB = [
   { name: 'Tuna (canned)', calories: 132, protein: 29, carbs: 0, fat: 1, serving: '100g' },
   { name: 'Greek Yogurt', calories: 100, protein: 17, carbs: 6, fat: 0.7, serving: '1 cup' },
   { name: 'Milk (whole)', calories: 149, protein: 8, carbs: 12, fat: 8, serving: '1 cup' },
-  { name: 'Almond Milk', calories: 39, protein: 1, carbs: 3.5, fat: 2.5, serving: '1 cup' },
   { name: 'Avocado', calories: 320, protein: 4, carbs: 17, fat: 29, serving: '1 whole' },
   { name: 'Almonds', calories: 164, protein: 6, carbs: 6, fat: 14, serving: '1 oz (28g)' },
   { name: 'Broccoli', calories: 55, protein: 3.7, carbs: 11, fat: 0.6, serving: '1 cup' },
   { name: 'Spinach', calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, serving: '1 cup' },
+  { name: 'Lettuce', calories: 15, protein: 1.4, carbs: 2.9, fat: 0.2, serving: '1 cup' },
+  { name: 'Bell Pepper', calories: 31, protein: 1, carbs: 7, fat: 0.3, serving: '1 medium' },
   { name: 'Sweet Potato', calories: 103, protein: 2.3, carbs: 24, fat: 0.1, serving: '1 medium' },
   { name: 'Steak (beef)', calories: 271, protein: 26, carbs: 0, fat: 18, serving: '100g' },
   { name: 'Beef Burger', calories: 540, protein: 34, carbs: 40, fat: 25, serving: '1 burger' },
   { name: 'Peanut Butter', calories: 190, protein: 7, carbs: 6, fat: 16, serving: '2 tbsp' },
-  { name: 'Olive Oil', calories: 119, protein: 0, carbs: 0, fat: 14, serving: '1 tbsp' },
   { name: 'Cheddar Cheese', calories: 113, protein: 7, carbs: 0.4, fat: 9, serving: '1 oz' },
   { name: 'Pizza (cheese)', calories: 285, protein: 12, carbs: 36, fat: 10, serving: '1 slice' },
   { name: 'Caesar Salad', calories: 290, protein: 9, carbs: 18, fat: 21, serving: '1 serving' },
   { name: 'Protein Shake', calories: 160, protein: 30, carbs: 8, fat: 3, serving: '1 scoop' },
   { name: 'Orange Juice', calories: 112, protein: 1.7, carbs: 26, fat: 0.5, serving: '1 cup' },
   { name: 'Coffee (black)', calories: 5, protein: 0.3, carbs: 0, fat: 0, serving: '1 cup' },
-  { name: 'Latte', calories: 190, protein: 10, carbs: 19, fat: 7, serving: 'large' },
   { name: 'Blueberries', calories: 84, protein: 1.1, carbs: 21, fat: 0.5, serving: '1 cup' },
   { name: 'Strawberries', calories: 49, protein: 1, carbs: 12, fat: 0.5, serving: '1 cup' },
   { name: 'Cottage Cheese', calories: 206, protein: 25, carbs: 8.2, fat: 9, serving: '1 cup' },
@@ -62,19 +60,306 @@ const FOOD_DB = [
 function searchFoods(query) {
   if (!query || query.length < 2) return [];
   const q = query.toLowerCase();
-  return FOOD_DB.filter(f => f.name.toLowerCase().includes(q)).slice(0, 7);
+  return FOOD_DB.filter(f => f.name.toLowerCase().includes(q)).slice(0, 8);
 }
 
-// ── AI Food Scanner with real AI analysis ─────────────────────────────────────
+// ── Inline input style to guarantee visibility ────────────────────────────────
+const inputStyle = {
+  background: 'rgba(255,255,255,0.07)',
+  border: '1px solid rgba(168,85,247,0.3)',
+  borderRadius: 12,
+  padding: '11px 14px',
+  width: '100%',
+  outline: 'none',
+  fontSize: 15,
+  color: '#ffffff',
+  WebkitTextFillColor: '#ffffff',
+  caretColor: '#a855f7',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+};
 
+const inputStyleSm = {
+  ...inputStyle,
+  padding: '9px 12px',
+  fontSize: 14,
+};
+
+// ── AI Scan Review/Edit Screen ─────────────────────────────────────────────────
+function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence, onSaveAll, onClose }) {
+  const [foods, setFoods] = useState(initialFoods);
+  const [editIdx, setEditIdx] = useState(null);
+  const [showAddFood, setShowAddFood] = useState(false);
+  const [addSearch, setAddSearch] = useState('');
+  const [addSuggestions, setAddSuggestions] = useState([]);
+  const [addCustom, setAddCustom] = useState({ name: '', calories: '', protein: '', carbs: '', fat: '', portion: '1 serving' });
+
+  const totals = foods.reduce((acc, f) => ({
+    calories: acc.calories + (Number(f.calories) || 0),
+    protein_g: acc.protein_g + (Number(f.protein_g) || 0),
+    carbs_g: acc.carbs_g + (Number(f.carbs_g) || 0),
+    fat_g: acc.fat_g + (Number(f.fat_g) || 0),
+  }), { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 });
+
+  const removeFood = (idx) => setFoods(f => f.filter((_, i) => i !== idx));
+
+  const updateFood = (idx, field, value) => {
+    setFoods(f => f.map((item, i) => i === idx ? { ...item, [field]: value } : item));
+  };
+
+  const handleAddSearch = (val) => {
+    setAddSearch(val);
+    setAddSuggestions(val.length >= 2 ? searchFoods(val) : []);
+  };
+
+  const addFromDB = (food) => {
+    setFoods(f => [...f, { name: food.name, portion: food.serving, calories: food.calories, protein_g: food.protein, carbs_g: food.carbs, fat_g: food.fat }]);
+    setAddSearch(''); setAddSuggestions([]); setShowAddFood(false);
+  };
+
+  const addCustomFood = () => {
+    if (!addCustom.name.trim()) return;
+    setFoods(f => [...f, {
+      name: addCustom.name,
+      portion: addCustom.portion,
+      calories: Number(addCustom.calories) || 0,
+      protein_g: Number(addCustom.protein) || 0,
+      carbs_g: Number(addCustom.carbs) || 0,
+      fat_g: Number(addCustom.fat) || 0,
+    }]);
+    setAddCustom({ name: '', calories: '', protein: '', carbs: '', fat: '', portion: '1 serving' });
+    setShowAddFood(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[85] flex flex-col no-scrollbar" style={{ background: '#120630' }}>
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-10 pb-4 flex-shrink-0" style={{ borderBottom: '1px solid rgba(168,85,247,0.15)' }}>
+        <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+          <X className="w-5 h-5 text-white" />
+        </button>
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-400" />
+          <p className="text-sm font-bold text-white">Review AI Scan</p>
+        </div>
+        <div className="w-9" />
+      </div>
+
+      <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-4">
+        {/* Captured image thumbnail */}
+        {capturedImage && (
+          <img src={capturedImage} alt="meal" className="w-full rounded-2xl object-cover mb-4" style={{ maxHeight: 180 }} />
+        )}
+
+        {lowConfidence && (
+          <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)' }}>
+            <p className="text-xs text-amber-400">⚠️ Food may not be fully detected. Please review and edit.</p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-sm font-bold text-white">{foods.length} item{foods.length !== 1 ? 's' : ''} detected</p>
+          <button onClick={() => setShowAddFood(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold"
+            style={{ background: 'rgba(168,85,247,0.18)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.3)' }}>
+            <Plus className="w-3.5 h-3.5" /> Add Food
+          </button>
+        </div>
+
+        {/* Food items */}
+        <div className="space-y-2.5 mb-4">
+          {foods.map((food, idx) => (
+            <motion.div key={idx} layout className="rounded-2xl p-4"
+              style={{ background: 'rgba(255,255,255,0.04)', border: editIdx === idx ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(255,255,255,0.08)' }}>
+              {editIdx === idx ? (
+                // Edit mode
+                <div className="space-y-2.5">
+                  <input
+                    style={inputStyleSm}
+                    placeholder="Food name"
+                    value={food.name}
+                    onChange={e => updateFood(idx, 'name', e.target.value)}
+                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { label: 'Calories', field: 'calories', color: '#a855f7', unit: 'kcal' },
+                      { label: 'Protein',  field: 'protein_g', color: '#ec4899', unit: 'g' },
+                      { label: 'Carbs',    field: 'carbs_g',  color: '#3b82f6', unit: 'g' },
+                      { label: 'Fat',      field: 'fat_g',    color: '#f59e0b', unit: 'g' },
+                    ].map(m => (
+                      <div key={m.field} className="rounded-xl p-2.5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                        <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: m.color }}>{m.label}</p>
+                        <div className="flex items-baseline gap-1">
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            style={{ ...inputStyleSm, padding: '4px 0', background: 'transparent', border: 'none', fontSize: 18, fontWeight: 700, width: '100%' }}
+                            value={food[m.field]}
+                            onChange={e => updateFood(idx, m.field, e.target.value)}
+                            placeholder="0"
+                          />
+                          <span className="text-xs text-gray-500">{m.unit}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <input
+                    style={inputStyleSm}
+                    placeholder="Portion (e.g. 150g, 1 cup)"
+                    value={food.portion}
+                    onChange={e => updateFood(idx, 'portion', e.target.value)}
+                  />
+                  <button onClick={() => setEditIdx(null)}
+                    className="w-full py-2 rounded-xl text-sm font-bold text-white"
+                    style={{ background: 'rgba(168,85,247,0.25)', border: '1px solid rgba(168,85,247,0.4)' }}>
+                    Done Editing
+                  </button>
+                </div>
+              ) : (
+                // View mode
+                <div>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-white">{food.name}</p>
+                      <p className="text-xs text-gray-500">{food.portion}</p>
+                    </div>
+                    <div className="flex gap-1.5 ml-2 flex-shrink-0">
+                      <button onClick={() => setEditIdx(idx)}
+                        className="w-7 h-7 rounded-lg bg-white/[0.06] flex items-center justify-center">
+                        <Edit2 className="w-3.5 h-3.5 text-purple-400" />
+                      </button>
+                      <button onClick={() => removeFood(idx)}
+                        className="w-7 h-7 rounded-lg bg-white/[0.06] flex items-center justify-center">
+                        <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    {[
+                      { l: 'Cal', v: food.calories, c: '#a855f7', u: 'kcal' },
+                      { l: 'P', v: food.protein_g, c: '#ec4899', u: 'g' },
+                      { l: 'C', v: food.carbs_g, c: '#3b82f6', u: 'g' },
+                      { l: 'F', v: food.fat_g, c: '#f59e0b', u: 'g' },
+                    ].map(m => (
+                      <div key={m.l}>
+                        <p className="text-xs font-black" style={{ color: m.c }}>{Math.round(Number(m.v) || 0)}<span className="text-[9px] font-normal">{m.u}</span></p>
+                        <p className="text-[9px] text-gray-600">{m.l}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Add Food Panel */}
+        <AnimatePresence>
+          {showAddFood && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="rounded-2xl p-4 mb-4" style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.25)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-bold text-white">Add Missing Food</p>
+                <button onClick={() => { setShowAddFood(false); setAddSearch(''); setAddSuggestions([]); }}>
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              </div>
+              {/* Search */}
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400/50 pointer-events-none" />
+                <input
+                  style={{ ...inputStyleSm, paddingLeft: 36 }}
+                  placeholder="Search food database..."
+                  value={addSearch}
+                  onChange={e => handleAddSearch(e.target.value)}
+                  autoComplete="off"
+                />
+                {addSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 rounded-xl overflow-hidden z-10 shadow-2xl"
+                    style={{ background: '#1E0840', border: '1px solid rgba(168,85,247,0.2)' }}>
+                    {addSuggestions.map((s, i) => (
+                      <button key={i} onMouseDown={e => { e.preventDefault(); addFromDB(s); }}
+                        className="w-full flex items-center justify-between px-4 py-3 text-left"
+                        style={{ borderBottom: i < addSuggestions.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                        <div>
+                          <p className="text-sm font-medium text-white">{s.name}</p>
+                          <p className="text-[11px] text-purple-300/50">{s.serving} · P:{s.protein}g C:{s.carbs}g F:{s.fat}g</p>
+                        </div>
+                        <span className="text-xs font-bold text-purple-400 ml-2">{s.calories} kcal</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Manual custom entry */}
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Or enter manually</p>
+              <input style={inputStyleSm} placeholder="Food name" value={addCustom.name}
+                onChange={e => setAddCustom(a => ({ ...a, name: e.target.value }))} className="mb-2" />
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                {[
+                  { label: 'Calories', field: 'calories', color: '#a855f7' },
+                  { label: 'Protein',  field: 'protein',  color: '#ec4899' },
+                  { label: 'Carbs',    field: 'carbs',    color: '#3b82f6' },
+                  { label: 'Fat',      field: 'fat',      color: '#f59e0b' },
+                ].map(m => (
+                  <div key={m.field}>
+                    <p className="text-[10px] mb-1 font-bold" style={{ color: m.color }}>{m.label}</p>
+                    <input type="number" inputMode="decimal" style={inputStyleSm}
+                      placeholder="0" value={addCustom[m.field]}
+                      onChange={e => setAddCustom(a => ({ ...a, [m.field]: e.target.value }))} />
+                  </div>
+                ))}
+              </div>
+              <button onClick={addCustomFood} disabled={!addCustom.name.trim()}
+                className="w-full py-2.5 rounded-xl text-sm font-bold text-white mt-1"
+                style={{ background: addCustom.name.trim() ? 'rgba(168,85,247,0.35)' : 'rgba(255,255,255,0.05)', color: addCustom.name.trim() ? '#e9d5ff' : '#4b5563' }}>
+                Add to List
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Totals */}
+        {foods.length > 0 && (
+          <div className="rounded-2xl p-4 mb-4"
+            style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(168,85,247,0.1))', border: '1px solid rgba(168,85,247,0.3)' }}>
+            <p className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Meal Total</p>
+            <div className="flex gap-4">
+              {[
+                { l: 'Calories', v: totals.calories, c: '#a855f7', u: 'kcal' },
+                { l: 'Protein',  v: totals.protein_g, c: '#ec4899', u: 'g' },
+                { l: 'Carbs',    v: totals.carbs_g,  c: '#3b82f6', u: 'g' },
+                { l: 'Fat',      v: totals.fat_g,    c: '#f59e0b', u: 'g' },
+              ].map(m => (
+                <div key={m.l}>
+                  <p className="text-base font-black" style={{ color: m.c }}>{Math.round(m.v)}<span className="text-xs font-normal">{m.u}</span></p>
+                  <p className="text-[10px] text-gray-500">{m.l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Save button */}
+      <div className="px-5 pb-10 pt-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(168,85,247,0.1)' }}>
+        <button onClick={() => onSaveAll(foods)} disabled={foods.length === 0} className="btn-primary">
+          Log {foods.length} Item{foods.length !== 1 ? 's' : ''}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── AI Scan Camera ─────────────────────────────────────────────────────────────
 function AIScanModal({ onConfirm, onClose }) {
   const videoRef  = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
-  const [phase, setPhase] = useState('camera'); // camera | analyzing | results
+  const [phase, setPhase] = useState('camera');
   const [capturedImage, setCapturedImage] = useState(null);
   const [detectedFoods, setDetectedFoods] = useState([]);
-  const [lowConfidence, setLowConfidence] = useState('');
+  const [lowConfidence, setLowConfidence] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -100,34 +385,30 @@ function AIScanModal({ onConfirm, onClose }) {
     setPhase('analyzing');
 
     try {
-      // Convert base64 dataUrl to a Blob/File for upload
       const res = await fetch(dataUrl);
       const blob = await res.blob();
       const file = new File([blob], 'meal.jpg', { type: 'image/jpeg' });
-
-      // Upload image to get a real URL the AI can access
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
-      // Now send the real URL to the vision AI
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a precise nutrition analysis assistant. Carefully analyze this food image.
+        prompt: `You are a precise nutrition analysis assistant. Carefully analyze this food image and identify EVERY distinct food item visible.
 
-Identify EVERY distinct food item you can see. Be specific — for example:
+Be very specific about each item:
 - "Grilled Chicken Breast" not "meat"
-- "Jasmine Rice" or "Brown Rice" not "grain"
-- "Broccoli" not "vegetables"
-- "Caesar Salad" not "salad"
+- "Brown Rice" or "White Rice" not "grain"
+- "Romaine Lettuce" not "vegetables"
+- "Bell Pepper (red)" not "pepper"
+- Count individual items like eggs (e.g. "3 Boiled Eggs")
 
 For EACH food item provide:
-- name: the specific food name (be as specific as possible)
-- portion: estimated portion size (e.g. "150g", "1 cup", "1 medium")
-- calories: estimated kcal
+- name: specific food name
+- portion: estimated portion size (e.g. "150g", "1 cup", "3 eggs")
+- calories: estimated kcal for this portion
 - protein_g: protein in grams
-- carbs_g: carbohydrates in grams  
+- carbs_g: carbohydrates in grams
 - fat_g: fat in grams
 
-Only use a generic name like "Mixed Meal" as an absolute last resort if you truly cannot identify anything.
-If you can see the food, name it specifically.`,
+Be as accurate as possible. If the image is unclear, still do your best to identify foods.`,
         file_urls: [file_url],
         response_json_schema: {
           type: 'object',
@@ -146,52 +427,36 @@ If you can see the food, name it specifically.`,
                 }
               }
             },
-            confidence: { type: 'string', description: 'high, medium, or low' },
-            low_confidence_message: { type: 'string', description: 'message to show user if confidence is low' }
+            confidence: { type: 'string' },
           }
         }
       });
 
-      const foods = result.foods || [];
-      if (foods.length === 0) {
-        setDetectedFoods([{ name: 'Food not confidently identified', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, unidentified: true }]);
-      } else {
-        setDetectedFoods(foods);
-      }
-      setLowConfidence(result.confidence === 'low' ? (result.low_confidence_message || 'Food not confidently identified. Please confirm or edit.') : '');
-      setPhase('results');
-    } catch (err) {
-      setDetectedFoods([{ name: 'Food not confidently identified', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, unidentified: true }]);
-      setLowConfidence('Could not analyze image. Please confirm or edit the food name.');
-      setPhase('results');
+      const foods = (result.foods || []).filter(f => f.name);
+      setDetectedFoods(foods.length > 0 ? foods : [{ name: 'Unknown Food', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }]);
+      setLowConfidence(result.confidence === 'low' || foods.length === 0);
+      setPhase('review');
+    } catch {
+      setDetectedFoods([{ name: 'Meal (unidentified)', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }]);
+      setLowConfidence(true);
+      setPhase('review');
     }
   };
 
-  const removeFood = (idx) => setDetectedFoods(f => f.filter((_, i) => i !== idx));
-
-  const totals = detectedFoods.reduce((acc, f) => ({
-    calories: acc.calories + (f.calories || 0),
-    protein_g: acc.protein_g + (f.protein_g || 0),
-    carbs_g: acc.carbs_g + (f.carbs_g || 0),
-    fat_g: acc.fat_g + (f.fat_g || 0),
-  }), { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 });
-
-  const handleConfirm = () => {
-    if (detectedFoods.length === 0) return;
-    const primary = detectedFoods[0];
-    onConfirm({
-      food_name: detectedFoods.length === 1 ? primary.name : detectedFoods.map(f => f.name).join(', '),
-      calories: Math.round(totals.calories),
-      protein: Math.round(totals.protein_g),
-      carbs: Math.round(totals.carbs_g),
-      fat: Math.round(totals.fat_g),
-      serving_size: detectedFoods.length === 1 ? primary.portion : `${detectedFoods.length} items`,
-    });
-  };
+  if (phase === 'review') {
+    return (
+      <AIScanReviewScreen
+        foods={detectedFoods}
+        capturedImage={capturedImage}
+        lowConfidence={lowConfidence}
+        onSaveAll={onConfirm}
+        onClose={onClose}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[90] flex flex-col" style={{ background: '#000' }}>
-      {/* Header */}
       <div className="flex items-center justify-between p-4 pt-10 flex-shrink-0" style={{ background: 'rgba(0,0,0,0.6)' }}>
         <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
           <X className="w-5 h-5 text-white" />
@@ -210,12 +475,10 @@ If you can see the food, name it specifically.`,
           <p className="text-sm text-gray-400 mb-6">{error}</p>
           <button onClick={onClose} className="btn-primary max-w-xs">Go Back</button>
         </div>
-
       ) : phase === 'camera' ? (
         <>
           <div className="flex-1 relative overflow-hidden">
             <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-            {/* Scan frame */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative w-72 h-72">
                 <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-purple-400 rounded-tl-xl" />
@@ -224,9 +487,7 @@ If you can see the food, name it specifically.`,
                 <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-purple-400 rounded-br-xl" />
               </div>
             </div>
-            <p className="absolute bottom-8 left-0 right-0 text-center text-sm text-white/70">
-              Center your meal in the frame
-            </p>
+            <p className="absolute bottom-8 left-0 right-0 text-center text-sm text-white/70">Center your meal in the frame</p>
           </div>
           <div className="pb-12 pt-6 flex justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.8)' }}>
             <motion.button whileTap={{ scale: 0.92 }} onClick={capture}
@@ -236,8 +497,7 @@ If you can see the food, name it specifically.`,
             </motion.button>
           </div>
         </>
-
-      ) : phase === 'analyzing' ? (
+      ) : (
         <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6">
           {capturedImage && (
             <img src={capturedImage} alt="captured" className="w-full max-w-xs rounded-2xl object-cover" style={{ maxHeight: 260 }} />
@@ -248,98 +508,13 @@ If you can see the food, name it specifically.`,
             <p className="text-sm text-purple-300/60">AI is detecting foods and estimating nutrition</p>
           </div>
         </div>
-
-      ) : (
-        // Results screen
-        <div className="flex-1 overflow-y-auto no-scrollbar" style={{ background: '#120630' }}>
-          {capturedImage && (
-            <img src={capturedImage} alt="captured" className="w-full object-cover" style={{ maxHeight: 200 }} />
-          )}
-          <div className="px-5 py-4">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-5 h-5 text-green-400" />
-              <p className="text-base font-bold text-white">
-                {detectedFoods.length} food{detectedFoods.length !== 1 ? 's' : ''} detected
-              </p>
-            </div>
-            {lowConfidence && (
-              <div className="rounded-xl p-3 mb-3" style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)' }}>
-                <p className="text-xs text-amber-400">⚠️ {lowConfidence}</p>
-              </div>
-            )}
-
-            {/* Detected foods list */}
-            <div className="space-y-2.5 mb-4">
-              {detectedFoods.map((food, idx) => (
-                <motion.div key={idx} layout
-                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl p-4"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-white">{food.name}</p>
-                      <p className="text-xs text-gray-500">{food.portion}</p>
-                    </div>
-                    <button onClick={() => removeFood(idx)}
-                      className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center ml-2 flex-shrink-0">
-                      <X className="w-3 h-3 text-gray-500" />
-                    </button>
-                  </div>
-                  <div className="flex gap-3">
-                    {[
-                      { l: 'Cal', v: food.calories, c: '#a855f7', u: 'kcal' },
-                      { l: 'P', v: food.protein_g, c: '#ec4899', u: 'g' },
-                      { l: 'C', v: food.carbs_g, c: '#3b82f6', u: 'g' },
-                      { l: 'F', v: food.fat_g, c: '#f59e0b', u: 'g' },
-                    ].map(m => (
-                      <div key={m.l}>
-                        <p className="text-xs font-black" style={{ color: m.c }}>{Math.round(m.v || 0)}<span className="text-[9px] font-normal">{m.u}</span></p>
-                        <p className="text-[9px] text-gray-600">{m.l}</p>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Totals */}
-            {detectedFoods.length > 1 && (
-              <div className="rounded-2xl p-4 mb-4"
-                style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(168,85,247,0.1))', border: '1px solid rgba(168,85,247,0.3)' }}>
-                <p className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Meal Total</p>
-                <div className="flex gap-4">
-                  {[
-                    { l: 'Calories', v: totals.calories, c: '#a855f7', u: 'kcal' },
-                    { l: 'Protein', v: totals.protein_g, c: '#ec4899', u: 'g' },
-                    { l: 'Carbs', v: totals.carbs_g, c: '#3b82f6', u: 'g' },
-                    { l: 'Fat', v: totals.fat_g, c: '#f59e0b', u: 'g' },
-                  ].map(m => (
-                    <div key={m.l}>
-                      <p className="text-base font-black" style={{ color: m.c }}>{Math.round(m.v)}<span className="text-xs font-normal">{m.u}</span></p>
-                      <p className="text-[10px] text-gray-500">{m.l}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <button onClick={handleConfirm} disabled={detectedFoods.length === 0} className="btn-primary">
-              Log This Meal
-            </button>
-            <button onClick={() => { setPhase('camera'); setCapturedImage(null); setDetectedFoods([]); setLowConfidence(''); }}
-              className="w-full text-center text-sm text-gray-500 mt-3 py-2">
-              Retake photo
-            </button>
-          </div>
-        </div>
       )}
       <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }
 
-// ── Voice modal ───────────────────────────────────────────────────────────────
-
+// ── Voice modal ────────────────────────────────────────────────────────────────
 function VoiceModal({ onResult, onClose }) {
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -405,14 +580,13 @@ function VoiceModal({ onResult, onClose }) {
   );
 }
 
-// ── Barcode Scanner Modal ─────────────────────────────────────────────────────
-
+// ── Barcode Scanner ────────────────────────────────────────────────────────────
 function BarcodeScanModal({ onConfirm, onClose }) {
   const videoRef  = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
   const intervalRef = useRef(null);
-  const [phase, setPhase] = useState('camera'); // camera | looking | found | notfound
+  const [phase, setPhase] = useState('camera');
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
   const [manualCode, setManualCode] = useState('');
@@ -434,28 +608,21 @@ function BarcodeScanModal({ onConfirm, onClose }) {
   const lookupBarcode = async (barcode) => {
     if (!barcode || barcode.length < 8) return;
     setPhase('looking');
-    try {
-      const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
-      const data = await res.json();
-      if (data.status === 1 && data.product) {
-        const p = data.product;
-        const nutriments = p.nutriments || {};
-        const servingSize = p.serving_size || p.quantity || '100g';
-        const per100 = nutriments['energy-kcal_100g'] || nutriments['energy_100g'] / 4.184 || 0;
-        const calories = nutriments['energy-kcal_serving'] || nutriments['energy-kcal'] || Math.round(per100);
-        setProduct({
-          food_name: p.product_name || p.product_name_en || 'Unknown Product',
-          calories: Math.round(calories) || 0,
-          protein: Math.round(nutriments.proteins_serving || nutriments.proteins || 0),
-          carbs: Math.round(nutriments.carbohydrates_serving || nutriments.carbohydrates || 0),
-          fat: Math.round(nutriments.fat_serving || nutriments.fat || 0),
-          serving_size: servingSize,
-        });
-        setPhase('found');
-      } else {
-        setPhase('notfound');
-      }
-    } catch {
+    const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+    const data = await res.json();
+    if (data.status === 1 && data.product) {
+      const p = data.product;
+      const n = p.nutriments || {};
+      setProduct({
+        food_name: p.product_name || 'Unknown Product',
+        calories: Math.round(n['energy-kcal_serving'] || n['energy-kcal'] || 0),
+        protein: Math.round(n.proteins_serving || n.proteins || 0),
+        carbs: Math.round(n.carbohydrates_serving || n.carbohydrates || 0),
+        fat: Math.round(n.fat_serving || n.fat || 0),
+        serving_size: p.serving_size || '100g',
+      });
+      setPhase('found');
+    } else {
       setPhase('notfound');
     }
   };
@@ -464,48 +631,32 @@ function BarcodeScanModal({ onConfirm, onClose }) {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas || video.readyState < 2) return;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
     setScanAttempts(n => n + 1);
-
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({
-        file: await (async () => { const r = await fetch(dataUrl); const b = await r.blob(); return new File([b], 'barcode.jpg', { type: 'image/jpeg' }); })()
-      });
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: 'Look at this image and extract any barcode or QR code number you can see. Return ONLY the numeric barcode digits, nothing else. If there is no barcode visible, return "none".',
-        file_urls: [file_url],
-        response_json_schema: { type: 'object', properties: { barcode: { type: 'string' } } }
-      });
-      const code = result?.barcode?.replace(/\D/g, '');
-      if (code && code.length >= 8) {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        streamRef.current?.getTracks().forEach(t => t.stop());
-        await lookupBarcode(code);
-      }
-    } catch { /* keep trying */ }
-  };
-
-  const startScanning = () => {
-    intervalRef.current = setInterval(captureAndDecode, 3000);
+    const { file_url } = await base44.integrations.Core.UploadFile({
+      file: await (async () => { const r = await fetch(dataUrl); const b = await r.blob(); return new File([b], 'barcode.jpg', { type: 'image/jpeg' }); })()
+    });
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: 'Extract barcode/QR code number from image. Return ONLY digits, nothing else. If none visible, return "none".',
+      file_urls: [file_url],
+      response_json_schema: { type: 'object', properties: { barcode: { type: 'string' } } }
+    });
+    const code = result?.barcode?.replace(/\D/g, '');
+    if (code && code.length >= 8) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      streamRef.current?.getTracks().forEach(t => t.stop());
+      await lookupBarcode(code);
+    }
   };
 
   useEffect(() => {
     if (!error) {
-      const t = setTimeout(startScanning, 1500);
+      const t = setTimeout(() => { intervalRef.current = setInterval(captureAndDecode, 3000); }, 1500);
       return () => clearTimeout(t);
     }
   }, [error]);
-
-  const handleManualLookup = () => {
-    if (manualCode.trim()) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      streamRef.current?.getTracks().forEach(t => t.stop());
-      lookupBarcode(manualCode.trim());
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-[90] flex flex-col" style={{ background: '#000' }}>
@@ -542,25 +693,19 @@ function BarcodeScanModal({ onConfirm, onClose }) {
                 </div>
               </div>
             )}
-            {error && (
-              <div className="absolute bottom-6 left-4 right-4">
-                <p className="text-xs text-amber-400 text-center">{error}</p>
-              </div>
-            )}
           </div>
           <div className="px-5 pb-10 pt-4 flex-shrink-0" style={{ background: 'rgba(0,0,0,0.8)' }}>
             <p className="text-xs text-gray-500 text-center mb-3">Or enter barcode manually</p>
             <div className="flex gap-2">
               <input
-                className="flex-1 rounded-2xl px-4 py-3 text-sm outline-none"
-                style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', WebkitTextFillColor: '#fff', border: '1px solid rgba(168,85,247,0.3)', caretColor: '#a855f7' }}
+                style={{ ...inputStyle, flex: 1 }}
                 placeholder="e.g. 0123456789012"
                 value={manualCode}
                 onChange={e => setManualCode(e.target.value)}
                 inputMode="numeric"
-                onKeyDown={e => e.key === 'Enter' && handleManualLookup()}
+                onKeyDown={e => e.key === 'Enter' && lookupBarcode(manualCode.trim())}
               />
-              <button onClick={handleManualLookup}
+              <button onClick={() => { if (intervalRef.current) clearInterval(intervalRef.current); streamRef.current?.getTracks().forEach(t => t.stop()); lookupBarcode(manualCode.trim()); }}
                 className="px-4 py-3 rounded-2xl text-sm font-bold text-white"
                 style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>
                 Search
@@ -574,7 +719,6 @@ function BarcodeScanModal({ onConfirm, onClose }) {
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
           <Loader2 className="w-12 h-12 text-purple-400 animate-spin" />
           <p className="text-white font-bold">Looking up product...</p>
-          <p className="text-sm text-gray-500">Searching food database</p>
         </div>
       )}
 
@@ -601,7 +745,7 @@ function BarcodeScanModal({ onConfirm, onClose }) {
               ))}
             </div>
           </div>
-          <button onClick={() => { onConfirm(product); }} className="btn-primary mb-3">Add to Log</button>
+          <button onClick={() => onConfirm(product)} className="btn-primary mb-3">Add to Log</button>
           <button onClick={onClose} className="w-full text-center text-sm text-gray-500 py-2">Cancel</button>
         </div>
       )}
@@ -610,38 +754,37 @@ function BarcodeScanModal({ onConfirm, onClose }) {
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
           <AlertCircle className="w-12 h-12 text-amber-400" />
           <p className="text-white font-bold text-lg">Product not found</p>
-          <p className="text-sm text-gray-400">This product isn't in our database. Please add it manually.</p>
+          <p className="text-sm text-gray-400">This product isn't in our database.</p>
           <button onClick={onClose} className="btn-primary max-w-xs mt-2">Add Manually</button>
         </div>
       )}
-
       <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }
 
 // ── Main AddFoodDialog ─────────────────────────────────────────────────────────
-
 export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'snack', date, initialMode = 'manual' }) {
-  const [showCamera, setShowCamera] = useState(false);
-  const [showVoice, setShowVoice]   = useState(false);
+  const [showCamera,  setShowCamera]  = useState(false);
+  const [showVoice,   setShowVoice]   = useState(false);
   const [showBarcode, setShowBarcode] = useState(false);
-  const [foodName, setFoodName]     = useState('');
+  const [foodName, setFoodName]       = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(mealType);
-  const [serving, setServing]       = useState('1 serving');
-  const [calories, setCalories]     = useState('');
-  const [carbs, setCarbs]           = useState('');
-  const [protein, setProtein]       = useState('');
-  const [fat, setFat]               = useState('');
+  const [serving, setServing]         = useState('1 serving');
+  const [calories, setCalories]       = useState('');
+  const [carbs, setCarbs]             = useState('');
+  const [protein, setProtein]         = useState('');
+  const [fat, setFat]                 = useState('');
   const [aiSuggested, setAiSuggested] = useState(false);
-  const inputRef = useRef(null);
 
   useEffect(() => { setSelectedMeal(mealType); }, [mealType]);
   useEffect(() => {
-    if (isOpen && initialMode === 'scan') setShowCamera(true);
-    else if (isOpen && initialMode === 'voice') setShowVoice(true);
-    else if (isOpen && initialMode === 'barcode') setShowBarcode(true);
+    if (isOpen) {
+      if (initialMode === 'scan')    { setShowCamera(true);  }
+      else if (initialMode === 'voice')   { setShowVoice(true);   }
+      else if (initialMode === 'barcode') { setShowBarcode(true); }
+    }
   }, [initialMode, isOpen]);
 
   const handleSearch = (val) => {
@@ -661,6 +804,25 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
     setAiSuggested(true);
   };
 
+  // AI scan returns multiple foods — save each one
+  const handleAIScanSave = (foods) => {
+    foods.forEach(food => {
+      onSave({
+        date,
+        meal_type: selectedMeal,
+        food_name: food.name,
+        serving_size: food.portion || '1 serving',
+        calories: Math.round(Number(food.calories) || 0),
+        protein: Math.round(Number(food.protein_g) || 0),
+        carbs: Math.round(Number(food.carbs_g) || 0),
+        fat: Math.round(Number(food.fat_g) || 0),
+      });
+    });
+    setShowCamera(false);
+    resetForm();
+    onClose();
+  };
+
   const handleSave = () => {
     if (!foodName.trim()) return;
     onSave({ date, meal_type: selectedMeal, food_name: foodName, serving_size: serving, calories: Number(calories) || 0, carbs: Number(carbs) || 0, protein: Number(protein) || 0, fat: Number(fat) || 0 });
@@ -675,9 +837,9 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
 
   const handleClose = () => { resetForm(); onClose(); };
 
-  if (showCamera)  return <AIScanModal    onConfirm={(r) => { applyFood(r); setShowCamera(false); }}  onClose={() => setShowCamera(false)} />;
-  if (showVoice)   return <VoiceModal     onResult={(r)  => { applyFood(r); setShowVoice(false); }}   onClose={() => setShowVoice(false)} />;
-  if (showBarcode) return <BarcodeScanModal onConfirm={(r) => { applyFood(r); setShowBarcode(false); }} onClose={() => setShowBarcode(false)} />;
+  if (showCamera)  return <AIScanModal    onConfirm={handleAIScanSave}                              onClose={() => { setShowCamera(false); if (initialMode === 'scan') handleClose(); }} />;
+  if (showVoice)   return <VoiceModal     onResult={(r) => { applyFood(r); setShowVoice(false); }}  onClose={() => { setShowVoice(false);  if (initialMode === 'voice') handleClose(); }} />;
+  if (showBarcode) return <BarcodeScanModal onConfirm={(r) => { applyFood(r); setShowBarcode(false); }} onClose={() => { setShowBarcode(false); if (initialMode === 'barcode') handleClose(); }} />;
 
   return (
     <AnimatePresence>
@@ -707,7 +869,7 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                     { label: 'Barcode',  action: () => setShowBarcode(true) },
                     { label: 'Voice',    action: () => setShowVoice(true) },
                   ].map((m, i) => (
-                    <button key={i} onClick={() => m.action ? m.action() : null}
+                    <button key={i} onClick={() => m.action && m.action()}
                       className="flex-1 py-2 rounded-xl text-xs font-semibold transition-all"
                       style={!m.action
                         ? { background: 'rgba(168,85,247,0.2)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.4)' }
@@ -731,16 +893,15 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                   ))}
                 </div>
 
-                {/* Food search with live autocomplete */}
+                {/* Food search */}
                 <div className="relative mb-1">
                   <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400/50 pointer-events-none" />
                     <input
-                      ref={inputRef}
-                      className="input-dark pl-10"
+                      style={{ ...inputStyle, paddingLeft: 44 }}
                       placeholder="Search food (e.g. Chicken breast)"
                       value={foodName}
-                      onChange={(e) => handleSearch(e.target.value)}
+                      onChange={e => handleSearch(e.target.value)}
                       autoComplete="off"
                       autoCorrect="off"
                       spellCheck="false"
@@ -752,14 +913,17 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                         className="absolute top-full left-0 right-0 mt-1 rounded-2xl overflow-hidden z-10 shadow-2xl"
                         style={{ background: '#1E0840', border: '1px solid rgba(168,85,247,0.2)' }}>
                         {suggestions.map((s, i) => (
-                          <button key={i} onMouseDown={(e) => { e.preventDefault(); applyFood(s); }}
+                          <button key={i} onMouseDown={e => { e.preventDefault(); applyFood(s); }}
                             className="w-full flex items-center justify-between px-4 py-3 text-left transition-colors"
                             style={{ borderBottom: i < suggestions.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                             <div>
                               <p className="text-sm font-medium text-white">{s.name}</p>
-                              <p className="text-[11px] text-purple-300/50">{s.serving} · P:{s.protein}g C:{s.carbs}g F:{s.fat}g</p>
+                              <p className="text-[11px] text-purple-300/50">{s.serving}</p>
                             </div>
-                            <span className="text-xs font-bold text-purple-400 ml-2 flex-shrink-0">{s.calories} kcal</span>
+                            <div className="text-right ml-2 flex-shrink-0">
+                              <p className="text-xs font-bold text-purple-400">{s.calories} kcal</p>
+                              <p className="text-[10px] text-gray-500">P:{s.protein}g C:{s.carbs}g F:{s.fat}g</p>
+                            </div>
                           </button>
                         ))}
                       </motion.div>
@@ -770,20 +934,17 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                 {aiSuggested && (
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     className="text-[11px] text-green-400 mb-4 flex items-center gap-1 mt-2">
-                    <CheckCircle className="w-3 h-3" /> Nutrition filled — edit values below if needed
+                    <CheckCircle className="w-3 h-3" /> Nutrition filled — edit if needed
                   </motion.p>
                 )}
 
-                {/* Meal name preview */}
-                {aiSuggested && foodName && (
-                  <div className="rounded-xl p-3 mb-3" style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.15)' }}>
-                    <p className="text-sm font-bold text-white">{foodName}</p>
-                    <p className="text-xs text-gray-500">{serving} · {calories} kcal · P:{protein}g C:{carbs}g F:{fat}g</p>
-                  </div>
-                )}
-
-                <input className="input-dark mb-4 mt-2" placeholder="Serving size (e.g. 1 cup, 200g)"
-                  value={serving} onChange={(e) => setServing(e.target.value)} />
+                {/* Serving */}
+                <input
+                  style={{ ...inputStyle, marginTop: aiSuggested ? 0 : 12, marginBottom: 12 }}
+                  placeholder="Serving size (e.g. 1 cup, 200g)"
+                  value={serving}
+                  onChange={e => setServing(e.target.value)}
+                />
 
                 {/* Macro inputs */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
@@ -797,9 +958,14 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
                       <label className="text-[10px] font-bold uppercase tracking-widest" style={{ color: f.color }}>{f.label}</label>
                       <div className="flex items-baseline gap-1 mt-1">
-                        <input type="number" inputMode="decimal" value={f.val} onChange={(e) => f.set(e.target.value)}
-                         placeholder="0" className="text-xl font-black outline-none w-full min-w-0"
-                         style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', WebkitAppearance: 'none', MozAppearance: 'textfield', caretColor: '#a855f7' }} />
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          value={f.val}
+                          onChange={e => f.set(e.target.value)}
+                          placeholder="0"
+                          style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', WebkitAppearance: 'none', MozAppearance: 'textfield', caretColor: '#a855f7', outline: 'none', border: 'none', fontSize: 22, fontWeight: 900, width: '100%', minWidth: 0 }}
+                        />
                         <span className="text-xs text-gray-500 flex-shrink-0">{f.unit}</span>
                       </div>
                     </div>
