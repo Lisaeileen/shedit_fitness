@@ -244,6 +244,15 @@ export default function Today() {
         </div>
       </div>
 
+      {/* Today's Plan */}
+      <TodaysPlan
+        dayLog={dayLog}
+        meals={meals}
+        steps={steps}
+        stepsGoal={stepsGoal}
+        onNavigate={() => {}}
+      />
+
       {/* AI Nutrition Insights */}
       <DailyNutritionInsight dayLog={dayLog} />
 
