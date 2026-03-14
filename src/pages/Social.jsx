@@ -178,7 +178,7 @@ export default function Social() {
           {tab === 'Challenges' && (
             <div>
               <p className="text-[10px] text-purple-300/40 uppercase tracking-widest font-bold mb-3">Active Challenges</p>
-              {CHALLENGES_LIST.map(c => <ChallengeCard key={c.id} challenge={c} />)}
+              {CHALLENGES_LIST.map(c => <ChallengeCard key={c.id} challenge={c} logs={logs} />)}
             </div>
           )}
 
