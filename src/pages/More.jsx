@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Scale, Timer, Moon, Dumbbell, Target, FileText,
   Bell, Footprints, Shield, HelpCircle, ChevronRight,
-  TrendingDown, Zap, X, Trash2, Users, Brain, Camera
+  TrendingDown, Zap, X, Trash2, Users, Brain, Camera, Trophy, Share2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -18,9 +18,12 @@ import FastingPanel from '../components/fitness/panels/FastingPanel';
 import WorkoutPanel from '../components/fitness/panels/WorkoutPanel';
 import RemindersPanel from '../components/fitness/panels/RemindersPanel';
 import BodyTransformationPanel from '../components/fitness/panels/BodyTransformationPanel';
+import AchievementsPanel from '../components/fitness/panels/AchievementsPanel';
+import ShareProgressCard from '../components/fitness/ShareProgressCard';
 
 export default function More() {
   const [activePanel, setActivePanel]     = useState(null);
+  const [showShare, setShowShare]         = useState(false);
   const [stepsGoalDialog, setStepsGoalDialog] = useState(false);
   const [calsGoalDialog, setCalsGoalDialog]   = useState(false);
   const [tick, setTick] = useState(0);
@@ -57,9 +60,11 @@ export default function More() {
     {
       title: 'Goals & Reports',
       items: [
-        { id: 'goals',  label: 'My Goals',      icon: Target,      color: '#3b82f6', action: () => setActivePanel('goals') },
-        { id: 'report', label: 'Weekly Report', icon: FileText,    color: '#a855f7', action: () => setActivePanel('report') },
-        { id: 'kglost', label: 'Weight Loss',   icon: TrendingDown,color: '#10b981', action: () => setActivePanel('kglost') },
+        { id: 'goals',        label: 'My Goals',        icon: Target,      color: '#3b82f6', action: () => setActivePanel('goals') },
+        { id: 'report',       label: 'Weekly Report',   icon: FileText,    color: '#a855f7', action: () => setActivePanel('report') },
+        { id: 'kglost',       label: 'Weight Loss',     icon: TrendingDown,color: '#10b981', action: () => setActivePanel('kglost') },
+        { id: 'achievements', label: 'Achievements',    icon: Trophy,      color: '#f59e0b', action: () => setActivePanel('achievements') },
+        { id: 'share',        label: 'Share Progress',  icon: Share2,      color: '#ec4899', action: () => setShowShare(true) },
       ]
     },
     {
@@ -144,6 +149,8 @@ export default function More() {
       ))}
 
       <div className="mb-8" />
+
+      {showShare && <ShareProgressCard onClose={() => setShowShare(false)} />}
 
       <LogValueDialog isOpen={stepsGoalDialog} onClose={() => setStepsGoalDialog(false)}
         title="Daily Steps Goal" unit="steps" value={todayLog.steps_goal || 10000}
@@ -239,7 +246,8 @@ export default function More() {
                   {activePanel === 'fasting'   && <FastingPanel />}
                   {activePanel === 'workout'   && <WorkoutPanel />}
                   {activePanel === 'reminders' && <RemindersPanel />}
-                  {activePanel === 'body'      && <BodyTransformationPanel />}
+                  {activePanel === 'body'         && <BodyTransformationPanel />}
+                  {activePanel === 'achievements' && <AchievementsPanel />}
                 </div>
               </div>
             </motion.div>
