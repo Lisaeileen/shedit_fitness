@@ -64,10 +64,22 @@ function FeedCard({ item }) {
   );
 }
 
-function ChallengeCard({ challenge }) {
+function ChallengeCard({ challenge, logs }) {
   const joined = useMemo(() => Challenges.list().find(c => c.id === challenge.id), []);
   const [isJoined, setIsJoined] = useState(!!joined);
-  const progress = joined?.progress || 0;
+
+  // Auto-compute progress from real logs
+  const progress = useMemo(() => {
+    if (!isJoined) return 0;
+    const recent = [...logs].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, challenge.goal);
+    if (challenge.id === 'walk7' || challenge.id === 'steps10k') {
+      const minSteps = challenge.id === 'steps10k' ? 10000 : 8000;
+      return recent.filter(l => (l.steps || 0) >= minSteps).length;
+    }
+    if (challenge.id === 'hydrate') return recent.filter(l => (l.water_glasses || 0) >= 8).length;
+    if (challenge.id === 'weight30') return recent.filter(l => l.weight).length;
+    return joined?.progress || 0;
+  }, [isJoined, logs, challenge]);
 
   const handleJoin = () => {
     Challenges.join(challenge);
