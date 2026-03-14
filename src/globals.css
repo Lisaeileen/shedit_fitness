@@ -202,17 +202,14 @@ input[type=number] { -moz-appearance: textfield; }
   color: white;
 }
 
-/* ── Force inputs to show text clearly ── */
-input,
+/* ── Force inputs to show text clearly — white on dark backgrounds ── */
+input:not([type=range]),
 textarea {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  background-clip: padding-box !important;
-  -webkit-background-clip: padding-box !important;
-  background-image: none !important;
   opacity: 1 !important;
 }
-input::placeholder,
+input:not([type=range])::placeholder,
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.3) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.3) !important;
