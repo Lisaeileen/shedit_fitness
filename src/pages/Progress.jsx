@@ -6,7 +6,6 @@ import {
   ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid
 } from 'recharts';
 import { Flame, Footprints, ArrowUp, Moon, Dumbbell, Scale, TrendingDown } from 'lucide-react';
-import { AreaChart, Area, ResponsiveContainer as RC2, XAxis as XA2, YAxis as YA2 } from 'recharts';
 import { DailyLogs } from '../components/storage';
 import ActivityRing from '../components/fitness/ActivityRing';
 
