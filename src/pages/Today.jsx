@@ -19,6 +19,9 @@ import WeightSection from '../components/fitness/WeightSection';
 import AddFoodDialog from '../components/fitness/AddFoodDialog';
 import LogValueDialog from '../components/fitness/LogValueDialog';
 import DailyNutritionInsight from '../components/fitness/DailyNutritionInsight';
+import DailyCheckIn from '../components/fitness/DailyCheckIn';
+import TodaysPlan from '../components/fitness/TodaysPlan';
+import SmartReminders from '../components/fitness/SmartReminders';
 
 export default function Today() {
   const [selectedDate, setSelectedDate]   = useState(new Date());
