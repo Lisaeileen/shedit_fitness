@@ -18,6 +18,7 @@ import HabitCard from '../components/fitness/HabitCard';
 import WeightSection from '../components/fitness/WeightSection';
 import AddFoodDialog from '../components/fitness/AddFoodDialog';
 import LogValueDialog from '../components/fitness/LogValueDialog';
+import DailyNutritionInsight from '../components/fitness/DailyNutritionInsight';
 
 export default function Today() {
   const [selectedDate, setSelectedDate]   = useState(new Date());
@@ -233,6 +234,9 @@ export default function Today() {
           <HabitCard type="steps"    value={steps}                        goal={stepsGoal}                  onTap={() => setStepsDialog(true)} />
         </div>
       </div>
+
+      {/* AI Nutrition Insights */}
+      <DailyNutritionInsight dayLog={dayLog} />
 
       {/* Smart Goals Banner */}
       <SmartGoalsBanner steps={steps} stepsGoal={stepsGoal} calorieGoal={calsGoal} />
