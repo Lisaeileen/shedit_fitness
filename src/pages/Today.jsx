@@ -120,6 +120,12 @@ export default function Today() {
         <WeekSelector selectedDate={selectedDate} onSelect={setSelectedDate} />
       </div>
 
+      {/* Daily Check-In */}
+      <DailyCheckIn />
+
+      {/* Smart Reminders */}
+      <SmartReminders dayLog={dayLog} meals={meals} steps={steps} stepsGoal={stepsGoal} />
+
       {/* Calorie Hero */}
       <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.05 }} className="rounded-3xl p-5 mb-4"
