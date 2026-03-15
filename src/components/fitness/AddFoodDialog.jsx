@@ -464,9 +464,10 @@ If image quality is poor, estimate generously and flag as low confidence.`,
         }
       });
 
-      const foods = (result.foods || []).filter(f => f.name);
-      setDetectedFoods(foods.length > 0 ? foods : [{ name: 'Unknown Food', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }]);
-      setLowConfidence(result.confidence === 'low' || foods.length === 0);
+      const foods = (result.foods || []).filter(f => f.name && f.name.trim());
+      const hasLowConf = foods.some(f => f.confidence === 'low') || foods.length === 0;
+      setDetectedFoods(foods.length > 0 ? foods : [{ name: 'Meal (tap edit to add details)', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }]);
+      setLowConfidence(result.confidence === 'low' || hasLowConf);
       setPhase('review');
     } catch {
       setDetectedFoods([{ name: 'Meal (unidentified)', portion: '1 serving', calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }]);
