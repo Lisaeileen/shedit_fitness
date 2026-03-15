@@ -1,66 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2, CheckCircle, Search, Mic, MicOff, Camera, Plus, Minus, Sparkles, ScanLine, AlertCircle, Trash2, Edit2 } from 'lucide-react';
+import { X, Loader2, CheckCircle, Search, Mic, MicOff, Camera, Plus, Sparkles, ScanLine, AlertCircle, Trash2, Edit2, Globe } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { localSearch } from './foodDatabase';
 
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 
-const FOOD_DB = [
-  { name: 'Chicken Breast', calories: 165, protein: 31, carbs: 0, fat: 3.6, serving: '100g' },
-  { name: 'Chicken Thigh', calories: 209, protein: 26, carbs: 0, fat: 11, serving: '100g' },
-  { name: 'Chicken Salad', calories: 290, protein: 28, carbs: 8, fat: 16, serving: '1 bowl' },
-  { name: 'Chicken Wrap', calories: 380, protein: 30, carbs: 34, fat: 12, serving: '1 wrap' },
-  { name: 'Grilled Chicken', calories: 187, protein: 35, carbs: 0, fat: 4, serving: '100g' },
-  { name: 'Chicken Alfredo', calories: 596, protein: 34, carbs: 48, fat: 22, serving: '1 serving' },
-  { name: 'Oats / Porridge', calories: 389, protein: 17, carbs: 66, fat: 7, serving: '100g dry' },
-  { name: 'Banana', calories: 89, protein: 1.1, carbs: 23, fat: 0.3, serving: '1 medium' },
-  { name: 'Apple', calories: 52, protein: 0.3, carbs: 14, fat: 0.2, serving: '1 medium' },
-  { name: 'Egg (boiled)', calories: 78, protein: 6.3, carbs: 0.6, fat: 5.3, serving: '1 large' },
-  { name: 'Scrambled Eggs', calories: 182, protein: 13, carbs: 2, fat: 13, serving: '2 eggs' },
-  { name: 'Brown Rice', calories: 216, protein: 5, carbs: 45, fat: 1.8, serving: '1 cup cooked' },
-  { name: 'White Rice', calories: 206, protein: 4.3, carbs: 44.5, fat: 0.4, serving: '1 cup cooked' },
-  { name: 'Pasta', calories: 220, protein: 8, carbs: 43, fat: 1.3, serving: '1 cup cooked' },
-  { name: 'Whole Grain Bread', calories: 79, protein: 3.5, carbs: 15, fat: 1, serving: '1 slice' },
-  { name: 'Salmon Fillet', calories: 208, protein: 28, carbs: 0, fat: 10, serving: '100g' },
-  { name: 'Tuna (canned)', calories: 132, protein: 29, carbs: 0, fat: 1, serving: '100g' },
-  { name: 'Greek Yogurt', calories: 100, protein: 17, carbs: 6, fat: 0.7, serving: '1 cup' },
-  { name: 'Milk (whole)', calories: 149, protein: 8, carbs: 12, fat: 8, serving: '1 cup' },
-  { name: 'Avocado', calories: 320, protein: 4, carbs: 17, fat: 29, serving: '1 whole' },
-  { name: 'Almonds', calories: 164, protein: 6, carbs: 6, fat: 14, serving: '1 oz (28g)' },
-  { name: 'Broccoli', calories: 55, protein: 3.7, carbs: 11, fat: 0.6, serving: '1 cup' },
-  { name: 'Spinach', calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, serving: '1 cup' },
-  { name: 'Lettuce', calories: 15, protein: 1.4, carbs: 2.9, fat: 0.2, serving: '1 cup' },
-  { name: 'Bell Pepper', calories: 31, protein: 1, carbs: 7, fat: 0.3, serving: '1 medium' },
-  { name: 'Sweet Potato', calories: 103, protein: 2.3, carbs: 24, fat: 0.1, serving: '1 medium' },
-  { name: 'Steak (beef)', calories: 271, protein: 26, carbs: 0, fat: 18, serving: '100g' },
-  { name: 'Beef Burger', calories: 540, protein: 34, carbs: 40, fat: 25, serving: '1 burger' },
-  { name: 'Peanut Butter', calories: 190, protein: 7, carbs: 6, fat: 16, serving: '2 tbsp' },
-  { name: 'Cheddar Cheese', calories: 113, protein: 7, carbs: 0.4, fat: 9, serving: '1 oz' },
-  { name: 'Pizza (cheese)', calories: 285, protein: 12, carbs: 36, fat: 10, serving: '1 slice' },
-  { name: 'Caesar Salad', calories: 290, protein: 9, carbs: 18, fat: 21, serving: '1 serving' },
-  { name: 'Protein Shake', calories: 160, protein: 30, carbs: 8, fat: 3, serving: '1 scoop' },
-  { name: 'Orange Juice', calories: 112, protein: 1.7, carbs: 26, fat: 0.5, serving: '1 cup' },
-  { name: 'Coffee (black)', calories: 5, protein: 0.3, carbs: 0, fat: 0, serving: '1 cup' },
-  { name: 'Blueberries', calories: 84, protein: 1.1, carbs: 21, fat: 0.5, serving: '1 cup' },
-  { name: 'Strawberries', calories: 49, protein: 1, carbs: 12, fat: 0.5, serving: '1 cup' },
-  { name: 'Cottage Cheese', calories: 206, protein: 25, carbs: 8.2, fat: 9, serving: '1 cup' },
-  { name: 'Quinoa', calories: 222, protein: 8, carbs: 39, fat: 3.5, serving: '1 cup cooked' },
-  { name: 'Lentils', calories: 230, protein: 18, carbs: 40, fat: 0.8, serving: '1 cup cooked' },
-  { name: 'Black Beans', calories: 227, protein: 15, carbs: 41, fat: 0.9, serving: '1 cup cooked' },
-  { name: 'Hummus', calories: 166, protein: 8, carbs: 18, fat: 8, serving: '1/4 cup' },
-  { name: 'Tofu (firm)', calories: 144, protein: 17, carbs: 3, fat: 8, serving: '1/2 cup' },
-  { name: 'Turkey Breast', calories: 135, protein: 30, carbs: 0, fat: 1, serving: '100g' },
-  { name: 'Shrimp', calories: 99, protein: 24, carbs: 0, fat: 0.3, serving: '100g' },
-  { name: 'Mango', calories: 99, protein: 1.4, carbs: 25, fat: 0.6, serving: '1 cup' },
-  { name: 'Watermelon', calories: 46, protein: 0.9, carbs: 11, fat: 0.2, serving: '1 cup' },
-  { name: 'Orange', calories: 62, protein: 1.2, carbs: 15, fat: 0.2, serving: '1 medium' },
-  { name: 'Pineapple', calories: 82, protein: 0.9, carbs: 22, fat: 0.2, serving: '1 cup' },
-];
+// ── OpenFoodFacts search ──────────────────────────────────────────────────────
+async function searchOpenFoodFacts(query) {
+  try {
+    const res = await fetch(
+      `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=product_name,nutriments,serving_size,brands`
+    );
+    const data = await res.json();
+    const products = (data.products || []).filter(p => p.product_name);
+    return products.map(p => {
+      const n = p.nutriments || {};
+      return {
+        name: p.product_name + (p.brands ? ` (${p.brands.split(',')[0].trim()})` : ''),
+        calories: Math.round(n['energy-kcal_serving'] || n['energy-kcal_100g'] || n['energy-kcal'] || 0),
+        protein: Math.round((n.proteins_serving || n.proteins_100g || 0) * 10) / 10,
+        carbs: Math.round((n.carbohydrates_serving || n.carbohydrates_100g || 0) * 10) / 10,
+        fat: Math.round((n.fat_serving || n.fat_100g || 0) * 10) / 10,
+        serving: p.serving_size || '100g',
+        source: 'openfoodfacts',
+      };
+    }).filter(p => p.calories > 0 || p.protein > 0);
+  } catch { return []; }
+}
 
-function searchFoods(query) {
-  if (!query || query.length < 2) return [];
-  const q = query.toLowerCase();
-  return FOOD_DB.filter(f => f.name.toLowerCase().includes(q)).slice(0, 8);
+// ── AI nutrition lookup (last resort) ────────────────────────────────────────
+async function searchAI(query) {
+  try {
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `List up to 8 specific food items matching "${query}" from any world cuisine. Include all common preparations and varieties. For each, provide accurate nutrition per typical serving.`,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          foods: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                calories: { type: 'number' },
+                protein: { type: 'number' },
+                carbs: { type: 'number' },
+                fat: { type: 'number' },
+                serving: { type: 'string' },
+              }
+            }
+          }
+        }
+      }
+    });
+    return (result.foods || []).map(f => ({ ...f, source: 'ai' }));
+  } catch { return []; }
 }
 
 // ── Inline input style to guarantee visibility ────────────────────────────────
