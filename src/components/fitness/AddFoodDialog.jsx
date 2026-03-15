@@ -304,9 +304,18 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
                 ].map(m => (
                   <div key={m.field}>
                     <p className="text-[10px] mb-1 font-bold" style={{ color: m.color }}>{m.label}</p>
-                    <input type="number" inputMode="decimal" style={inputStyleSm}
-                      placeholder="0" value={addCustom[m.field]}
-                      onChange={e => setAddCustom(a => ({ ...a, [m.field]: e.target.value }))} />
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      pattern="[0-9]*\.?[0-9]*"
+                      style={inputStyleSm}
+                      placeholder="0"
+                      value={addCustom[m.field]}
+                      onChange={e => {
+                        const v = e.target.value;
+                        if (v === '' || /^\d*\.?\d*$/.test(v)) setAddCustom(a => ({ ...a, [m.field]: v }));
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -959,12 +968,16 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                       <label className="text-[10px] font-bold uppercase tracking-widest" style={{ color: f.color }}>{f.label}</label>
                       <div className="flex items-baseline gap-1 mt-1">
                         <input
-                          type="number"
+                          type="text"
                           inputMode="decimal"
+                          pattern="[0-9]*\.?[0-9]*"
                           value={f.val}
-                          onChange={e => f.set(e.target.value)}
+                          onChange={e => {
+                            const v = e.target.value;
+                            if (v === '' || /^\d*\.?\d*$/.test(v)) f.set(v);
+                          }}
                           placeholder="0"
-                          style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', WebkitAppearance: 'none', MozAppearance: 'textfield', caretColor: '#a855f7', outline: 'none', border: 'none', fontSize: 22, fontWeight: 900, width: '100%', minWidth: 0 }}
+                          style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', caretColor: '#a855f7', outline: 'none', border: 'none', fontSize: 22, fontWeight: 900, width: '100%', minWidth: 0 }}
                         />
                         <span className="text-xs text-gray-500 flex-shrink-0">{f.unit}</span>
                       </div>
