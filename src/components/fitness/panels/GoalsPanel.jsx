@@ -138,8 +138,18 @@ export default function GoalsPanel() {
           ].map(f => (
             <div key={f.label}>
               <p className="text-[10px] text-gray-500 mb-1.5">{f.label}</p>
-              <input type="number" inputMode="decimal" style={inputStyle}
-                value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.placeholder} />
+              <input
+                type="text"
+                inputMode="decimal"
+                pattern="[0-9]*\.?[0-9]*"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                style={inputStyle}
+                value={f.val}
+                onChange={e => { const v = e.target.value; if (v === '' || /^\d*\.?\d*$/.test(v)) f.set(v); }}
+                placeholder={f.placeholder}
+              />
             </div>
           ))}
         </div>
