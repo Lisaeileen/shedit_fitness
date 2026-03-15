@@ -1,15 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, Shield, Award } from 'lucide-react';
+import { Flame, Shield, Award, Zap, Star, Trophy, Crown, Diamond } from 'lucide-react';
 import { Streak, Badges, DailyLogs } from '../storage';
 import { format } from 'date-fns';
 
 const MILESTONES = [
-  { days: 3,  label: '3-Day Spark',    emoji: '✨', color: '#f59e0b' },
-  { days: 7,  label: '7-Day Warrior',  emoji: '⚡', color: '#f59e0b' },
-  { days: 14, label: '2-Week Champ',   emoji: '🏅', color: '#c0c0c0' },
-  { days: 30, label: '30-Day Legend',  emoji: '🏆', color: '#ffd700' },
-  { days: 90, label: '90-Day Elite',   emoji: '💎', color: '#a855f7' },
+  { days: 3,  label: '3-Day Spark',   Icon: Zap,     color: '#f59e0b' },
+  { days: 7,  label: '7-Day Warrior', Icon: Star,    color: '#f59e0b' },
+  { days: 14, label: '2-Week Champ',  Icon: Award,   color: '#c0c0c0' },
+  { days: 30, label: '30-Day Legend', Icon: Trophy,  color: '#ffd700' },
+  { days: 90, label: '90-Day Elite',  Icon: Crown,   color: '#a855f7' },
 ];
 
 function getMilestone(count) {
@@ -42,7 +42,7 @@ export default function StreakCard() {
 
   const handleFreeze = () => {
     const result = Streak.useFreeze(todayStr);
-    setFreezeMsg(result ? '❄️ Streak freeze used! You\'re protected for today.' : '❄️ You\'ve already used your freeze this month.');
+    setFreezeMsg(result ? 'Streak freeze used. Protected for today.' : 'You have already used your freeze this month.');
     setTimeout(() => setFreezeMsg(''), 3000);
   };
 
@@ -85,7 +85,7 @@ export default function StreakCard() {
           </div>
           {milestone ? (
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-base">{milestone.emoji}</span>
+              <milestone.Icon className="w-4 h-4" style={{ color: milestone.color }} />
               <span className="text-xs font-bold" style={{ color: milestone.color }}>{milestone.label}</span>
             </div>
           ) : (
@@ -94,7 +94,7 @@ export default function StreakCard() {
           {next && (
             <div>
               <div className="flex justify-between mb-0.5">
-                <span className="text-[10px] text-gray-600">Next: {next.emoji} {next.label}</span>
+                <span className="text-[10px] text-gray-600">Next: {next.label}</span>
                 <span className="text-[10px] text-orange-400">{count}/{next.days}</span>
               </div>
               <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
@@ -122,13 +122,13 @@ export default function StreakCard() {
           const unlocked = count >= m.days;
           return (
             <div key={m.days} className="flex flex-col items-center gap-0.5 flex-shrink-0">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all"
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
                 style={{
                   background: unlocked ? `${m.color}20` : 'rgba(255,255,255,0.03)',
                   border: unlocked ? `1px solid ${m.color}40` : '1px solid rgba(255,255,255,0.06)',
-                  filter: unlocked ? 'none' : 'grayscale(1) opacity(0.3)',
+                  opacity: unlocked ? 1 : 0.3,
                 }}>
-                {m.emoji}
+                <m.Icon className="w-4 h-4" style={{ color: unlocked ? m.color : '#6b7280' }} />
               </div>
               <span className="text-[8px] text-gray-600">{m.days}d</span>
             </div>
