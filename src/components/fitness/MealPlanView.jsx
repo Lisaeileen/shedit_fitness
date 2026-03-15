@@ -383,12 +383,33 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
     });
   };
 
+  const getRecipeDetail = async (meal) => {
+    if (!dayPlan) return;
+    setSwapping(true);
+    const mealName = dayPlan[meal.key];
+    const res = await base44.integrations.Core.InvokeLLM({
+      prompt: `Provide the full recipe for "${mealName}". List each ingredient with exact quantities and type (e.g. "2 large eggs", "½ cup chopped red bell pepper", "30g cheddar cheese", "1 tbsp olive oil"). Also provide step-by-step cooking instructions. Include global ingredients if relevant (e.g. Nigerian, Korean, African, Asian cuisines).`,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          ingredients: { type: 'array', items: { type: 'string' } },
+          instructions: { type: 'array', items: { type: 'string' } },
+        }
+      }
+    });
+    MealPlans.updateDay(dayPlan.id, {
+      [`${meal.key}_detail`]: { ingredients: res.ingredients || [], instructions: res.instructions || [] },
+    });
+    setPlans(MealPlans.list());
+    setSwapping(false);
+  };
+
   const swapMeal = async (meal) => {
     if (!dayPlan) return;
     setSwapping(true);
-    const prefs = `Diet: ${goals?.diet_styles?.join(', ') || 'balanced'}. Avoid: ${goals?.disliked_foods?.join(', ') || 'none'}. Calorie target for ${meal.label}: ~${dayPlan[meal.calKey]} kcal.`;
+    const prefs = `Diet: ${goals?.diet_styles?.join(', ') || 'balanced'}. Avoid: ${goals?.disliked_foods?.join(', ') || 'none'}. Calorie target for ${meal.label}: ~${dayPlan[meal.calKey]} kcal. Preferred cuisines: ${Object.entries(goals?.cuisine_prefs || {}).filter(([,v])=>v==='love').map(([k])=>k).join(', ') || 'any'}.`;
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Suggest an alternative ${meal.label} meal. ${prefs} Return a JSON with: name (string), calories (number), protein (number), carbs (number), fat (number), ingredients (array of strings), instructions (array of strings).`,
+      prompt: `Suggest a different ${meal.label} meal that the user hasn't had yet. ${prefs} Provide exact ingredient amounts with quantities and types (e.g. "2 large eggs", "½ cup chopped red bell pepper"). Include global cuisine options (African, Korean, Asian, Mediterranean, Nigerian, etc.) where appropriate.`,
       response_json_schema: {
         type: 'object',
         properties: {
@@ -408,7 +429,8 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
       [meal.protKey]: res.protein,
       [meal.carbKey]: res.carbs,
       [meal.fatKey]: res.fat,
-      [`${meal.key}_detail`]: { ingredients: res.ingredients, instructions: res.instructions },
+      [`${meal.key}_detail`]: { ingredients: res.ingredients || [], instructions: res.instructions || [] },
+      [`${meal.key}_image`]: null, // clear cached image so new one generates
     });
     setPlans(MealPlans.list());
     setSwapping(false);
