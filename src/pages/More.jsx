@@ -191,19 +191,83 @@ export default function More() {
                   </div>
 
                   {activePanel === 'privacy' && (
-                    <div className="space-y-4 text-sm text-gray-400 leading-relaxed">
-                      <p><strong className="text-white">Data Storage:</strong> All your health data is stored entirely on your device in local storage. No data is ever sent to any server or third party.</p>
-                      <p><strong className="text-white">No Account Required:</strong> Shedit works fully offline and does not collect personal information.</p>
-                      <p><strong className="text-white">Data Deletion:</strong> You can delete all data at any time from More → Delete My Data.</p>
-                      <p><strong className="text-white">Contact:</strong> privacy@sheditapp.com</p>
+                    <div className="space-y-5 text-sm text-gray-400 leading-relaxed pb-4">
+                      <p className="text-xs text-gray-600">Last updated: March 2026</p>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Data We Collect</p>
+                        <p>Shedit may collect the following data to provide personalised fitness and nutrition tracking:</p>
+                        <ul className="mt-2 space-y-1 list-disc list-inside text-gray-500 text-xs">
+                          <li>Account information (name, email if signed in)</li>
+                          <li>Weight and body metrics</li>
+                          <li>Food and meal logs</li>
+                          <li>Workout and exercise data</li>
+                          <li>Step count and activity data</li>
+                          <li>Device health data (if health permissions are granted)</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Health Integrations</p>
+                        <p>Shedit may integrate with Apple Health and Google Fit to read step counts and activity data. This data is used solely for fitness tracking within the app. You control all health permissions through your device settings and can revoke access at any time.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Camera Use</p>
+                        <p>The app uses your camera for AI-powered meal scanning and body transformation tracking. Images are processed to identify nutritional information and body metrics. Photos are not uploaded to any server or stored beyond the immediate analysis session.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Data Storage & Protection</p>
+                        <p>Your data is stored locally on your device. When cloud sync is enabled, data is encrypted in transit and at rest. We do not sell, rent, or share your personal data with third parties for advertising purposes.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Your Rights</p>
+                        <p>You may delete all your data at any time from <span className="text-purple-400">More → Delete My Data</span>. For privacy-related requests, contact us at <span className="text-purple-400">privacy@sheditapp.com</span>.</p>
+                      </div>
                     </div>
                   )}
 
                   {activePanel === 'terms' && (
-                    <div className="space-y-4 text-sm text-gray-400 leading-relaxed">
-                      <p><strong className="text-white">Health Disclaimer:</strong> Shedit is a wellness tracking tool, not a medical device. Always consult a healthcare professional before starting any fitness program.</p>
-                      <p><strong className="text-white">Accuracy:</strong> Calorie and nutrition estimates are approximations. Actual values may vary.</p>
-                      <p><strong className="text-white">Acceptable Use:</strong> Use Shedit responsibly and for lawful purposes only.</p>
+                    <div className="space-y-5 text-sm text-gray-400 leading-relaxed pb-4">
+                      <p className="text-xs text-gray-600">Last updated: March 2026</p>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Use of the App</p>
+                        <p>Shedit is a personal fitness and nutrition tracking application designed to support your health and wellness journey. It provides tools for tracking calories, macronutrients, workouts, hydration, and body metrics. Shedit does not provide medical diagnosis or treatment and is not a substitute for professional medical advice.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Health Disclaimer</p>
+                        <p>Calorie, macro, and exercise estimates are approximations based on general data. Individual results will vary. Always consult a qualified healthcare professional before making significant changes to your diet or exercise routine, especially if you have a medical condition.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">User Responsibilities</p>
+                        <p>By using Shedit, you agree to:</p>
+                        <ul className="mt-2 space-y-1 list-disc list-inside text-gray-500 text-xs">
+                          <li>Provide accurate information about yourself</li>
+                          <li>Use the app responsibly and for lawful purposes</li>
+                          <li>Consult healthcare professionals when needed</li>
+                          <li>Not misuse, reverse engineer, or attempt to exploit the app</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Account Usage</p>
+                        <p>Your account and data are for personal use only. You are responsible for maintaining the confidentiality of your account. Sharing accounts or using the app to store third-party data without consent is prohibited.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Limitation of Liability</p>
+                        <p>Shedit provides informational tools for health and fitness tracking. We are not liable for any health outcomes, injuries, or losses resulting from use of the app or reliance on its estimates. Use the app as a supportive tool, not a medical device.</p>
+                      </div>
+
+                      <div>
+                        <p className="text-white font-bold mb-1">Changes to Terms</p>
+                        <p>We may update these Terms from time to time. Continued use of the app constitutes acceptance of the updated Terms. Contact us at <span className="text-purple-400">support@sheditapp.com</span> with any questions.</p>
+                      </div>
                     </div>
                   )}
 
