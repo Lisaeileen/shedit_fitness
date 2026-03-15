@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Footprints, ArrowUp, Bell, Smartphone } from 'lucide-react';
+import { Footprints, ArrowUp, Bell, Smartphone, MoveUp } from 'lucide-react';
 import { DailyLogs, Meals } from '../components/storage';
 import { SheditWordmark, SheditIcon } from '../components/fitness/SheditLogo';
 import { useHealthSteps } from '../components/fitness/useHealthSteps';
@@ -188,50 +188,81 @@ export default function Today() {
 
       {/* Steps & Stairs */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }} className="glass-card rounded-2xl p-4 flex items-center gap-4 mb-4">
-        <ActivityRing value={steps} max={stepsGoal} size={80} strokeWidth={7} color="#a855f7"
-          label={steps >= 1000 ? `${(steps/1000).toFixed(1)}k` : steps} sublabel="steps" />
-        <div className="flex-1 space-y-3">
-          <div>
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-gray-400 flex items-center gap-1.5">
-                <Footprints className="w-3.5 h-3.5 text-purple-400" /> Steps
-                {stepsSource === 'motion' && (
-                  <span className="flex items-center gap-0.5 text-[9px] text-green-400 font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-                    Live
-                  </span>
-                )}
-              </span>
-              <span className="text-xs font-bold text-white">{steps.toLocaleString()} / {stepsGoal.toLocaleString()}</span>
+        transition={{ delay: 0.1 }} className="glass-card rounded-2xl p-4 mb-4">
+        {/* Climbing indicator */}
+        <AnimatePresence>
+          {isClimbing && (
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.95 }}
+              className="flex items-center gap-2 rounded-xl px-3 py-2 mb-3"
+              style={{ background: 'rgba(236,72,153,0.14)', border: '1px solid rgba(236,72,153,0.3)' }}>
+              <MoveUp className="w-3.5 h-3.5 text-pink-400 animate-bounce" />
+              <p className="text-xs font-bold text-pink-300">Climbing Now</p>
+              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="flex items-center gap-4">
+          <ActivityRing value={steps} max={stepsGoal} size={80} strokeWidth={7} color="#a855f7"
+            label={steps >= 1000 ? `${(steps/1000).toFixed(1)}k` : steps} sublabel="steps" />
+          <div className="flex-1 space-y-3">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-gray-400 flex items-center gap-1.5">
+                  <Footprints className="w-3.5 h-3.5 text-purple-400" /> Steps
+                  {stepsSource === 'motion' && (
+                    <span className="flex items-center gap-0.5 text-[9px] text-green-400 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+                      Live
+                    </span>
+                  )}
+                </span>
+                <span className="text-xs font-bold text-white">{steps.toLocaleString()} / {stepsGoal.toLocaleString()}</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                <motion.div
+                  animate={{ width: `${Math.min((steps / stepsGoal) * 100, 100)}%` }}
+                  transition={{ duration: 0.6 }}
+                  className="h-full rounded-full" style={{ background: '#a855f7', boxShadow: '0 0 8px rgba(168,85,247,0.5)' }} />
+              </div>
             </div>
-            <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-              <motion.div
-                animate={{ width: `${Math.min((steps / stepsGoal) * 100, 100)}%` }}
-                transition={{ duration: 0.6 }}
-                className="h-full rounded-full" style={{ background: '#a855f7', boxShadow: '0 0 8px rgba(168,85,247,0.5)' }} />
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs text-gray-400 flex items-center gap-1.5">
+                  <ArrowUp className="w-3.5 h-3.5 text-pink-400" /> Stairs
+                  {stepsSource === 'motion' && (
+                    <span className="flex items-center gap-0.5 text-[9px] text-green-400 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+                      Live
+                    </span>
+                  )}
+                </span>
+                <span className="text-xs font-bold text-white">{stairs} / {stairsGoal} flights</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                <motion.div
+                  animate={{ width: `${Math.min((stairs / stairsGoal) * 100, 100)}%` }}
+                  transition={{ duration: 0.8 }}
+                  className="h-full rounded-full" style={{ background: '#ec4899', boxShadow: '0 0 8px rgba(236,72,153,0.4)' }} />
+              </div>
             </div>
           </div>
-          <div>
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-gray-400 flex items-center gap-1.5">
-                <ArrowUp className="w-3.5 h-3.5 text-pink-400" /> Stairs
-              </span>
-              <span className="text-xs font-bold text-white">{stairs} / {stairsGoal} flights</span>
-            </div>
-            <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-              <motion.div initial={{ width: 0 }}
-                animate={{ width: `${Math.min((stairs / stairsGoal) * 100, 100)}%` }}
-                transition={{ duration: 1.2, delay: 0.3 }}
-                className="h-full rounded-full" style={{ background: '#ec4899', boxShadow: '0 0 8px rgba(236,72,153,0.4)' }} />
-            </div>
+          <div className="flex flex-col gap-2 self-start">
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => setStepsDialog(true)}
+              className="px-3 py-1.5 rounded-xl text-[11px] font-semibold text-purple-400"
+              style={{ background: 'rgba(168,85,247,0.12)' }}>
+              Steps
+            </motion.button>
+            <motion.button whileTap={{ scale: 0.9 }} onClick={() => setStairsDialog(true)}
+              className="px-3 py-1.5 rounded-xl text-[11px] font-semibold text-pink-400"
+              style={{ background: 'rgba(236,72,153,0.12)' }}>
+              Stairs
+            </motion.button>
           </div>
         </div>
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => setStepsDialog(true)}
-          className="px-3 py-1.5 rounded-xl text-[11px] font-semibold text-purple-400 self-start"
-          style={{ background: 'rgba(168,85,247,0.12)' }}>
-          + Log
-        </motion.button>
       </motion.div>
 
       {/* Streak */}
