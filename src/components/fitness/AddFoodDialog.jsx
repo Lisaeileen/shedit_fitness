@@ -572,7 +572,7 @@ function VoiceModal({ onResult, onClose }) {
 
   const lookupTranscript = (text) => {
     setSearching(true);
-    const results = searchFoods(text.split(' ').find(w => w.length > 3) || text);
+    const results = localSearch(text.split(' ').find(w => w.length > 3) || text, 3);
     const found = results[0] || { name: text, calories: 200, protein: 10, carbs: 20, fat: 8, serving: '1 serving' };
     setTimeout(() => {
       setSearching(false);
