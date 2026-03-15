@@ -33,7 +33,7 @@ async function searchOpenFoodFacts(query) {
 async function searchAI(query) {
   try {
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `List up to 8 specific food items matching "${query}" from any world cuisine. Include all common preparations and varieties. For each, provide accurate nutrition per typical serving.`,
+      prompt: `List up to 10 specific food items matching "${query}" from ANY world cuisine — including Nigerian, African, Asian, Mediterranean, Indian, Korean, American, European, Caribbean, Middle Eastern, etc. Include common preparations and regional varieties. Provide accurate nutrition per typical serving for each.`,
       response_json_schema: {
         type: 'object',
         properties: {
