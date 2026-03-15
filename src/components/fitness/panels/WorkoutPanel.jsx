@@ -147,7 +147,7 @@ export default function WorkoutPanel() {
             <X className="w-4 h-4 text-gray-400" />
           </button>
           <div className="flex-1">
-            <h4 className="text-base font-bold text-white">{selected.emoji} {selected.label}</h4>
+            <h4 className="text-base font-bold text-white">{selected.label}</h4>
             <p className="text-xs text-gray-500">{selected.duration} min · ~{selected.cals} kcal</p>
           </div>
         </div>
