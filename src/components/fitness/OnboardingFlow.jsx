@@ -50,6 +50,17 @@ const CUISINES = [
   { value: 'french',        label: 'French' },
   { value: 'korean',        label: 'Korean' },
   { value: 'nigerian',      label: 'Nigerian' },
+  { value: 'west_african',  label: 'West African' },
+  { value: 'east_african',  label: 'East African' },
+  { value: 'ghanaian',      label: 'Ghanaian' },
+  { value: 'ethiopian',     label: 'Ethiopian' },
+  { value: 'caribbean',     label: 'Caribbean' },
+  { value: 'middle_eastern',label: 'Middle Eastern' },
+  { value: 'turkish',       label: 'Turkish' },
+  { value: 'lebanese',      label: 'Lebanese' },
+  { value: 'vietnamese',    label: 'Vietnamese' },
+  { value: 'british',       label: 'British' },
+  { value: 'spanish',       label: 'Spanish' },
 ];
 
 const COOKED_VEGS = [
