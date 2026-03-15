@@ -33,7 +33,7 @@ async function getMealImage(mealName) {
 
 // ── MealDetailModal ──────────────────────────────────────────────────────────
 
-function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, onSwap, swapping }) {
+function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, onSwap, onGetRecipe, swapping }) {
   if (!dayPlan) return null;
   const mealName = dayPlan[meal.key];
   const cal = dayPlan[meal.calKey] || 0;
