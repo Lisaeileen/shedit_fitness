@@ -44,9 +44,24 @@ export default function LogValueDialog({
                   <Minus className="w-5 h-5" style={{ color }} />
                 </motion.button>
                 <div className="text-center flex-1">
-                  <div className="text-5xl font-black text-white leading-none">
-                    {step < 1 ? val.toFixed(1) : val}
-                  </div>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    value={step < 1 ? val.toFixed(1) : val}
+                    onChange={e => {
+                      const v = e.target.value;
+                      if (v === '' || /^\d*\.?\d*$/.test(v)) {
+                        const n = parseFloat(v);
+                        if (!isNaN(n)) setVal(Math.min(Math.max(n, min), max));
+                        else if (v === '') setVal(min);
+                      }
+                    }}
+                    className="text-5xl font-black text-white leading-none bg-transparent border-none outline-none text-center w-full"
+                    style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff', caretColor: color }}
+                  />
                   <div className="text-sm text-gray-400 mt-1">{unit}</div>
                 </div>
                 <motion.button whileTap={{ scale: 0.88 }} onClick={() => change(step)}
