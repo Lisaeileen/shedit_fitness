@@ -1025,6 +1025,9 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                   placeholder="Serving size (e.g. 1 cup, 200g)"
                   value={serving}
                   onChange={e => setServing(e.target.value)}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
                 />
 
                 {/* Macro inputs */}
