@@ -618,6 +618,7 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
             onSaveFavorite={saveFavorite}
             favorites={favorites}
             onSwap={swapMeal}
+            onGetRecipe={getRecipeDetail}
             swapping={swapping} />
         )}
         {showGrocery && plans.length > 0 && (
