@@ -32,6 +32,7 @@ export default function Today() {
   const [waterDialog, setWaterDialog]     = useState(false);
   const [stepsDialog, setStepsDialog]     = useState(false);
   const [exerciseDialog, setExerciseDialog] = useState(false);
+  const [stairsDialog,  setStairsDialog]  = useState(false);
   const [tick, setTick] = useState(0);
 
   const dateStr  = format(selectedDate, 'yyyy-MM-dd');
@@ -349,6 +350,7 @@ export default function Today() {
       <LogValueDialog isOpen={waterDialog}    onClose={() => setWaterDialog(false)}    title="Log Water"    unit="glasses" value={dayLog.water_glasses    || 0}   step={1}   min={0}   max={20}    color="#22d3ee" onSave={(v) => upsertLog({ water_glasses: v })} />
       <LogValueDialog isOpen={stepsDialog}    onClose={() => setStepsDialog(false)}    title="Log Steps"    unit="steps"   value={steps}   step={100} min={0}   max={50000} color="#a855f7" onSave={(v) => { updateStepsManually(v); refresh(); }} />
       <LogValueDialog isOpen={exerciseDialog} onClose={() => setExerciseDialog(false)} title="Log Exercise" unit="min"     value={dayLog.exercise_minutes || 0}   step={5}   min={0}   max={300}   color="#f43f5e" onSave={(v) => upsertLog({ exercise_minutes: v })} />
+      <LogValueDialog isOpen={stairsDialog}   onClose={() => setStairsDialog(false)}   title="Log Stairs"   unit="flights" value={stairs}                          step={1}   min={0}   max={200}   color="#ec4899" onSave={(v) => { updateStairsManually(v); refresh(); }} />
     </div>
   );
 }
