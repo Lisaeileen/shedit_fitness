@@ -144,13 +144,23 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
             </div>
           )}
 
-          {/* Swap button */}
-          <motion.button whileTap={{ scale: 0.97 }} onClick={() => onSwap(meal)} disabled={swapping}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm mt-2"
-            style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.3), rgba(168,85,247,0.2))', border: '1px solid rgba(168,85,247,0.35)', color: '#c084fc' }}>
-            {swapping ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
-            {swapping ? 'Finding alternative...' : 'Swap Meal'}
-          </motion.button>
+          {/* Action buttons */}
+          <div className="flex gap-2 mt-2">
+            {!detail && (
+              <motion.button whileTap={{ scale: 0.97 }} onClick={() => onGetRecipe(meal)} disabled={swapping}
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
+                style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.25), rgba(124,58,237,0.15))', border: '1px solid rgba(168,85,247,0.4)', color: '#c084fc' }}>
+                {swapping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                {swapping ? 'Loading...' : 'Get Recipe'}
+              </motion.button>
+            )}
+            <motion.button whileTap={{ scale: 0.97 }} onClick={() => onSwap(meal)} disabled={swapping}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#6b7280' }}>
+              {swapping ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
+              {swapping ? 'Swapping...' : 'Swap Meal'}
+            </motion.button>
+          </div>
         </div>
       </motion.div>
     </div>
