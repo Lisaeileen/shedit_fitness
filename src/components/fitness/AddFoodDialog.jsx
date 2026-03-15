@@ -795,11 +795,39 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
     }
   }, [initialMode, isOpen]);
 
-  const handleSearch = (val) => {
+  const searchTimerRef = useRef(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const handleSearch = useCallback((val) => {
     setFoodName(val);
     setAiSuggested(false);
-    setSuggestions(val.length >= 2 ? searchFoods(val) : []);
-  };
+    if (!val || val.length < 1) { setSuggestions([]); return; }
+
+    // Instant local results
+    const local = localSearch(val, 6);
+    setSuggestions(local);
+
+    // Debounced remote fetch (OFF API + AI)
+    clearTimeout(searchTimerRef.current);
+    if (val.length >= 2) {
+      setSearchLoading(true);
+      searchTimerRef.current = setTimeout(async () => {
+        const remote = await searchOpenFoodFacts(val);
+        // Merge: remote first, then any local not already represented
+        const remoteNames = new Set(remote.map(r => r.name.toLowerCase().slice(0, 20)));
+        const extra = local.filter(l => !remoteNames.has(l.name.toLowerCase().slice(0, 20)));
+        const merged = [...remote, ...extra].slice(0, 14);
+        // If still nothing, fall back to AI
+        if (merged.length === 0) {
+          const ai = await searchAI(val);
+          setSuggestions(ai);
+        } else {
+          setSuggestions(merged);
+        }
+        setSearchLoading(false);
+      }, 500);
+    }
+  }, []);
 
   const applyFood = (food) => {
     setFoodName(food.name || food.food_name || '');
