@@ -112,8 +112,12 @@ User profile:
 - Preferred cooked vegs: ${(goals.cooked_vegs || []).join(', ') || 'any'}
 - Meal priorities: budget=${goals.priorities?.budget || 50}, weight_loss=${goals.priorities?.weight_loss || 70}, quick=${goals.priorities?.quick || 50}
 
-Distribute calories: breakfast ~25%, lunch ~30%, dinner ~35%, snacks ~10% of daily goal.
-Each meal must NOT include any avoided foods. Use preferred cuisines and ingredients.
+Rules:
+1. Distribute calories: breakfast ~25%, lunch ~30%, dinner ~35%, snacks ~10% of daily goal.
+2. Each meal must NOT include avoided foods. Use preferred cuisines.
+3. Include global diversity (Nigerian, Korean, African, Asian, Mediterranean, etc.) where user's cuisines allow.
+4. For EVERY meal, provide exact ingredients with precise quantities and types (e.g. "2 large eggs", "½ cup chopped red bell pepper", "30g cheddar cheese", "1 tbsp olive oil").
+5. Provide 3-5 step-by-step cooking instructions per meal.
 
 Return JSON with a "days" array of 7 objects, one per day in order: monday through sunday.`;
 
