@@ -229,6 +229,9 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
                     placeholder="Portion (e.g. 150g, 1 cup)"
                     value={food.portion}
                     onChange={e => updateFood(idx, 'portion', e.target.value)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
                   />
                   <button onClick={() => setEditIdx(null)}
                     className="w-full py-2 rounded-xl text-sm font-bold text-white"
