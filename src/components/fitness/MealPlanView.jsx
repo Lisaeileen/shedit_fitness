@@ -15,13 +15,21 @@ const MEAL_CONFIG = [
   { key: 'snacks',    label: 'Snacks',    icon: 'apple',    calKey: 'snacks_calories',    protKey: 'snacks_protein',    carbKey: 'snacks_carbs',    fatKey: 'snacks_fat',    color: '#ec4899' },
 ];
 
-// Meal images from Unsplash
-const MEAL_IMAGES = {
-  breakfast: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&q=80',
-  lunch: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80',
-  dinner: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80',
-  snacks: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=600&q=80',
-};
+// Cache for AI-generated meal images
+const mealImageCache = {};
+
+async function getMealImage(mealName) {
+  if (!mealName) return null;
+  const key = mealName.slice(0, 60).toLowerCase();
+  if (mealImageCache[key]) return mealImageCache[key];
+  try {
+    const res = await base44.integrations.Core.GenerateImage({
+      prompt: `Professional food photography of ${mealName}, overhead shot on a beautiful dark plate, restaurant quality, vibrant colors, sharp focus, 4K`
+    });
+    mealImageCache[key] = res.url;
+    return res.url;
+  } catch { return null; }
+}
 
 // ── MealDetailModal ──────────────────────────────────────────────────────────
 
