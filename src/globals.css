@@ -136,7 +136,7 @@ textarea.gradient-text {
 
 /* Input dark */
 .input-dark {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(168, 85, 247, 0.2);
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -146,19 +146,32 @@ textarea.gradient-text {
   outline: none;
   font-size: max(16px, 15px);
   transition: border-color 0.2s, box-shadow 0.2s;
-  -webkit-user-select: text;
-  user-select: text;
+  -webkit-user-select: text !important;
+  user-select: text !important;
   -webkit-appearance: none;
   appearance: none;
   caret-color: #a855f7;
   touch-action: manipulation;
   opacity: 1 !important;
+  /* Prevent iOS from overriding text color */
+  -webkit-text-size-adjust: 100%;
 }
 .input-dark:focus {
-  border-color: rgba(168, 85, 247, 0.6);
+  border-color: rgba(168, 85, 247, 0.6) !important;
   box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
-.input-dark::placeholder { color: rgba(255,255,255,0.22); }
+.input-dark::placeholder {
+  color: rgba(255,255,255,0.25) !important;
+  -webkit-text-fill-color: rgba(255,255,255,0.25) !important;
+}
+/* Disabled state */
+.input-dark:disabled {
+  opacity: 0.5 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
 
 /* Ensure all inputs are interactive */
 input, textarea, select {
