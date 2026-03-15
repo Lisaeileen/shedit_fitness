@@ -43,6 +43,18 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
   const detailKey = `${meal.key}_detail`;
   const detail = dayPlan[detailKey];
   const isFav = favorites.includes(mealName);
+  const [mealImage, setMealImage] = useState(dayPlan[`${meal.key}_image`] || null);
+  const [imgLoading, setImgLoading] = useState(!mealImage);
+
+  useEffect(() => {
+    if (!mealImage && mealName) {
+      setImgLoading(true);
+      getMealImage(mealName).then(url => {
+        if (url) setMealImage(url);
+        setImgLoading(false);
+      });
+    }
+  }, [mealName]);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col" style={{ background: 'rgba(0,0,0,0.85)' }}>
@@ -51,8 +63,9 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
         className="mt-auto w-full max-w-md mx-auto rounded-t-3xl overflow-hidden flex flex-col"
         style={{ background: '#120630', maxHeight: '90vh' }}>
         {/* Hero image */}
-        <div className="relative flex-shrink-0" style={{ height: 200 }}>
-          <img src={MEAL_IMAGES[meal.key]} alt={mealName} className="w-full h-full object-cover" />
+        <div className="relative flex-shrink-0 flex items-center justify-center" style={{ height: 200, background: 'linear-gradient(135deg, #1a0640, #2a0a4a)' }}>
+          {imgLoading && <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />}
+          {mealImage && <img src={mealImage} alt={mealName} className="w-full h-full object-cover absolute inset-0" />}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #120630 0%, transparent 60%)' }} />
           <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center"
             style={{ background: 'rgba(0,0,0,0.5)' }}>
