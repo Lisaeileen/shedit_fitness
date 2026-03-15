@@ -165,6 +165,7 @@ export default function Plan() {
   const refresh = useCallback(() => setTick(t => t + 1), []);
   const [phase, setPhase] = useState('check');
   const [aiError, setAiError] = useState(false);
+  const [planTab, setPlanTab] = useState('meals');
 
   useEffect(() => {
     const goals = UserGoals.get();
