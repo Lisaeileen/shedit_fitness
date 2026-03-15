@@ -27,6 +27,11 @@ const DIET_STYLES = [
   { value: 'anti_inflammatory',   label: 'Anti-Inflammatory',      desc: 'Foods that reduce inflammation',       img: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400&q=80' },
   { value: 'dash',                label: 'DASH Diet',              desc: 'Lower blood pressure naturally',       img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80' },
   { value: 'flexitarian',         label: 'Flexitarian',            desc: 'Mostly plant, occasional meat',        img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { value: 'italian_style',       label: 'Italian Style',          desc: 'Pasta, olive oil, fresh produce',      img: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=400&q=80' },
+  { value: 'african_style',       label: 'African Cuisine',        desc: 'Rich stews, grains & spices',          img: 'https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=400&q=80' },
+  { value: 'clean_eating',        label: 'Clean Eating',           desc: 'Minimally processed, real food',       img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80' },
+  { value: 'high_carb',           label: 'High Carb',              desc: 'Energy-rich, performance focus',       img: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80' },
+  { value: 'low_fat',             label: 'Low Fat',                desc: 'Heart-healthy, lean eating',           img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80' },
 ];
 
 const DISLIKED_FOODS = [
