@@ -437,7 +437,7 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
   const [swapping, setSwapping] = useState(false);
 
   const dayPlan = plans.find(p => p.day_of_week === selectedDay);
-  const totalCals = MEAL_CONFIG.reduce((s, m) => s + (dayPlan?.[m.calKey] || 0), 0);
+  const totalCals = MEAL_CONFIG.reduce((s, mc) => s + (dayPlan?.[mc.calKey] || 0), 0);
 
   const saveFavorite = (name) => {
     setFavorites(favs => {
