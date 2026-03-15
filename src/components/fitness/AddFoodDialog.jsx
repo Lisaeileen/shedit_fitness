@@ -778,7 +778,8 @@ function BarcodeScanModal({ onConfirm, onClose }) {
             <p className="text-base font-bold text-white">Product Found!</p>
           </div>
           <div className="rounded-2xl p-4 mb-5" style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)' }}>
-            <p className="text-lg font-black text-white mb-1">{product.food_name}</p>
+            <p className="text-lg font-black text-white mb-0.5">{product.food_name}</p>
+            {product.brand && <p className="text-xs text-purple-300/60 mb-1">{product.brand}</p>}
             <p className="text-xs text-gray-400 mb-4">Serving: {product.serving_size}</p>
             <div className="grid grid-cols-4 gap-2">
               {[
