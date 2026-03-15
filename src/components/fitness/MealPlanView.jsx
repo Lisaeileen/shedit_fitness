@@ -341,11 +341,11 @@ function MealChatModal({ goals, onClose }) {
 
         {/* Input */}
         <div className="px-4 pb-6 pt-2 flex gap-2 flex-shrink-0">
-          <input className="flex-1 px-4 py-3 rounded-2xl text-sm text-white outline-none"
-            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+          <input className="flex-1 input-dark text-sm py-3"
             placeholder="Ask me anything about food..."
             value={input} onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') send(input); }} />
+            onKeyDown={e => { if (e.key === 'Enter') send(input); }}
+            autoComplete="off" autoCorrect="off" spellCheck="false" />
           <button onClick={() => send(input)} disabled={!input.trim() || loading}
             className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
             style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>
