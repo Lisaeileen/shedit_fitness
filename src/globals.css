@@ -209,14 +209,34 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ── Force inputs to show text clearly — white on dark backgrounds ── */
 input:not([type=range]),
-textarea {
+textarea,
+select {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   opacity: 1 !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
 }
 input:not([type=range])::placeholder,
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.3) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.3) !important;
   opacity: 1 !important;
+}
+
+/* Autocomplete / autofill — keep dark background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 60px #1a0835 inset !important;
+  box-shadow: 0 0 0 60px #1a0835 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #a855f7;
+}
+
+/* Predictive text / dropdown suggestions visible */
+input[list] option {
+  background: #1E0840;
+  color: #ffffff;
 }
