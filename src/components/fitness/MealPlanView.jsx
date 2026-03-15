@@ -572,6 +572,7 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}>
             {/* Daily summary */}
+
             <div className="glass-card-purple rounded-2xl p-4 mb-4">
               <div className="flex items-center justify-between mb-2">
                 <div>
