@@ -205,16 +205,19 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
                         <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: m.color }}>{m.label}</p>
                         <div className="flex items-baseline gap-1">
                           <input
-                           type="text"
-                           inputMode="decimal"
-                           pattern="[0-9]*\.?[0-9]*"
-                           style={{ ...inputStyleSm, padding: '4px 0', background: 'transparent', border: 'none', fontSize: 18, fontWeight: 700, width: '100%', color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
-                           value={food[m.field]}
-                           onChange={e => {
-                             const v = e.target.value;
-                             if (v === '' || /^\d*\.?\d*$/.test(v)) updateFood(idx, m.field, v);
-                           }}
-                           placeholder="0"
+                          type="text"
+                          inputMode="decimal"
+                          pattern="[0-9]*\.?[0-9]*"
+                          autoComplete="off"
+                          autoCorrect="off"
+                          spellCheck="false"
+                          style={{ ...inputStyleSm, padding: '4px 0', background: 'transparent', border: 'none', fontSize: 18, fontWeight: 700, width: '100%', color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
+                          value={food[m.field]}
+                          onChange={e => {
+                            const v = e.target.value;
+                            if (v === '' || /^\d*\.?\d*$/.test(v)) updateFood(idx, m.field, v);
+                          }}
+                          placeholder="0"
                           />
                           <span className="text-xs text-gray-500">{m.unit}</span>
                         </div>
