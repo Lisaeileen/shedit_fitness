@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, X, Check, Flame, Plus, Dumbbell, Timer } from 'lucide-react';
+import { ChevronRight, X, Check, Flame, Plus, Dumbbell, Timer, Zap, Home, Activity, Wind } from 'lucide-react';
+
+const ROUTINE_ICONS = { weight_loss: Flame, home: Home, strength: Dumbbell, cardio: Activity };
 import { DailyLogs } from '../../storage';
 import { format } from 'date-fns';
 
@@ -212,8 +214,10 @@ export default function WorkoutPanel() {
                 <motion.button key={r.id} whileTap={{ scale: 0.98 }} onClick={() => setSelected(r)}
                   className="w-full flex items-center gap-4 p-4 rounded-2xl text-left"
                   style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                    style={{ background: `${r.color}18` }}>{r.emoji}</div>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${r.color}18` }}>
+                    {React.createElement(ROUTINE_ICONS[r.id] || Activity, { className: 'w-5 h-5', style: { color: r.color } })}
+                  </div>
                   <div className="flex-1">
                     <p className="text-sm font-bold text-white">{r.label}</p>
                     <p className="text-xs text-gray-500">{r.desc}</p>
@@ -242,7 +246,7 @@ export default function WorkoutPanel() {
                         background: customType.id === t.id ? 'rgba(168,85,247,0.2)' : 'rgba(255,255,255,0.04)',
                         border: `1px solid ${customType.id === t.id ? 'rgba(168,85,247,0.4)' : 'rgba(255,255,255,0.07)'}`,
                       }}>
-                      <span className="text-xl">{t.emoji}</span>
+                        <Dumbbell className="w-4 h-4" style={{ color: customType.id === t.id ? '#c084fc' : '#6b7280' }} />
                       <span className="text-[10px] font-semibold" style={{ color: customType.id === t.id ? '#c084fc' : '#6b7280' }}>{t.label}</span>
                     </button>
                   ))}
