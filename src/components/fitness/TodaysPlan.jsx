@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, ChevronRight } from 'lucide-react';
+import { Check, ChevronRight, Utensils, Footprints, Droplets, Dumbbell, Activity } from 'lucide-react';
 
 function TaskRow({ Icon, label, done, detail, onTap }) {
   return (
@@ -37,36 +37,11 @@ export default function TodaysPlan({ dayLog, meals, steps, stepsGoal, onNavigate
   const exerciseGoal = dayLog?.exercise_goal || 30;
 
   const tasks = [
-    {
-      emoji: '🍽️',
-      label: 'Log your meals',
-      detail: totalMeals > 0 ? `${totalMeals} item${totalMeals > 1 ? 's' : ''} logged` : 'Nothing logged yet',
-      done: totalMeals >= 3,
-    },
-    {
-      emoji: '👟',
-      label: 'Reach step goal',
-      detail: `${steps.toLocaleString()} / ${stepsGoal.toLocaleString()} steps`,
-      done: steps >= stepsGoal,
-    },
-    {
-      emoji: '💧',
-      label: 'Drink water',
-      detail: `${water} / ${waterGoal} glasses`,
-      done: water >= waterGoal,
-    },
-    {
-      emoji: '🥩',
-      label: 'Hit protein target',
-      detail: `${protein}g / ${proteinGoal}g`,
-      done: protein >= proteinGoal,
-    },
-    {
-      emoji: '🏃',
-      label: 'Exercise',
-      detail: `${exercise} / ${exerciseGoal} min`,
-      done: exercise >= exerciseGoal,
-    },
+    { Icon: Utensils,   label: 'Log your meals',    detail: totalMeals > 0 ? `${totalMeals} item${totalMeals > 1 ? 's' : ''} logged` : 'Nothing logged yet', done: totalMeals >= 3 },
+    { Icon: Footprints, label: 'Reach step goal',   detail: `${steps.toLocaleString()} / ${stepsGoal.toLocaleString()} steps`, done: steps >= stepsGoal },
+    { Icon: Droplets,   label: 'Drink water',       detail: `${water} / ${waterGoal} glasses`, done: water >= waterGoal },
+    { Icon: Activity,   label: 'Hit protein target',detail: `${protein}g / ${proteinGoal}g`, done: protein >= proteinGoal },
+    { Icon: Dumbbell,   label: 'Exercise',          detail: `${exercise} / ${exerciseGoal} min`, done: exercise >= exerciseGoal },
   ];
 
   const doneCount = tasks.filter(t => t.done).length;
@@ -109,7 +84,7 @@ export default function TodaysPlan({ dayLog, meals, steps, stepsGoal, onNavigate
       {pct === 100 && (
         <div className="mt-3 rounded-2xl p-3 text-center"
           style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <p className="text-sm font-black text-green-400">🎉 Perfect day! All goals completed!</p>
+          <p className="text-sm font-black text-green-400">Perfect day — all goals completed!</p>
         </div>
       )}
     </motion.div>
