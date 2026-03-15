@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Camera, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { Plus, Camera, ChevronDown, ChevronUp, Trash2, Sunrise, Sun, Moon, Apple } from 'lucide-react';
 
 const mealConfig = {
-  breakfast: { emoji: '🌅', color: '#f59e0b', time: '7–10 AM' },
-  lunch:     { emoji: '☀️', color: '#a855f7', time: '12–2 PM' },
-  dinner:    { emoji: '🌙', color: '#6366f1', time: '6–9 PM' },
-  snack:     { emoji: '🍎', color: '#ec4899', time: 'Anytime' },
+  breakfast: { Icon: Sunrise, color: '#f59e0b', time: '7–10 AM' },
+  lunch:     { Icon: Sun,     color: '#a855f7', time: '12–2 PM' },
+  dinner:    { Icon: Moon,    color: '#6366f1', time: '6–9 PM' },
+  snack:     { Icon: Apple,   color: '#ec4899', time: 'Anytime' },
 };
 
 export default function MealCard({ type, entries = [], totalCalories = 0, onAddFood, onDeleteEntry }) {

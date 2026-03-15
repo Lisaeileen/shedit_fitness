@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight } from 'lucide-react';
 
-function TaskRow({ emoji, label, done, detail, onTap }) {
+function TaskRow({ Icon, label, done, detail, onTap }) {
   return (
     <motion.button
       whileTap={{ scale: 0.97 }}
@@ -14,7 +14,7 @@ function TaskRow({ emoji, label, done, detail, onTap }) {
         style={{ background: done ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.05)', border: done ? '1px solid rgba(16,185,129,0.35)' : '1px solid rgba(255,255,255,0.08)' }}>
         {done
           ? <Check className="w-4 h-4 text-green-400" />
-          : <span className="text-base">{emoji}</span>}
+          : <Icon className="w-4 h-4 text-gray-400" />}
       </div>
       <div className="flex-1 text-left">
         <p className="text-sm font-semibold" style={{ color: done ? '#6b7280' : '#ffffff', textDecoration: done ? 'line-through' : 'none' }}>{label}</p>

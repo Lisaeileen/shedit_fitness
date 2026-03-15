@@ -1,49 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { X, ChevronRight, Smile } from 'lucide-react';
+import { X, ChevronRight, Activity, Smile, TrendingUp, TrendingDown, Minus, Zap, BatteryLow, Moon, Sun, Target, Dumbbell, MoreHorizontal, Wind } from 'lucide-react';
 
 const QUESTIONS = [
   {
     id: 'mood',
     question: 'How do you feel today?',
-    emoji: '😊',
+    Icon: Activity,
     options: [
-      { value: 'great',   label: 'Great',   emoji: '😄' },
-      { value: 'good',    label: 'Good',    emoji: '🙂' },
-      { value: 'okay',    label: 'Okay',    emoji: '😐' },
-      { value: 'low',     label: 'Low',     emoji: '😔' },
+      { value: 'great',   label: 'Great',   Icon: TrendingUp },
+      { value: 'good',    label: 'Good',    Icon: Smile },
+      { value: 'okay',    label: 'Okay',    Icon: Minus },
+      { value: 'low',     label: 'Low',     Icon: TrendingDown },
     ]
   },
   {
     id: 'energy',
     question: 'Energy level?',
-    emoji: '⚡',
+    Icon: Zap,
     options: [
-      { value: 'high',   label: 'High',   emoji: '🔥' },
-      { value: 'medium', label: 'Medium', emoji: '⚡' },
-      { value: 'low',    label: 'Low',    emoji: '🪫' },
+      { value: 'high',   label: 'High',   Icon: Zap },
+      { value: 'medium', label: 'Medium', Icon: Minus },
+      { value: 'low',    label: 'Low',    Icon: BatteryLow },
     ]
   },
   {
     id: 'sleep',
     question: 'Sleep quality last night?',
-    emoji: '😴',
+    Icon: Moon,
     options: [
-      { value: 'great', label: 'Great',   emoji: '💤' },
-      { value: 'okay',  label: 'Okay',    emoji: '😴' },
-      { value: 'poor',  label: 'Poor',    emoji: '😫' },
+      { value: 'great', label: 'Great',   Icon: Sun },
+      { value: 'okay',  label: 'Okay',    Icon: Moon },
+      { value: 'poor',  label: 'Poor',    Icon: Wind },
     ]
   },
   {
     id: 'motivation',
     question: 'Motivation to reach your goals?',
-    emoji: '🎯',
+    Icon: Target,
     options: [
-      { value: 'pumped',  label: 'Pumped!',  emoji: '💪' },
-      { value: 'focused', label: 'Focused',  emoji: '🎯' },
-      { value: 'meh',     label: 'Meh',      emoji: '😶' },
-      { value: 'struggling', label: 'Struggling', emoji: '😮‍💨' },
+      { value: 'pumped',     label: 'Pumped',     Icon: Dumbbell },
+      { value: 'focused',    label: 'Focused',    Icon: Target },
+      { value: 'meh',        label: 'Meh',        Icon: Minus },
+      { value: 'struggling', label: 'Struggling', Icon: TrendingDown },
     ]
   },
 ];
