@@ -17,8 +17,8 @@ export default function HealthPermissionPrompt({ onAllow, onDeny }) {
             <Activity className="w-4 h-4 text-purple-400" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white">Enable Step Tracking</p>
-            <p className="text-[10px] text-purple-300/50">Uses your device motion sensor</p>
+            <p className="text-sm font-bold text-white">Enable Motion Tracking</p>
+            <p className="text-[10px] text-purple-300/50">Steps &amp; stairs — on device only</p>
           </div>
         </div>
         <button onClick={onDeny} className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
@@ -29,7 +29,7 @@ export default function HealthPermissionPrompt({ onAllow, onDeny }) {
       {/* Explanation */}
       <div className="px-4 pb-3">
         <p className="text-xs text-gray-400 leading-relaxed mb-3">
-          Shedit uses your device's motion sensor to automatically count your steps and calculate activity levels, helping improve your calorie tracking accuracy.
+          Shedit needs access to motion sensors to accurately track your steps and stairs climbed. Only actual stairs will be counted — elevators, escalators, and flat walking are ignored.
         </p>
 
         {/* Permissions list */}
