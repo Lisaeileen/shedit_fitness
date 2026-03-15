@@ -324,7 +324,8 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
               {/* Manual custom entry */}
               <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Or enter manually</p>
               <input style={inputStyleSm} placeholder="Food name" value={addCustom.name}
-                onChange={e => setAddCustom(a => ({ ...a, name: e.target.value }))} className="mb-2" />
+                onChange={e => setAddCustom(a => ({ ...a, name: e.target.value }))} className="mb-2"
+                autoComplete="off" autoCorrect="off" spellCheck="false" />
               <div className="grid grid-cols-2 gap-2 mb-2">
                 {[
                   { label: 'Calories', field: 'calories', color: '#a855f7' },
