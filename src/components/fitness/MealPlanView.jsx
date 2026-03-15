@@ -549,17 +549,8 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
             {/* Meal cards */}
             <div className="space-y-3 pb-4">
               {MEAL_CONFIG.map((meal, i) => (
-                <motion.div key={meal.key}
-                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
-                  className="rounded-2xl overflow-hidden cursor-pointer"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
-                  onClick={() => setSelectedMealModal(meal)}>
-                  <div className="flex">
-                    {/* Small image */}
-                    <div className="relative w-20 flex-shrink-0">
-                      <img src={MEAL_IMAGES[meal.key]} alt={meal.label} className="w-full h-full object-cover" style={{ minHeight: 80 }} />
-                      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent, rgba(10,4,26,0.7))' }} />
-                    </div>
+                <MealCard key={meal.key} meal={meal} dayPlan={dayPlan} index={i} onClick={() => setSelectedMealModal(meal)} />
+              ))}
                     <div className="flex-1 p-3.5">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
