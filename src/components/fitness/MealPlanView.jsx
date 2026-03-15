@@ -583,13 +583,13 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
                   <p className="text-[10px] text-gray-600 mb-1">Macros</p>
                   <div className="flex gap-3">
                     {[
-                      { label: 'P', total: MEAL_CONFIG.reduce((s,m)=>s+(dayPlan?.[m.protKey]||0),0), color: '#ec4899' },
-                      { label: 'C', total: MEAL_CONFIG.reduce((s,m)=>s+(dayPlan?.[m.carbKey]||0),0), color: '#3b82f6' },
-                      { label: 'F', total: MEAL_CONFIG.reduce((s,m)=>s+(dayPlan?.[m.fatKey]||0),0), color: '#f59e0b' },
-                    ].map(m => (
-                      <div key={m.label} className="text-center">
-                        <p className="text-xs font-black" style={{ color: m.color }}>{Math.round(m.total)}g</p>
-                        <p className="text-[9px] text-gray-600">{m.label}</p>
+                      { label: 'P', total: MEAL_CONFIG.reduce((s,mc)=>s+(dayPlan?.[mc.protKey]||0),0), color: '#ec4899' },
+                      { label: 'C', total: MEAL_CONFIG.reduce((s,mc)=>s+(dayPlan?.[mc.carbKey]||0),0), color: '#3b82f6' },
+                      { label: 'F', total: MEAL_CONFIG.reduce((s,mc)=>s+(dayPlan?.[mc.fatKey]||0),0), color: '#f59e0b' },
+                    ].map(macro => (
+                      <div key={macro.label} className="text-center">
+                        <p className="text-xs font-black" style={{ color: macro.color }}>{Math.round(macro.total)}g</p>
+                        <p className="text-[9px] text-gray-600">{macro.label}</p>
                       </div>
                     ))}
                   </div>
