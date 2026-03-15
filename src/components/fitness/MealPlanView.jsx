@@ -551,40 +551,6 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
               {MEAL_CONFIG.map((meal, i) => (
                 <MealCard key={meal.key} meal={meal} dayPlan={dayPlan} index={i} onClick={() => setSelectedMealModal(meal)} />
               ))}
-                    <div className="flex-1 p-3.5">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-1.5 mb-1">
-                            {meal.icon === 'sunrise' && <Sunrise className="w-3.5 h-3.5" style={{ color: meal.color }} />}
-                            {meal.icon === 'sun'     && <Sun     className="w-3.5 h-3.5" style={{ color: meal.color }} />}
-                            {meal.icon === 'moon'    && <Moon    className="w-3.5 h-3.5" style={{ color: meal.color }} />}
-                            {meal.icon === 'apple'   && <Apple   className="w-3.5 h-3.5" style={{ color: meal.color }} />}
-                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{meal.label}</p>
-                          </div>
-                          <p className="text-sm font-bold text-white leading-tight line-clamp-2">{dayPlan[meal.key] || 'Not planned'}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs font-bold" style={{ color: meal.color }}>{dayPlan[meal.calKey] || 0} kcal</span>
-                        <div className="flex gap-2">
-                          {[
-                            { l: 'P', k: meal.protKey, c: '#ec4899' },
-                            { l: 'C', k: meal.carbKey, c: '#3b82f6' },
-                            { l: 'F', k: meal.fatKey, c: '#f59e0b' },
-                          ].map(m => (
-                            <span key={m.l} className="text-[10px] font-semibold" style={{ color: m.c }}>
-                              {m.l}:{Math.round(dayPlan?.[m.k] || 0)}g
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center pr-3">
-                      <ChevronDown className="w-4 h-4 text-gray-600" />
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
             </div>
           </motion.div>
         </AnimatePresence>
