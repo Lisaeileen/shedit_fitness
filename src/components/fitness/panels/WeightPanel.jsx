@@ -90,8 +90,15 @@ export default function WeightPanel({ onClose }) {
       <div>
         <p className="text-xs text-purple-300/60 uppercase tracking-wider font-bold mb-2">Log Today's Weight</p>
         <div className="flex gap-2">
-          <input type="number" value={newW} onChange={e => setNewW(e.target.value)}
-            placeholder="e.g. 74.5" className="input-dark flex-1" />
+          <input
+            type="number"
+            inputMode="decimal"
+            value={newW}
+            onChange={e => setNewW(e.target.value)}
+            placeholder="e.g. 74.5"
+            className="input-dark flex-1"
+            style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff', caretColor: '#a855f7' }}
+          />
           <motion.button whileTap={{ scale: 0.95 }} onClick={logWeight}
             className="px-5 rounded-2xl font-bold text-white"
             style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)' }}>
