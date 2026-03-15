@@ -5,11 +5,14 @@ import { Bell, Droplets, Utensils, Dumbbell, Moon, Check } from 'lucide-react';
 const STORE_KEY = 'shedit_reminders';
 
 const DEFAULT_REMINDERS = [
-  { id: 'water',    icon: Droplets, label: 'Drink Water',   color: '#22d3ee', time: '08:00', enabled: false },
-  { id: 'lunch',    icon: Utensils, label: 'Log Lunch',     color: '#a855f7', time: '12:00', enabled: false },
-  { id: 'dinner',   icon: Utensils, label: 'Log Dinner',    color: '#ec4899', time: '18:00', enabled: false },
-  { id: 'exercise', icon: Dumbbell, label: 'Exercise Time', color: '#f59e0b', time: '07:00', enabled: false },
-  { id: 'sleep',    icon: Moon,     label: 'Sleep Time',    color: '#6366f1', time: '22:00', enabled: false },
+  { id: 'breakfast', icon: Utensils, label: 'Log Breakfast', color: '#f59e0b', time: '08:00', enabled: false },
+  { id: 'water',     icon: Droplets, label: 'Drink Water',   color: '#22d3ee', time: '10:00', enabled: false },
+  { id: 'lunch',     icon: Utensils, label: 'Log Lunch',     color: '#a855f7', time: '12:30', enabled: false },
+  { id: 'steps',     icon: Bell,     label: 'Check Steps',   color: '#c084fc', time: '17:00', enabled: false },
+  { id: 'dinner',    icon: Utensils, label: 'Log Dinner',    color: '#ec4899', time: '18:30', enabled: false },
+  { id: 'exercise',  icon: Dumbbell, label: 'Exercise Time', color: '#f59e0b', time: '07:00', enabled: false },
+  { id: 'weighin',   icon: Bell,     label: 'Weigh In',      color: '#10b981', time: '07:30', enabled: false },
+  { id: 'sleep',     icon: Moon,     label: 'Sleep Time',    color: '#6366f1', time: '22:00', enabled: false },
 ];
 
 function load() {
@@ -102,7 +105,7 @@ export default function RemindersPanel() {
             {r.enabled && (
               <div className="flex items-center gap-3">
                 <input type="time" value={r.time} onChange={e => setTime(r.id, e.target.value)}
-                  className="input-dark flex-1 text-sm" />
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: 12, padding: '9px 12px', color: '#ffffff', WebkitTextFillColor: '#ffffff', caretColor: '#a855f7', outline: 'none', fontSize: 14, flex: 1, colorScheme: 'dark' }} />
                 {permGranted && (
                   <button onClick={() => testNotification(r)}
                     className="px-3 py-2 rounded-xl text-xs text-purple-400 font-semibold flex-shrink-0"
