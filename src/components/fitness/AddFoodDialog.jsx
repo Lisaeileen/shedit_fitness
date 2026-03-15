@@ -289,20 +289,26 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
                   onChange={e => handleAddSearch(e.target.value)}
                   autoComplete="off"
                 />
-                {addSuggestions.length > 0 && (
+                {(addSuggestions.length > 0 || addSearchLoading) && (
                   <div className="absolute top-full left-0 right-0 mt-1 rounded-xl overflow-hidden z-10 shadow-2xl"
-                    style={{ background: '#1E0840', border: '1px solid rgba(168,85,247,0.2)' }}>
+                    style={{ background: '#1E0840', border: '1px solid rgba(168,85,247,0.2)', maxHeight: 260, overflowY: 'auto' }}>
                     {addSuggestions.map((s, i) => (
                       <button key={i} onMouseDown={e => { e.preventDefault(); addFromDB(s); }}
                         className="w-full flex items-center justify-between px-4 py-3 text-left"
                         style={{ borderBottom: i < addSuggestions.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-                        <div>
-                          <p className="text-sm font-medium text-white">{s.name}</p>
+                        <div className="flex-1 min-w-0 mr-2">
+                          <p className="text-sm font-medium text-white truncate">{s.name}</p>
                           <p className="text-[11px] text-purple-300/50">{s.serving} · P:{s.protein}g C:{s.carbs}g F:{s.fat}g</p>
                         </div>
-                        <span className="text-xs font-bold text-purple-400 ml-2">{s.calories} kcal</span>
+                        <span className="text-xs font-bold text-purple-400 ml-2 flex-shrink-0">{s.calories} kcal</span>
                       </button>
                     ))}
+                    {addSearchLoading && (
+                      <div className="flex items-center gap-2 px-4 py-2.5">
+                        <Loader2 className="w-3.5 h-3.5 text-purple-400 animate-spin" />
+                        <span className="text-[11px] text-purple-300/50">Searching global database...</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
