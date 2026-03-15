@@ -27,9 +27,9 @@ export default function MealCard({ type, entries = [], totalCalories = 0, onAddF
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
       {/* Header */}
       <div className="flex items-center gap-3 p-4">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: `${config.color}18` }}>
-          {config.emoji}
+          <config.Icon className="w-5 h-5" style={{ color: config.color }} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">

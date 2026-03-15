@@ -95,7 +95,7 @@ export default function DailyCheckIn({ onComplete }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
-            <Smile className="w-4 h-4 text-purple-400" />
+            <Activity className="w-4 h-4 text-purple-400" />
             <p className="text-[10px] text-purple-300/60 uppercase tracking-widest font-bold">Daily Check-In</p>
           </div>
           <button onClick={() => setOpen(false)}>
@@ -116,17 +116,20 @@ export default function DailyCheckIn({ onComplete }) {
             initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.22 }}>
             <p className="text-base font-black text-white mb-4">
-              {q.emoji} {q.question}
+              {q.question}
             </p>
             <div className="grid grid-cols-2 gap-2">
-              {q.options.map(opt => (
+              {q.options.map(opt => {
+                const OptIcon = opt.Icon;
+                return (
                 <motion.button key={opt.value} whileTap={{ scale: 0.93 }} onClick={() => handleSelect(opt.value)}
                   className="flex items-center gap-2.5 p-3 rounded-2xl text-left transition-all"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                  <span className="text-xl">{opt.emoji}</span>
+                  <OptIcon className="w-5 h-5 text-purple-400 flex-shrink-0" />
                   <span className="text-sm font-semibold text-white">{opt.label}</span>
                 </motion.button>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         </AnimatePresence>

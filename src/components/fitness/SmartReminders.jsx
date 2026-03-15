@@ -58,7 +58,7 @@ export default function SmartReminders({ dayLog, meals, steps, stepsGoal }) {
             transition={{ duration: 0.25 }}
             className="rounded-2xl px-4 py-3 flex items-center gap-3"
             style={{ background: `${r.color}14`, border: `1px solid ${r.color}30` }}>
-            <span className="text-xl flex-shrink-0">{r.emoji}</span>
+            <r.Icon className="w-4 h-4 flex-shrink-0" style={{ color: r.color }} />
             <p className="text-xs font-semibold flex-1" style={{ color: r.color }}>{r.text}</p>
             <button onClick={() => setDismissed(d => [...d, r.id])} className="flex-shrink-0 ml-1">
               <X className="w-3.5 h-3.5" style={{ color: r.color }} />
