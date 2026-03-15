@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Save, Check, Info } from 'lucide-react';
+import { Target, Save, Check, Info, TrendingDown, Scale, Dumbbell } from 'lucide-react';
 import { UserGoals, DailyLogs } from '../../storage';
 
 const GOALS = [
-  { id: 'lose_weight',  label: '🏃 Lose Weight',      desc: 'Burn fat, look and feel better',        calMult: 0.80, proteinMult: 2.2, carbMult: 0.40, fatMult: 0.30 },
-  { id: 'maintain',     label: '⚖️ Maintain Weight',   desc: 'Stay at your current weight',           calMult: 1.00, proteinMult: 1.8, carbMult: 0.50, fatMult: 0.35 },
-  { id: 'gain_muscle',  label: '💪 Gain Muscle',       desc: 'Build strength and size',               calMult: 1.15, proteinMult: 2.5, carbMult: 0.55, fatMult: 0.35 },
+  { id: 'lose_weight',  label: 'Lose Weight',    desc: 'Burn fat, look and feel better',  calMult: 0.80, proteinMult: 2.2, carbMult: 0.40, fatMult: 0.30 },
+  { id: 'maintain',     label: 'Maintain Weight',desc: 'Stay at your current weight',      calMult: 1.00, proteinMult: 1.8, carbMult: 0.50, fatMult: 0.35 },
+  { id: 'gain_muscle',  label: 'Gain Muscle',    desc: 'Build strength and size',          calMult: 1.15, proteinMult: 2.5, carbMult: 0.55, fatMult: 0.35 },
 ];
 
 const ACTIVITY = [
@@ -99,19 +99,30 @@ export default function GoalsPanel() {
       {/* Goal */}
       <div>
         <p className="text-[10px] text-purple-300/60 uppercase tracking-wider font-bold mb-2">Primary Goal</p>
+        {(() => {
+          const GoalIcons = { lose_weight: TrendingDown, maintain: Scale, gain_muscle: Dumbbell };
+          return (
         <div className="space-y-2">
-          {GOALS.map(g => (
+          {GOALS.map(g => {
+            const GIcon = GoalIcons[g.id];
+            return (
             <motion.button key={g.id} whileTap={{ scale: 0.98 }} onClick={() => setGoal(g.id)}
               className="w-full flex items-center gap-3 p-3.5 rounded-2xl text-left transition-all"
               style={{ background: goal === g.id ? 'rgba(168,85,247,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${goal === g.id ? 'rgba(168,85,247,0.4)' : 'rgba(255,255,255,0.07)'}` }}>
-              <span className="text-xl">{g.label.split(' ')[0]}</span>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: goal === g.id ? 'rgba(168,85,247,0.2)' : 'rgba(255,255,255,0.05)' }}>
+                <GIcon className="w-4 h-4" style={{ color: goal === g.id ? '#c084fc' : '#6b7280' }} />
+              </div>
               <div>
-                <p className="text-sm font-semibold text-white">{g.label.slice(g.label.indexOf(' ') + 1)}</p>
+                <p className="text-sm font-semibold text-white">{g.label}</p>
                 <p className="text-xs text-gray-500">{g.desc}</p>
               </div>
             </motion.button>
-          ))}
+            );
+          })}
         </div>
+          );
+        })()}
       </div>
 
       {/* Body Stats */}
