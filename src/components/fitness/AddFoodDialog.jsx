@@ -102,9 +102,25 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
     setFoods(f => f.map((item, i) => i === idx ? { ...item, [field]: value } : item));
   };
 
+  const [addSearchLoading, setAddSearchLoading] = useState(false);
+  const addSearchTimerRef = useRef(null);
+
   const handleAddSearch = (val) => {
     setAddSearch(val);
-    setAddSuggestions(val.length >= 2 ? searchFoods(val) : []);
+    if (!val || val.length < 1) { setAddSuggestions([]); return; }
+    const local = localSearch(val, 6);
+    setAddSuggestions(local);
+    clearTimeout(addSearchTimerRef.current);
+    if (val.length >= 2) {
+      setAddSearchLoading(true);
+      addSearchTimerRef.current = setTimeout(async () => {
+        const remote = await searchOpenFoodFacts(val);
+        const remoteNames = new Set(remote.map(r => r.name.toLowerCase().slice(0, 20)));
+        const extra = local.filter(l => !remoteNames.has(l.name.toLowerCase().slice(0, 20)));
+        setAddSuggestions([...remote, ...extra].slice(0, 12));
+        setAddSearchLoading(false);
+      }, 500);
+    }
   };
 
   const addFromDB = (food) => {
