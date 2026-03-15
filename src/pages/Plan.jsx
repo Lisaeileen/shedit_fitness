@@ -4,7 +4,7 @@ import { UserGoals, MealPlans } from '../components/storage';
 import OnboardingFlow from '../components/fitness/OnboardingFlow';
 import MealPlanView from '../components/fitness/MealPlanView';
 import WorkoutPanel from '../components/fitness/panels/WorkoutPanel';
-import { Loader2, Utensils, Dumbbell } from 'lucide-react';
+import { Loader2, Utensils, Dumbbell, TrendingUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { SheditWordmark } from '../components/fitness/SheditLogo';
 

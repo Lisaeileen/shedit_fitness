@@ -552,7 +552,9 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
         </AnimatePresence>
       ) : (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-14">
-          <div className="text-6xl mb-4">🍽️</div>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.2)' }}>
+            <Sparkles className="w-8 h-8 text-purple-400" />
+          </div>
           <h3 className="text-lg font-bold text-white mb-2">No plan yet</h3>
           <p className="text-sm text-gray-500 mb-6">Generate your AI personalized weekly meal plan</p>
           {onRegenerate && <button onClick={onRegenerate} className="btn-primary max-w-xs mx-auto">Generate My Plan</button>}
