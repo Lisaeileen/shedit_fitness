@@ -944,24 +944,34 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                     />
                   </div>
                   <AnimatePresence>
-                    {suggestions.length > 0 && (
+                    {(suggestions.length > 0 || searchLoading) && (
                       <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                         className="absolute top-full left-0 right-0 mt-1 rounded-2xl overflow-hidden z-10 shadow-2xl"
-                        style={{ background: '#1E0840', border: '1px solid rgba(168,85,247,0.2)' }}>
+                        style={{ background: '#1E0840', border: '1px solid rgba(168,85,247,0.2)', maxHeight: 320, overflowY: 'auto' }}>
                         {suggestions.map((s, i) => (
                           <button key={i} onMouseDown={e => { e.preventDefault(); applyFood(s); }}
                             className="w-full flex items-center justify-between px-4 py-3 text-left transition-colors"
                             style={{ borderBottom: i < suggestions.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-                            <div>
-                              <p className="text-sm font-medium text-white">{s.name}</p>
+                            <div className="flex-1 min-w-0 mr-2">
+                              <div className="flex items-center gap-1.5">
+                                <p className="text-sm font-medium text-white truncate">{s.name}</p>
+                                {s.source === 'ai' && <Sparkles className="w-2.5 h-2.5 text-purple-400 flex-shrink-0" />}
+                                {s.source === 'openfoodfacts' && <Globe className="w-2.5 h-2.5 text-blue-400 flex-shrink-0" />}
+                              </div>
                               <p className="text-[11px] text-purple-300/50">{s.serving}</p>
                             </div>
-                            <div className="text-right ml-2 flex-shrink-0">
+                            <div className="text-right flex-shrink-0">
                               <p className="text-xs font-bold text-purple-400">{s.calories} kcal</p>
                               <p className="text-[10px] text-gray-500">P:{s.protein}g C:{s.carbs}g F:{s.fat}g</p>
                             </div>
                           </button>
                         ))}
+                        {searchLoading && (
+                          <div className="flex items-center gap-2 px-4 py-2.5">
+                            <Loader2 className="w-3.5 h-3.5 text-purple-400 animate-spin" />
+                            <span className="text-[11px] text-purple-300/50">Searching global database...</span>
+                          </div>
+                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>
