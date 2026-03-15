@@ -220,8 +220,8 @@ function GroceryListModal({ plans, onClose }) {
               {Object.entries(groceries).filter(([, items]) => items?.length > 0).map(([cat, items]) => (
                 <div key={cat}>
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="text-base">{CATEGORY_ICONS[cat] || '📦'}</span>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{cat}</p>
+                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: CATEGORY_COLORS[cat] || '#a855f7' }} />
+                    <p className="text-xs font-bold uppercase tracking-widest" style={{ color: CATEGORY_COLORS[cat] || '#a855f7' }}>{CATEGORY_LABELS[cat] || cat}</p>
                   </div>
                   <div className="space-y-2">
                      {items.map((item, i) => (
