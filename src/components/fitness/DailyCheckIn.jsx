@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { X, Activity, TrendingUp, TrendingDown, Minus, Zap, BatteryLow, Moon, Sun, Target, Dumbbell, Wind } from 'lucide-react';
+import { X, Activity, TrendingUp, TrendingDown, Minus, Zap, BatteryLow, Moon, Sun, Target, Dumbbell, Wind, ThumbsUp } from 'lucide-react';
 
 const QUESTIONS = [
   {
@@ -10,7 +10,7 @@ const QUESTIONS = [
     Icon: Activity,
     options: [
       { value: 'great',   label: 'Great',   Icon: TrendingUp },
-      { value: 'good',    label: 'Good',    Icon: Smile },
+      { value: 'good',    label: 'Good',    Icon: ThumbsUp },
       { value: 'okay',    label: 'Okay',    Icon: Minus },
       { value: 'low',     label: 'Low',     Icon: TrendingDown },
     ]
