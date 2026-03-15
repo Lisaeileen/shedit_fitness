@@ -746,6 +746,9 @@ function BarcodeScanModal({ onConfirm, onClose }) {
                 value={manualCode}
                 onChange={e => setManualCode(e.target.value)}
                 inputMode="numeric"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
                 onKeyDown={e => e.key === 'Enter' && lookupBarcode(manualCode.trim())}
               />
               <button onClick={() => { if (intervalRef.current) clearInterval(intervalRef.current); streamRef.current?.getTracks().forEach(t => t.stop()); lookupBarcode(manualCode.trim()); }}
