@@ -166,8 +166,19 @@ Return JSON with a "days" array of 7 objects, one per day in order: monday throu
 
   const result = await base44.integrations.Core.InvokeLLM({ prompt, response_json_schema: schema });
   const planData = result.days || [];
-  // Ensure day_of_week is correct
-  return DAYS.map((day, i) => ({ day_of_week: day, ...(planData[i] || {}), day_of_week: day }));
+  return DAYS.map((day, i) => {
+    const d = planData[i] || {};
+    // Embed ingredients & instructions into _detail objects that MealPlanView can read
+    const withDetail = { day_of_week: day, ...d };
+    for (const m of ['breakfast', 'lunch', 'dinner', 'snacks']) {
+      const ing = d[`${m}_ingredients`];
+      const ins = d[`${m}_instructions`];
+      if (ing?.length || ins?.length) {
+        withDetail[`${m}_detail`] = { ingredients: ing || [], instructions: ins || [] };
+      }
+    }
+    return withDetail;
+  });
 }
 
 // ── Main Plan Page ────────────────────────────────────────────────────────────
