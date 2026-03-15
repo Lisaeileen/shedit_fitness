@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line } from 'recharts';
-import { TrendingDown, Footprints, Flame, Scale, Zap, Droplets, Dumbbell } from 'lucide-react';
+import { TrendingDown, Footprints, Flame, Scale, Zap, Droplets, Dumbbell, Minus } from 'lucide-react';
 import { DailyLogs, UserGoals } from '../../storage';
 import { subDays, format } from 'date-fns';
 
@@ -110,7 +110,7 @@ export default function WeeklyReportPanel() {
               <div key={i} className="flex-1 flex flex-col items-center gap-1">
                 <div className="w-full h-8 rounded-lg flex items-center justify-center text-base"
                   style={{ background: hit ? 'rgba(236,72,153,0.3)' : partial ? 'rgba(236,72,153,0.1)' : 'rgba(255,255,255,0.04)' }}>
-                  {hit ? '💪' : partial ? '〰️' : '—'}
+                  {hit ? <Zap className="w-3.5 h-3.5 text-pink-400" /> : partial ? <Minus className="w-3.5 h-3.5 text-pink-300/40" /> : <span className="text-[9px] text-gray-700">—</span>}
                 </div>
                 <p className="text-[9px] text-gray-600">{d.day}</p>
               </div>
@@ -169,7 +169,7 @@ export default function WeeklyReportPanel() {
 
       {/* Insight */}
       <div className="rounded-2xl p-4" style={{ background: 'rgba(168,85,247,0.06)', border: '1px solid rgba(168,85,247,0.15)' }}>
-        <p className="text-xs text-purple-300/80 font-semibold mb-1">💡 Weekly Insight</p>
+        <p className="text-xs text-purple-300/80 font-semibold mb-1">Weekly Insight</p>
         <p className="text-xs text-gray-400 leading-relaxed">{insight}</p>
       </div>
     </div>
