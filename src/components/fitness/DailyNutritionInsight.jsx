@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronUp, Utensils, AlertTriangle, CheckCircle, Dumbbell, Droplets, Footprints, Wheat, Activity } from 'lucide-react';
 
 function generateInsights(dayLog) {
   const insights = [];
@@ -10,43 +10,42 @@ function generateInsights(dayLog) {
   const proteinGoal = dayLog.protein_goal || 120;
   const carbs    = dayLog.carbs || 0;
   const carbsGoal = dayLog.carbs_goal || 250;
-  const fat      = dayLog.fat || 0;
   const water    = dayLog.water_glasses || 0;
   const waterGoal = dayLog.water_goal || 8;
   const steps    = dayLog.steps || 0;
   const stepsGoal = dayLog.steps_goal || 10000;
 
   if (cals === 0) {
-    insights.push({ type: 'info', emoji: '🍽️', text: "You haven't logged any food yet today. Tap + to start tracking!" });
+    insights.push({ type: 'info', Icon: Utensils, text: "You haven't logged any food yet today. Tap + to start tracking!" });
   } else if (cals > calsGoal) {
-    insights.push({ type: 'warn', emoji: '⚠️', text: `You're ${cals - calsGoal} kcal over your goal. Consider a lighter dinner or evening snack.` });
+    insights.push({ type: 'warn', Icon: AlertTriangle, text: `You're ${cals - calsGoal} kcal over your goal. Consider a lighter dinner or evening snack.` });
   } else if (cals >= calsGoal * 0.85) {
-    insights.push({ type: 'success', emoji: '✅', text: `Great job! You're at ${cals} kcal — very close to your ${calsGoal} kcal goal.` });
+    insights.push({ type: 'success', Icon: CheckCircle, text: `On track! You're at ${cals} kcal — very close to your ${calsGoal} kcal goal.` });
   }
 
   if (protein < proteinGoal * 0.5 && cals > 0) {
-    insights.push({ type: 'warn', emoji: '💪', text: `Low on protein — only ${protein}g of your ${proteinGoal}g goal. Try eggs, chicken, or Greek yogurt.` });
+    insights.push({ type: 'warn', Icon: Dumbbell, text: `Low on protein — only ${protein}g of your ${proteinGoal}g goal. Try eggs, chicken, or Greek yogurt.` });
   } else if (protein >= proteinGoal) {
-    insights.push({ type: 'success', emoji: '🥩', text: `Protein goal crushed! ${protein}g / ${proteinGoal}g — great for muscle and satiety!` });
+    insights.push({ type: 'success', Icon: Activity, text: `Protein goal reached! ${protein}g / ${proteinGoal}g — great for muscle and satiety.` });
   } else if (protein > 0) {
     const needed = proteinGoal - protein;
-    insights.push({ type: 'info', emoji: '🥚', text: `You still need ${needed}g protein today. Add a protein-rich snack to hit your goal.` });
+    insights.push({ type: 'info', Icon: Activity, text: `You still need ${needed}g protein today. Add a protein-rich snack to hit your goal.` });
   }
 
   if (water < 4 && cals > 0) {
-    insights.push({ type: 'warn', emoji: '💧', text: `Only ${water} glasses of water today. Staying hydrated reduces cravings and boosts energy!` });
+    insights.push({ type: 'warn', Icon: Droplets, text: `Only ${water} glasses of water today. Staying hydrated reduces cravings and boosts energy.` });
   } else if (water >= waterGoal) {
-    insights.push({ type: 'success', emoji: '💧', text: `Excellent hydration! ${water} glasses — well done!` });
+    insights.push({ type: 'success', Icon: Droplets, text: `Excellent hydration! ${water} glasses — well done.` });
   }
 
   if (steps >= stepsGoal) {
-    insights.push({ type: 'success', emoji: '👟', text: `Step goal complete! ${steps.toLocaleString()} steps — you're on fire today! 🔥` });
+    insights.push({ type: 'success', Icon: Footprints, text: `Step goal complete! ${steps.toLocaleString()} steps — great work today.` });
   } else if (steps > 0 && stepsGoal - steps < 2000) {
-    insights.push({ type: 'info', emoji: '🚶', text: `Just ${(stepsGoal - steps).toLocaleString()} more steps to hit your goal — a quick 15-min walk will do it!` });
+    insights.push({ type: 'info', Icon: Footprints, text: `Just ${(stepsGoal - steps).toLocaleString()} more steps to hit your goal — a quick 15-min walk will do it.` });
   }
 
   if (carbs > carbsGoal * 1.2 && cals > 0) {
-    insights.push({ type: 'warn', emoji: '🍞', text: `Your carb intake is higher than usual. Consider swapping refined carbs for veggies or legumes.` });
+    insights.push({ type: 'warn', Icon: Wheat, text: `Your carb intake is higher than usual. Consider swapping refined carbs for veggies or legumes.` });
   }
 
   return insights.slice(0, 3);
@@ -80,7 +79,7 @@ export default function DailyNutritionInsight({ dayLog }) {
               <motion.div key={i} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                 className="rounded-2xl px-4 py-3 flex items-start gap-3"
                 style={{ background: s.bg, border: `1px solid ${s.border}` }}>
-                <span className="text-base flex-shrink-0 mt-0.5">{ins.emoji}</span>
+                <ins.Icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: s.text }} />
                 <p className="text-xs leading-relaxed" style={{ color: s.text }}>{ins.text}</p>
               </motion.div>
             );
