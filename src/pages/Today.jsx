@@ -40,11 +40,14 @@ export default function Today() {
   // Health / step tracking
   const {
     steps: healthSteps,
+    stairs: healthStairs,
     source: stepsSource,
+    isClimbing,
     permission: motionPermission,
     requestPermission,
     denyPermission,
     updateStepsManually,
+    updateStairsManually,
   } = useHealthSteps(dateStr);
 
   const allLogs  = useMemo(() => DailyLogs.list(), [tick]);
@@ -91,7 +94,7 @@ export default function Today() {
   // Use health hook steps (auto-updated) or fall back to stored log
   const steps     = healthSteps || dayLog.steps || 0;
   const stepsGoal = dayLog.steps_goal || 10000;
-  const stairs    = dayLog.stairs_climbed || 0;
+  const stairs     = healthStairs > 0 ? healthStairs : (dayLog.stairs_climbed || 0);
   const stairsGoal = dayLog.stairs_goal || 20;
 
   const hour = new Date().getHours();
