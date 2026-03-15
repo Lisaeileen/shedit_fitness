@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { X, ChevronRight, Activity, Smile, TrendingUp, TrendingDown, Minus, Zap, BatteryLow, Moon, Sun, Target, Dumbbell, MoreHorizontal, Wind } from 'lucide-react';
+import { X, Activity, TrendingUp, TrendingDown, Minus, Zap, BatteryLow, Moon, Sun, Target, Dumbbell, Wind } from 'lucide-react';
 
 const QUESTIONS = [
   {
