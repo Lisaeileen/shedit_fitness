@@ -444,13 +444,14 @@ export default function OnboardingFlow({ onComplete }) {
                 <div className="relative mb-4">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
                   <input
-                    className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm text-white outline-none input-dark"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl text-sm outline-none input-dark"
                     placeholder="Search"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     autoComplete="off"
                     autoCorrect="off"
                     spellCheck="false"
+                    style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
                   />
                 </div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Common dislikes</p>
