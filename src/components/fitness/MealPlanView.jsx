@@ -190,7 +190,8 @@ function GroceryListModal({ plans, onClose }) {
     }).then(res => { setGroceries(res); setLoading(false); });
   }, []);
 
-  const CATEGORY_ICONS = { Produce: '🥦', Protein: '🍗', Dairy: '🥛', 'Grains & Pantry': '🌾', Other: '🛒' };
+  const CATEGORY_COLORS = { Produce: '#22c55e', Protein: '#ec4899', Dairy: '#60a5fa', 'Grains & Pantry': '#f59e0b', Other: '#a855f7' };
+  const CATEGORY_LABELS = { Produce: 'Produce', Protein: 'Proteins', Dairy: 'Dairy', 'Grains & Pantry': 'Grains & Pantry', Other: 'Other' };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col" style={{ background: 'rgba(0,0,0,0.85)' }}>
