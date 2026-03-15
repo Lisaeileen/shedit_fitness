@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, RefreshCw, ShoppingCart, MessageCircle, Heart, RefreshCcw, ChevronDown, ChevronUp, X, Send, Sparkles } from 'lucide-react';
+import { Loader2, RefreshCw, ShoppingCart, MessageCircle, Heart, RefreshCcw, ChevronDown, X, Send, Sparkles, Sunrise, Sun, Moon, Apple } from 'lucide-react';
 import { MealPlans } from '../storage';
 import { base44 } from '@/api/base44Client';
 import { getIngredientImage } from './ingredientImages';
@@ -9,10 +9,10 @@ const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'
 const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const MEAL_CONFIG = [
-  { key: 'breakfast', label: 'Breakfast', emoji: '🌅', calKey: 'breakfast_calories', protKey: 'breakfast_protein', carbKey: 'breakfast_carbs', fatKey: 'breakfast_fat', color: '#f59e0b' },
-  { key: 'lunch',     label: 'Lunch',     emoji: '☀️', calKey: 'lunch_calories',     protKey: 'lunch_protein',     carbKey: 'lunch_carbs',     fatKey: 'lunch_fat',     color: '#a855f7' },
-  { key: 'dinner',    label: 'Dinner',    emoji: '🌙', calKey: 'dinner_calories',    protKey: 'dinner_protein',    carbKey: 'dinner_carbs',    fatKey: 'dinner_fat',    color: '#6366f1' },
-  { key: 'snacks',    label: 'Snacks',    emoji: '🍎', calKey: 'snacks_calories',    protKey: 'snacks_protein',    carbKey: 'snacks_carbs',    fatKey: 'snacks_fat',    color: '#ec4899' },
+  { key: 'breakfast', label: 'Breakfast', icon: 'sunrise',  calKey: 'breakfast_calories', protKey: 'breakfast_protein', carbKey: 'breakfast_carbs', fatKey: 'breakfast_fat', color: '#f59e0b' },
+  { key: 'lunch',     label: 'Lunch',     icon: 'sun',      calKey: 'lunch_calories',     protKey: 'lunch_protein',     carbKey: 'lunch_carbs',     fatKey: 'lunch_fat',     color: '#a855f7' },
+  { key: 'dinner',    label: 'Dinner',    icon: 'moon',     calKey: 'dinner_calories',    protKey: 'dinner_protein',    carbKey: 'dinner_carbs',    fatKey: 'dinner_fat',    color: '#6366f1' },
+  { key: 'snacks',    label: 'Snacks',    icon: 'apple',    calKey: 'snacks_calories',    protKey: 'snacks_protein',    carbKey: 'snacks_carbs',    fatKey: 'snacks_fat',    color: '#ec4899' },
 ];
 
 // Meal images from Unsplash
