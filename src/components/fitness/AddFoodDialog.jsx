@@ -190,6 +190,9 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
                     placeholder="Food name"
                     value={food.name}
                     onChange={e => updateFood(idx, 'name', e.target.value)}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
                   />
                   <div className="grid grid-cols-2 gap-2">
                     {[
