@@ -656,12 +656,15 @@ function BarcodeScanModal({ onConfirm, onClose }) {
     if (data.status === 1 && data.product) {
       const p = data.product;
       const n = p.nutriments || {};
+      // Prefer serving-size values, fall back to per-100g
+      const hasServing = n['energy-kcal_serving'] || n.proteins_serving;
       setProduct({
-        food_name: p.product_name || 'Unknown Product',
-        calories: Math.round(n['energy-kcal_serving'] || n['energy-kcal'] || 0),
-        protein: Math.round(n.proteins_serving || n.proteins || 0),
-        carbs: Math.round(n.carbohydrates_serving || n.carbohydrates || 0),
-        fat: Math.round(n.fat_serving || n.fat || 0),
+        food_name: (p.product_name || p.product_name_en || 'Unknown Product').trim(),
+        brand: p.brands ? p.brands.split(',')[0].trim() : '',
+        calories: Math.round(hasServing ? (n['energy-kcal_serving'] || 0) : (n['energy-kcal_100g'] || n['energy-kcal'] || 0)),
+        protein: Math.round((hasServing ? (n.proteins_serving || 0) : (n.proteins_100g || n.proteins || 0)) * 10) / 10,
+        carbs: Math.round((hasServing ? (n.carbohydrates_serving || 0) : (n.carbohydrates_100g || n.carbohydrates || 0)) * 10) / 10,
+        fat: Math.round((hasServing ? (n.fat_serving || 0) : (n.fat_100g || n.fat || 0)) * 10) / 10,
         serving_size: p.serving_size || '100g',
       });
       setPhase('found');
