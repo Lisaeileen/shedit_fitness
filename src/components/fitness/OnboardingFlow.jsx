@@ -581,7 +581,7 @@ export default function OnboardingFlow({ onComplete }) {
                   autoComplete="given-name"
                   autoCorrect="off"
                   spellCheck="false"
-                  style={{ fontSize: 18, fontWeight: 600, caretColor: '#a855f7' }}
+                  style={{ fontSize: 18, fontWeight: 600, caretColor: '#a855f7', color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
                 />
               </>
             )}
