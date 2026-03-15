@@ -357,6 +357,70 @@ function MealChatModal({ goals, onClose }) {
   );
 }
 
+// ── MealCard ─────────────────────────────────────────────────────────────────
+
+function MealCard({ meal, dayPlan, index, onClick }) {
+  const [imgUrl, setImgUrl] = useState(dayPlan[`${meal.key}_image`] || null);
+
+  useEffect(() => {
+    const mealName = dayPlan[meal.key];
+    if (!imgUrl && mealName) {
+      getMealImage(mealName).then(url => { if (url) setImgUrl(url); });
+    }
+  }, [dayPlan[meal.key]]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}
+      className="rounded-2xl overflow-hidden cursor-pointer"
+      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+      onClick={onClick}>
+      <div className="flex">
+        <div className="relative w-20 flex-shrink-0 flex items-center justify-center"
+          style={{ minHeight: 80, background: 'linear-gradient(135deg, #1a0640, #2a0a4a)' }}>
+          {imgUrl
+            ? <img src={imgUrl} alt={meal.label} className="w-full h-full object-cover absolute inset-0" style={{ minHeight: 80 }} />
+            : <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(168,85,247,0.15)' }}>
+                {meal.icon === 'sunrise' && <Sunrise className="w-4 h-4" style={{ color: meal.color }} />}
+                {meal.icon === 'sun'     && <Sun     className="w-4 h-4" style={{ color: meal.color }} />}
+                {meal.icon === 'moon'    && <Moon    className="w-4 h-4" style={{ color: meal.color }} />}
+                {meal.icon === 'apple'   && <Apple   className="w-4 h-4" style={{ color: meal.color }} />}
+              </div>
+          }
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent, rgba(10,4,26,0.6))' }} />
+        </div>
+        <div className="flex-1 p-3.5">
+          <div className="flex items-center gap-1.5 mb-1">
+            {meal.icon === 'sunrise' && <Sunrise className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+            {meal.icon === 'sun'     && <Sun     className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+            {meal.icon === 'moon'    && <Moon    className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+            {meal.icon === 'apple'   && <Apple   className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{meal.label}</p>
+          </div>
+          <p className="text-sm font-bold text-white leading-tight line-clamp-2">{dayPlan[meal.key] || 'Not planned'}</p>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-xs font-bold" style={{ color: meal.color }}>{dayPlan[meal.calKey] || 0} kcal</span>
+            <div className="flex gap-2">
+              {[
+                { l: 'P', k: meal.protKey, c: '#ec4899' },
+                { l: 'C', k: meal.carbKey, c: '#3b82f6' },
+                { l: 'F', k: meal.fatKey, c: '#f59e0b' },
+              ].map(m => (
+                <span key={m.l} className="text-[10px] font-semibold" style={{ color: m.c }}>
+                  {m.l}:{Math.round(dayPlan?.[m.k] || 0)}g
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center pr-3">
+          <ChevronDown className="w-4 h-4 text-gray-600" />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 // ── Main MealPlanView ─────────────────────────────────────────────────────────
 
 export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRefresh, onRedo, onRegenerate }) {
