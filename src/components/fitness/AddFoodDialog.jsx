@@ -1043,16 +1043,19 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
                       <label className="text-[10px] font-bold uppercase tracking-widest" style={{ color: f.color }}>{f.label}</label>
                       <div className="flex items-baseline gap-1 mt-1">
                         <input
-                          type="text"
-                          inputMode="decimal"
-                          pattern="[0-9]*\.?[0-9]*"
-                          value={f.val}
-                          onChange={e => {
-                            const v = e.target.value;
-                            if (v === '' || /^\d*\.?\d*$/.test(v)) f.set(v);
-                          }}
-                          placeholder="0"
-                          style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', caretColor: '#a855f7', outline: 'none', border: 'none', fontSize: 22, fontWeight: 900, width: '100%', minWidth: 0 }}
+                         type="text"
+                         inputMode="decimal"
+                         pattern="[0-9]*\.?[0-9]*"
+                         autoComplete="off"
+                         autoCorrect="off"
+                         spellCheck="false"
+                         value={f.val}
+                         onChange={e => {
+                           const v = e.target.value;
+                           if (v === '' || /^\d*\.?\d*$/.test(v)) f.set(v);
+                         }}
+                         placeholder="0"
+                         style={{ background: 'transparent', color: '#ffffff', WebkitTextFillColor: '#ffffff', caretColor: '#a855f7', outline: 'none', border: 'none', fontSize: 22, fontWeight: 900, width: '100%', minWidth: 0 }}
                         />
                         <span className="text-xs text-gray-500 flex-shrink-0">{f.unit}</span>
                       </div>
