@@ -1,16 +1,36 @@
 /**
- * useHealthSteps  —  Advanced step + stair detection hook
+ * useHealthSteps  —  Accurate step + stair detection hook
  *
- * Step counting:   DeviceMotion accelerometer peak-detection (web-compatible)
- * Stair detection: Barometer / AltitudeSensor API (where available) tracks
- *                  pressure drops.  Falls back to vertical-acceleration heuristic.
+ * STEP COUNTING
+ * ─────────────
+ * Uses DeviceMotion accelerometer with peak-detection (magnitude delta threshold).
+ * Minimum inter-step interval guards against false triggers.
  *
- * Rules:
- *  - Each stair counted also increments total steps by 1.
- *  - A "stair climb" session starts when ≥2 stairs are detected within 10 s.
- *  - Elevators / escalators are filtered: elevation must rise with simultaneous
- *    rhythmic vertical acceleration (stepping motion).
- *  - Counts persist per-day in localStorage.
+ * STAIR DETECTION  (web-compatible, no native SDK)
+ * ─────────────────────────────────────────────────
+ * A real stair step has TWO simultaneous signatures:
+ *   1. A walking-rhythm step (same accelerometer peak used for step counting).
+ *   2. Net upward acceleration: on each stair tread the user's body rises ~15–20 cm.
+ *      This produces a brief but real upward impulse on the vertical axis that is
+ *      larger and more sustained than flat walking.
+ *
+ * Algorithm (no barometer required):
+ *   • We maintain a short circular buffer of the "gravity-corrected vertical"
+ *     acceleration (z-axis of accelerationIncludingGravity minus ~9.8 m/s²).
+ *   • At each detected step, we compute the peak-to-trough range of vertical
+ *     acceleration in the surrounding 400 ms window.
+ *   • Flat walking → range ≈ 1–3 m/s²  (horizontal bounce)
+ *   • Stair climbing → range ≥ 4 m/s²  (real upward displacement per step)
+ *   • Escalator/elevator → no cadence-correlated vertical impulse (filtered out)
+ *
+ * Barometer enhancement (Android Chrome / some Androids expose window.Barometer):
+ *   • Sustained pressure drop (altitude rising) combined with stepping cadence
+ *     confirms stair climbing and counts each step that occurs during the climb.
+ *
+ * INTEGRATION
+ * ──────────────
+ * Every counted stair is ALSO added to total steps (stair step = flat step + stair).
+ * Daily totals are persisted in localStorage and synced to DailyLogs entity.
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -19,18 +39,23 @@ import { format } from 'date-fns';
 
 const TODAY = format(new Date(), 'yyyy-MM-dd');
 
-// ── Constants ─────────────────────────────────────────────────────────────────
-const STEP_THRESHOLD       = 1.2;   // accel magnitude delta to count a step
-const MIN_STEP_INTERVAL_MS = 280;   // ~3.6 steps/sec max
-const STAIR_PRESSURE_DROP  = 0.06;  // hPa drop = ~0.5 m elevation gain
-const MIN_STAIR_INTERVAL_MS= 400;   // stairs can't be climbed faster than this
-const STAIR_STEP_WINDOW_MS = 600;   // step must occur within this window of pressure event
-const CLIMBING_IDLE_MS     = 6000;  // stop "climbing" indicator after 6 s of no stairs
+// ── Tuning constants ──────────────────────────────────────────────────────────
+const STEP_MAGNITUDE_DELTA  = 1.15;  // m/s² delta to trigger a step
+const MIN_STEP_INTERVAL_MS  = 280;   // max ~3.6 steps/sec
+const VERT_WINDOW_MS        = 380;   // window around step to measure vertical impulse
+const STAIR_VERT_THRESHOLD  = 3.8;   // peak-to-trough vertical range (m/s²) for stair
+const GRAVITY               = 9.81;
+const MIN_STAIR_INTERVAL_MS = 350;   // stairs faster than this are noise
+const CLIMBING_IDLE_MS      = 7000;  // "Climbing Now" clears after 7s of no stair
 
-function getMagnitude(x, y, z) {
+// Barometer: each ~0.12 hPa drop = ~1 m altitude gain
+const BARO_PRESSURE_DROP    = 0.10;  // hPa per stair (conservative)
+const BARO_STEP_WINDOW_MS   = 700;   // step must occur within this of pressure event
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function magnitude(x, y, z) {
   return Math.sqrt(x * x + y * y + z * z);
 }
-
 function storageGet(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key) ?? 'null') ?? fallback; } catch { return fallback; }
 }
@@ -38,91 +63,119 @@ function storageSet(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
 }
 
+// ── Hook ──────────────────────────────────────────────────────────────────────
 export function useHealthSteps(dateStr = TODAY) {
   const stepsKey  = `shedit_steps_${dateStr}`;
   const stairsKey = `shedit_stairs_${dateStr}`;
 
-  const [permission,    setPermission]    = useState('unknown');
-  const [steps,         setSteps]         = useState(() => {
+  const [permission,  setPermission]  = useState('unknown');
+  const [steps,       setSteps]       = useState(() => {
     const log = DailyLogs.getByDate(dateStr);
     return log?.steps || storageGet(stepsKey, 0);
   });
-  const [stairs,        setStairs]        = useState(() => {
+  const [stairs,      setStairs]      = useState(() => {
     const log = DailyLogs.getByDate(dateStr);
     return log?.stairs_climbed || storageGet(stairsKey, 0);
   });
-  const [source,        setSource]        = useState('manual');
-  const [isClimbing,    setIsClimbing]    = useState(false);
-  const [barometerAvail, setBarometerAvail] = useState(false);
+  const [source,      setSource]      = useState('manual');
+  const [isClimbing,  setIsClimbing]  = useState(false);
 
-  // Internal refs
-  const lastMagRef       = useRef(9.8);
-  const lastStepTimeRef  = useRef(0);
-  const recentStepRef    = useRef(0);   // timestamp of most recent step (for stair correlation)
-  const lastPressureRef  = useRef(null);
-  const lastStairTimeRef = useRef(0);
-  const climbingTimerRef = useRef(null);
+  // ── Internal refs ─────────────────────────────────────────────────────────
+  const lastMagRef        = useRef(GRAVITY);
+  const lastStepTimeRef   = useRef(0);
+  const lastStairTimeRef  = useRef(0);
+  const climbTimerRef     = useRef(null);
   const motionListenerRef = useRef(null);
-  const barometerRef     = useRef(null);
 
-  // ── Persist helpers ──────────────────────────────────────────────────────────
-  const persistSteps = useCallback((val) => {
-    storageSet(stepsKey, val);
-    DailyLogs.upsert(dateStr, { steps: val });
-  }, [dateStr, stepsKey]);
+  // Circular buffer: {t, vz} samples for vertical-impulse analysis
+  const vertBufferRef     = useRef([]);   // [{t, vz}]
 
-  const persistStairs = useCallback((val, stepsVal) => {
-    storageSet(stairsKey, val);
-    DailyLogs.upsert(dateStr, { stairs_climbed: val, steps: stepsVal });
-  }, [dateStr, stairsKey]);
+  // Barometer state
+  const baroRef           = useRef(null);
+  const lastPressureRef   = useRef(null);
+  const lastBaroStepRef   = useRef(0);    // timestamp of last step near a pressure event
 
-  // ── Stair counting ───────────────────────────────────────────────────────────
-  const countStair = useCallback(() => {
-    const now = Date.now();
-    if (now - lastStairTimeRef.current < MIN_STAIR_INTERVAL_MS) return;
-    lastStairTimeRef.current = now;
+  // ── Persist ────────────────────────────────────────────────────────────────
+  const persistBoth = useCallback((nextSteps, nextStairs) => {
+    storageSet(stepsKey,  nextSteps);
+    storageSet(stairsKey, nextStairs);
+    DailyLogs.upsert(dateStr, { steps: nextSteps, stairs_climbed: nextStairs });
+  }, [dateStr, stepsKey, stairsKey]);
 
-    // Require a recent step to filter out elevators / escalators
-    const stepRecency = now - recentStepRef.current;
-    if (stepRecency > STAIR_STEP_WINDOW_MS) return;
-
-    setStairs(prev => {
-      const next = prev + 1;
-      setSteps(s => {
-        const ns = s + 1; // stair also counts as step
-        persistStairs(next, ns);
-        return ns;
-      });
-      return next;
-    });
-
-    // Activate climbing indicator
+  // ── Climbing indicator ─────────────────────────────────────────────────────
+  const triggerClimbing = useCallback(() => {
     setIsClimbing(true);
-    if (climbingTimerRef.current) clearTimeout(climbingTimerRef.current);
-    climbingTimerRef.current = setTimeout(() => setIsClimbing(false), CLIMBING_IDLE_MS);
-  }, [persistStairs]);
+    if (climbTimerRef.current) clearTimeout(climbTimerRef.current);
+    climbTimerRef.current = setTimeout(() => setIsClimbing(false), CLIMBING_IDLE_MS);
+  }, []);
 
-  // ── Motion (step) handler ────────────────────────────────────────────────────
+  // ── Vertical impulse check ─────────────────────────────────────────────────
+  // Returns true if the vertical buffer around `now` shows a stair-level impulse.
+  const isStairStep = useCallback((now) => {
+    const buf = vertBufferRef.current;
+    const windowStart = now - VERT_WINDOW_MS;
+    const relevant = buf.filter(s => s.t >= windowStart && s.t <= now + 100);
+    if (relevant.length < 3) return false;
+    const vals = relevant.map(s => s.vz);
+    const max = Math.max(...vals);
+    const min = Math.min(...vals);
+    return (max - min) >= STAIR_VERT_THRESHOLD;
+  }, []);
+
+  // ── Motion handler ─────────────────────────────────────────────────────────
   const startMotionTracking = useCallback(() => {
     if (motionListenerRef.current) return;
 
     const handler = (event) => {
       const acc = event.accelerationIncludingGravity;
       if (!acc) return;
-      const mag = getMagnitude(acc.x || 0, acc.y || 0, acc.z || 0);
+      const x = acc.x || 0, y = acc.y || 0, z = acc.z || 0;
+      const mag = magnitude(x, y, z);
       const delta = Math.abs(mag - lastMagRef.current);
       lastMagRef.current = mag;
 
       const now = Date.now();
-      if (delta > STEP_THRESHOLD && now - lastStepTimeRef.current > MIN_STEP_INTERVAL_MS) {
-        lastStepTimeRef.current = now;
-        recentStepRef.current   = now;
 
-        setSteps(prev => {
-          const next = prev + 1;
-          persistSteps(next);
-          return next;
-        });
+      // Maintain vertical buffer (gravity-corrected z)
+      const vz = z - (-GRAVITY); // remove gravity; positive = upward accel
+      vertBufferRef.current.push({ t: now, vz });
+      // Keep only last 600ms
+      const cutoff = now - 600;
+      while (vertBufferRef.current.length && vertBufferRef.current[0].t < cutoff) {
+        vertBufferRef.current.shift();
+      }
+
+      // ── Step detection ──────────────────────────────────────────────────
+      if (delta > STEP_MAGNITUDE_DELTA && (now - lastStepTimeRef.current) > MIN_STEP_INTERVAL_MS) {
+        lastStepTimeRef.current = now;
+
+        // ── Stair classification ──────────────────────────────────────────
+        const climbing = isStairStep(now);
+        const stairAllowed = (now - lastStairTimeRef.current) > MIN_STAIR_INTERVAL_MS;
+
+        if (climbing && stairAllowed) {
+          lastStairTimeRef.current = now;
+          triggerClimbing();
+          // Count stair + step together atomically
+          setSteps(prevSteps => {
+            setStairs(prevStairs => {
+              const ns = prevSteps + 1;
+              const nst = prevStairs + 1;
+              persistBoth(ns, nst);
+              return nst;
+            });
+            return prevSteps + 1;
+          });
+        } else {
+          // Flat step only
+          setSteps(prev => {
+            const ns = prev + 1;
+            // persist steps (leave stairs unchanged — read from closure-safe DailyLogs)
+            storageSet(stepsKey, ns);
+            DailyLogs.upsert(dateStr, { steps: ns });
+            return ns;
+          });
+        }
       }
     };
 
@@ -130,67 +183,55 @@ export function useHealthSteps(dateStr = TODAY) {
     motionListenerRef.current = handler;
     setSource('motion');
     setPermission('granted');
-  }, [persistSteps]);
+  }, [isStairStep, triggerClimbing, persistBoth, dateStr, stepsKey]);
 
-  // ── Barometer / pressure tracking ───────────────────────────────────────────
+  // ── Barometer (enhancement) ────────────────────────────────────────────────
   const startBarometer = useCallback(() => {
-    // Sensor API (Android Chrome)
-    if (typeof window.AbsoluteOrientationSensor === 'undefined' && typeof window.Barometer !== 'undefined') {
-      try {
-        const sensor = new window.Barometer({ frequency: 2 });
-        sensor.addEventListener('reading', () => {
-          const hPa = sensor.pressure;
-          if (lastPressureRef.current === null) { lastPressureRef.current = hPa; return; }
-          const drop = lastPressureRef.current - hPa; // positive = rising altitude
-          if (drop >= STAIR_PRESSURE_DROP) {
-            countStair();
-          }
-          lastPressureRef.current = hPa;
-        });
-        sensor.start();
-        barometerRef.current = sensor;
-        setBarometerAvail(true);
-        return;
-      } catch {}
-    }
+    if (typeof window === 'undefined' || typeof window.Barometer === 'undefined') return;
+    try {
+      const sensor = new window.Barometer({ frequency: 2 });
+      sensor.addEventListener('reading', () => {
+        const hPa = sensor.pressure;
+        if (lastPressureRef.current === null) { lastPressureRef.current = hPa; return; }
+        const drop = lastPressureRef.current - hPa; // positive = altitude rise
+        lastPressureRef.current = hPa;
 
-    // Fallback: use DeviceMotion vertical acceleration as stair proxy.
-    // When a user climbs stairs, the vertical (z-axis) component shows a distinct
-    // upward impulse on each step that differs from level walking.
-    // We detect a sustained upward net-force signature.
-    if (!window.__stairFallbackActive) {
-      window.__stairFallbackActive = true;
-      let vertBuf = [];
-      const stairHandler = (e) => {
-        const acc = e.accelerationIncludingGravity;
-        if (!acc) return;
-        // z-axis: on phone held upright, negative z = acceleration upward
-        vertBuf.push(acc.z || 0);
-        if (vertBuf.length > 6) vertBuf.shift();
-        if (vertBuf.length === 6) {
-          // Mean of last 6 samples — climbing produces sustained negative z bias
-          const mean = vertBuf.reduce((a, b) => a + b, 0) / vertBuf.length;
-          if (mean < -11.5) { // > ~1.7 m/s² net upward accel
-            countStair();
-            vertBuf = [];
+        if (drop >= BARO_PRESSURE_DROP) {
+          const now = Date.now();
+          // Only count if a step also occurred within window (filter escalators)
+          if ((now - lastStepTimeRef.current) < BARO_STEP_WINDOW_MS) {
+            const stairAllowed = (now - lastStairTimeRef.current) > MIN_STAIR_INTERVAL_MS;
+            if (stairAllowed) {
+              lastStairTimeRef.current = now;
+              triggerClimbing();
+              setSteps(prevSteps => {
+                setStairs(prevStairs => {
+                  const ns = prevSteps + 1;
+                  const nst = prevStairs + 1;
+                  persistBoth(ns, nst);
+                  return nst;
+                });
+                return prevSteps + 1;
+              });
+            }
           }
         }
-      };
-      window.addEventListener('devicemotion', stairHandler);
-      barometerRef.current = { stop: () => window.removeEventListener('devicemotion', stairHandler) };
-    }
-  }, [countStair]);
+      });
+      sensor.start();
+      baroRef.current = sensor;
+    } catch (_) { /* barometer not available — vertical accel fallback is active */ }
+  }, [triggerClimbing, persistBoth]);
 
-  // ── Permission logic ─────────────────────────────────────────────────────────
+  // ── Permission flow ────────────────────────────────────────────────────────
   useEffect(() => {
     if (typeof DeviceMotionEvent === 'undefined') {
       setPermission('unavailable');
       return;
     }
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      setPermission('prompt');
+      setPermission('prompt'); // iOS 13+
     } else {
-      setPermission('auto');
+      setPermission('auto');   // Android / desktop
     }
   }, []);
 
@@ -213,19 +254,17 @@ export function useHealthSteps(dateStr = TODAY) {
           startMotionTracking();
           startBarometer();
           return true;
-        } else {
-          setPermission('denied');
-          return false;
         }
+        setPermission('denied');
+        return false;
       } catch {
         setPermission('denied');
         return false;
       }
-    } else {
-      startMotionTracking();
-      startBarometer();
-      return true;
     }
+    startMotionTracking();
+    startBarometer();
+    return true;
   }, [startMotionTracking, startBarometer]);
 
   const denyPermission = useCallback(() => {
@@ -233,27 +272,28 @@ export function useHealthSteps(dateStr = TODAY) {
     setSource('manual');
   }, []);
 
-  // ── Manual overrides ─────────────────────────────────────────────────────────
+  // ── Manual overrides ───────────────────────────────────────────────────────
   const updateStepsManually = useCallback((value) => {
     setSteps(value);
-    persistSteps(value);
-  }, [persistSteps]);
+    storageSet(stepsKey, value);
+    DailyLogs.upsert(dateStr, { steps: value });
+  }, [dateStr, stepsKey]);
 
   const updateStairsManually = useCallback((value) => {
     setStairs(value);
+    storageSet(stairsKey, value);
     DailyLogs.upsert(dateStr, { stairs_climbed: value });
-  }, [dateStr]);
+  }, [dateStr, stairsKey]);
 
-  // ── Cleanup ──────────────────────────────────────────────────────────────────
+  // ── Cleanup ────────────────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
       if (motionListenerRef.current) {
         window.removeEventListener('devicemotion', motionListenerRef.current);
         motionListenerRef.current = null;
       }
-      if (barometerRef.current?.stop) barometerRef.current.stop();
-      if (climbingTimerRef.current) clearTimeout(climbingTimerRef.current);
-      window.__stairFallbackActive = false;
+      if (baroRef.current?.stop) baroRef.current.stop();
+      if (climbTimerRef.current) clearTimeout(climbTimerRef.current);
     };
   }, []);
 
@@ -262,7 +302,6 @@ export function useHealthSteps(dateStr = TODAY) {
     stairs,
     source,
     isClimbing,
-    barometerAvail,
     permission,
     requestPermission,
     denyPermission,

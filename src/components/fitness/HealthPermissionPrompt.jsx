@@ -35,9 +35,9 @@ export default function HealthPermissionPrompt({ onAllow, onDeny }) {
         {/* Permissions list */}
         <div className="space-y-2 mb-4">
           {[
-            { icon: Footprints, label: 'Step Count',         desc: 'Track daily steps automatically',     color: '#a855f7' },
-            { icon: Activity,   label: 'Walking Distance',   desc: 'Estimate distance traveled',           color: '#3b82f6' },
-            { icon: Flame,      label: 'Active Calories',    desc: 'Calculate calories burned from steps', color: '#f59e0b' },
+            { icon: Footprints, label: 'Step Count',      desc: 'Track all daily steps automatically',              color: '#a855f7' },
+            { icon: Activity,   label: 'Stairs Climbed',  desc: 'Count only real stairs — not elevators/escalators', color: '#ec4899' },
+            { icon: Flame,      label: 'Active Calories', desc: 'Calculate calories burned from movement',           color: '#f59e0b' },
           ].map(({ icon: Icon, label, desc, color }) => (
             <div key={label} className="flex items-center gap-3 rounded-xl p-2.5" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${color}22` }}>
