@@ -106,30 +106,24 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
             ))}
           </div>
 
-          {/* AI-generated details */}
+          {/* Ingredients & Instructions */}
           {detail ? (
             <>
-              {detail.ingredients && (
+              {detail.ingredients && detail.ingredients.length > 0 && (
                 <div className="mb-4">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Ingredients</p>
                   <div className="space-y-2">
                     {detail.ingredients.map((ing, i) => (
-                      <div key={i} className="flex items-center gap-3 px-2 py-1.5 rounded-xl"
-                        style={{ background: 'rgba(255,255,255,0.03)' }}>
-                        <img
-                          src={getIngredientImage(ing)}
-                          alt={ing}
-                          className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
-                          onError={e => { e.target.src = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=120&q=70'; }}
-                          loading="lazy"
-                        />
-                        <span className="text-sm text-gray-300 leading-tight">{ing}</span>
+                      <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-xl"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#a855f7' }} />
+                        <span className="text-sm text-white leading-tight">{ing}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              {detail.instructions && (
+              {detail.instructions && detail.instructions.length > 0 && (
                 <div className="mb-4">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Instructions</p>
                   <div className="space-y-2">
@@ -145,8 +139,8 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
               )}
             </>
           ) : (
-            <div className="py-4 text-center">
-              <p className="text-sm text-gray-600">Tap "Swap Meal" to get full recipe details from AI</p>
+            <div className="py-3 text-center">
+              <p className="text-xs text-gray-600">Tap "Get Recipe" below to load full ingredients & instructions</p>
             </div>
           )}
 
