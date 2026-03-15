@@ -7,7 +7,6 @@ import { format } from 'date-fns';
 const ROUTINES = [
   {
     id: 'weight_loss',
-    emoji: '🔥',
     label: 'Weight Loss Circuit',
     desc: 'Burn fat with full body circuits',
     duration: 30,
@@ -25,7 +24,6 @@ const ROUTINES = [
   },
   {
     id: 'home',
-    emoji: '🏠',
     label: 'Home Workout',
     desc: 'No equipment needed',
     duration: 25,
@@ -43,7 +41,6 @@ const ROUTINES = [
   },
   {
     id: 'strength',
-    emoji: '💪',
     label: 'Strength Training',
     desc: 'Build muscle and get stronger',
     duration: 40,
@@ -61,7 +58,6 @@ const ROUTINES = [
   },
   {
     id: 'cardio',
-    emoji: '🏃',
     label: 'Cardio Routine',
     desc: 'Improve endurance and heart health',
     duration: 35,
@@ -79,12 +75,12 @@ const ROUTINES = [
 ];
 
 const CUSTOM_TYPES = [
-  { id: 'run',      emoji: '🏃', label: 'Run / Walk',     calsPerMin: 8 },
-  { id: 'cycling',  emoji: '🚴', label: 'Cycling',        calsPerMin: 7 },
-  { id: 'yoga',     emoji: '🧘', label: 'Yoga',           calsPerMin: 4 },
-  { id: 'swimming', emoji: '🏊', label: 'Swimming',       calsPerMin: 9 },
-  { id: 'hiking',   emoji: '🥾', label: 'Hiking',         calsPerMin: 6 },
-  { id: 'other',    emoji: '⚡',  label: 'Other',          calsPerMin: 5 },
+  { id: 'run',      label: 'Run / Walk', calsPerMin: 8 },
+  { id: 'cycling',  label: 'Cycling',   calsPerMin: 7 },
+  { id: 'yoga',     label: 'Yoga',      calsPerMin: 4 },
+  { id: 'swimming', label: 'Swimming',  calsPerMin: 9 },
+  { id: 'hiking',   label: 'Hiking',    calsPerMin: 6 },
+  { id: 'other',    label: 'Other',     calsPerMin: 5 },
 ];
 
 const inputStyle = {
