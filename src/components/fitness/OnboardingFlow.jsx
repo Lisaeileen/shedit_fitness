@@ -466,6 +466,7 @@ export default function OnboardingFlow({ onComplete }) {
                     autoComplete="off"
                     autoCorrect="off"
                     spellCheck="false"
+                    style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff' }}
                     onKeyDown={e => {
                       if (e.key === 'Enter' && answers.custom_disliked.trim()) {
                         toggleArr('disliked_foods', answers.custom_disliked.trim()); set('custom_disliked', '');
