@@ -421,24 +421,26 @@ function AIScanModal({ onConfirm, onClose }) {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a precise nutrition analysis assistant. Carefully analyze this food image and identify EVERY distinct food item visible.
+        model: 'gemini_3_flash',
+        prompt: `You are a professional nutritionist with expert food recognition skills. Carefully examine this food image and identify EVERY SINGLE distinct food item visible.
 
-Be very specific about each item:
-- "Grilled Chicken Breast" not "meat"
-- "Brown Rice" or "White Rice" not "grain"
-- "Romaine Lettuce" not "vegetables"
-- "Bell Pepper (red)" not "pepper"
-- Count individual items like eggs (e.g. "3 Boiled Eggs")
+CRITICAL RULES:
+1. Be highly specific: "Grilled Chicken Breast 150g" not "chicken", "3 Hard-Boiled Eggs" not "eggs", "Romaine Lettuce (1 cup chopped)" not "salad"
+2. Count individual items: if you see 3 eggs, say "3 Hard-Boiled Eggs"
+3. Identify sauces, dressings, toppings separately (e.g. "Caesar Dressing 2 tbsp", "Olive Oil drizzle")
+4. For mixed dishes, break down every component (e.g. Chicken Caesar Salad → "Grilled Chicken Breast", "Romaine Lettuce", "Parmesan Cheese", "Croutons", "Caesar Dressing")
+5. Estimate accurate calories for the EXACT portion visible in the image
 
-For EACH food item provide:
-- name: specific food name
-- portion: estimated portion size (e.g. "150g", "1 cup", "3 eggs")
-- calories: estimated kcal for this portion
-- protein_g: protein in grams
-- carbs_g: carbohydrates in grams
-- fat_g: fat in grams
+For EACH food item return:
+- name: specific descriptive food name with preparation method
+- portion: precise quantity (e.g. "150g", "1 cup", "3 large", "2 tbsp")
+- calories: kcal for this exact portion
+- protein_g: grams of protein
+- carbs_g: grams of carbohydrates
+- fat_g: grams of fat
+- confidence: "high", "medium", or "low"
 
-Be as accurate as possible. If the image is unclear, still do your best to identify foods.`,
+If image quality is poor, estimate generously and flag as low confidence.`,
         file_urls: [file_url],
         response_json_schema: {
           type: 'object',
