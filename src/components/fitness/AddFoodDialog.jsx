@@ -153,7 +153,7 @@ function AIScanReviewScreen({ foods: initialFoods, capturedImage, lowConfidence,
 
         {lowConfidence && (
           <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)' }}>
-            <p className="text-xs text-amber-400">⚠️ Food may not be fully detected. Please review and edit.</p>
+            <p className="text-xs text-amber-400">Food may not be fully detected. Please review and edit.</p>
           </div>
         )}
 
@@ -470,7 +470,7 @@ Be as accurate as possible. If the image is unclear, still do your best to ident
 
       {error ? (
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <p className="text-5xl mb-4">📷</p>
+          <Camera className="w-12 h-12 text-gray-500 mb-4" />
           <p className="text-white font-bold mb-2">Camera unavailable</p>
           <p className="text-sm text-gray-400 mb-6">{error}</p>
           <button onClick={onClose} className="btn-primary max-w-xs">Go Back</button>
