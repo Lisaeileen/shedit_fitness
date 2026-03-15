@@ -25,11 +25,12 @@ const inputStyle = {
   WebkitTextFillColor: '#ffffff',
   caretColor: '#a855f7',
   outline: 'none',
-  fontSize: 15,
+  fontSize: 18,
+  fontWeight: 700,
   width: '100%',
   textAlign: 'center',
-  fontWeight: 700,
-  fontSize: 18,
+  WebkitAppearance: 'none',
+  appearance: 'none',
 };
 
 function calcTargets(currentW, heightCm, age = 30, gender = 'male', activityId, goalId) {
