@@ -51,9 +51,12 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
             <X className="w-4 h-4 text-white" />
           </button>
           <div className="absolute bottom-3 left-4 flex items-center gap-2">
-            <span className="text-lg">{meal.emoji}</span>
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{meal.label}</span>
-          </div>
+              {meal.icon === 'sunrise' && <Sunrise className="w-4 h-4" style={{ color: meal.color }} />}
+              {meal.icon === 'sun'     && <Sun     className="w-4 h-4" style={{ color: meal.color }} />}
+              {meal.icon === 'moon'    && <Moon    className="w-4 h-4" style={{ color: meal.color }} />}
+              {meal.icon === 'apple'   && <Apple   className="w-4 h-4" style={{ color: meal.color }} />}
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{meal.label}</span>
+            </div>
         </div>
 
         <div className="overflow-y-auto no-scrollbar px-5 pb-8 pt-3">
@@ -514,7 +517,10 @@ export default function MealPlanView({ goals, mealPlans: initialPlans = [], onRe
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-1.5 mb-1">
-                            <span className="text-sm">{meal.emoji}</span>
+                            {meal.icon === 'sunrise' && <Sunrise className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+                            {meal.icon === 'sun'     && <Sun     className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+                            {meal.icon === 'moon'    && <Moon    className="w-3.5 h-3.5" style={{ color: meal.color }} />}
+                            {meal.icon === 'apple'   && <Apple   className="w-3.5 h-3.5" style={{ color: meal.color }} />}
                             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{meal.label}</p>
                           </div>
                           <p className="text-sm font-bold text-white leading-tight line-clamp-2">{dayPlan[meal.key] || 'Not planned'}</p>

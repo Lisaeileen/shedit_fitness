@@ -32,7 +32,7 @@ function GeneratingScreen({ userName }) {
       <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         className="w-24 h-24 rounded-3xl flex items-center justify-center mb-8"
         style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 0 48px rgba(168,85,247,0.5)' }}>
-        <span className="text-4xl">🍽️</span>
+        <Loader2 className="w-10 h-10 text-white" />
       </motion.div>
       <h2 className="text-2xl font-black text-white mb-3">
         {userName ? `Building your plan, ${userName}…` : 'Building your plan…'}
@@ -67,7 +67,7 @@ function ReadyBanner({ userName, goals, onView }) {
         transition={{ type: 'spring', damping: 14 }}
         className="w-28 h-28 rounded-3xl flex items-center justify-center mb-6"
         style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 0 48px rgba(168,85,247,0.4)' }}>
-        <span className="text-5xl">🏔️</span>
+        <TrendingUp className="w-12 h-12 text-white" />
       </motion.div>
       <motion.h2 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
         className="text-2xl font-black text-white mb-4 leading-snug">
