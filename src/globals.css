@@ -167,6 +167,11 @@ input, textarea, select {
   touch-action: manipulation;
 }
 
+/* Time input — dark color scheme so clock icon is white */
+input[type=time] {
+  color-scheme: dark;
+}
+
 /* Number input — hide spinners */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
