@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { UserGoals, MealPlans } from '../components/storage';
 import OnboardingFlow from '../components/fitness/OnboardingFlow';
 import MealPlanView from '../components/fitness/MealPlanView';
-import { Loader2 } from 'lucide-react';
+import WorkoutPanel from '../components/fitness/panels/WorkoutPanel';
+import { Loader2, Utensils, Dumbbell } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { SheditWordmark } from '../components/fitness/SheditLogo';
 
@@ -219,20 +220,45 @@ export default function Plan() {
   return (
     <div>
       <div className="px-4 pt-2">
-        <div className="flex items-center justify-between mb-5 pt-2">
+        <div className="flex items-center justify-between mb-4 pt-2">
           <div>
             <p className="text-[10px] text-purple-300/50 font-medium">Your weekly</p>
             <SheditWordmark size={30} />
           </div>
         </div>
+        {/* Plan tabs: Nutrition / Workout */}
+        <div className="flex p-1 rounded-2xl mb-4" style={{ background: 'rgba(255,255,255,0.04)' }}>
+          {[['meals', Utensils, 'Meal Plan'], ['workout', Dumbbell, 'Workouts']].map(([k, Icon, label]) => (
+            <button key={k} onClick={() => setPlanTab(k)}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all"
+              style={planTab === k
+                ? { background: 'linear-gradient(135deg,#7c3aed,#a855f7)', color: 'white' }
+                : { color: '#4b5563' }}>
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
-      <MealPlanView
-        goals={currentGoals}
-        mealPlans={MealPlans.list()}
-        onRefresh={refresh}
-        onRedo={() => { UserGoals.clear(); MealPlans.deleteAll(); setPhase('onboarding'); }}
-        onRegenerate={handleRegenerate}
-      />
+
+      <AnimatePresence mode="wait">
+        {planTab === 'meals' ? (
+          <motion.div key="meals" initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 8 }} transition={{ duration: 0.18 }}>
+            <MealPlanView
+              goals={currentGoals}
+              mealPlans={MealPlans.list()}
+              onRefresh={refresh}
+              onRedo={() => { UserGoals.clear(); MealPlans.deleteAll(); setPhase('onboarding'); }}
+              onRegenerate={handleRegenerate}
+            />
+          </motion.div>
+        ) : (
+          <motion.div key="workout" initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }} transition={{ duration: 0.18 }}
+            className="px-4 pb-28">
+            <WorkoutPanel />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
