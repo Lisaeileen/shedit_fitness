@@ -99,6 +99,10 @@ function ReadyBanner({ userName, goals, onView }) {
 async function generateAIPlan(goals) {
   const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
+  const lovedCuisines = Object.entries(goals.cuisine_prefs || {}).filter(([,v])=>v==='love').map(([k])=>k);
+  const dislikedCuisines = Object.entries(goals.cuisine_prefs || {}).filter(([,v])=>v==='dislike').map(([k])=>k);
+  const hasCuisinePrefs = lovedCuisines.length > 0;
+
   const prompt = `You are an expert nutritionist. Create a detailed 7-day personalized meal plan.
 
 User profile:
@@ -106,18 +110,30 @@ User profile:
 - Diet style: ${(goals.diet_styles || []).join(', ') || 'balanced'}
 - Daily calorie target: ${goals.daily_calorie_target || 2000} kcal
 - Foods to avoid: ${(goals.disliked_foods || []).join(', ') || 'none'}
-- Favourite cuisines: ${Object.entries(goals.cuisine_prefs || {}).filter(([,v])=>v==='love').map(([k])=>k).join(', ') || 'any'}
-- Cuisines to avoid: ${Object.entries(goals.cuisine_prefs || {}).filter(([,v])=>v==='dislike').map(([k])=>k).join(', ') || 'none'}
+- PREFERRED CUISINES (VERY IMPORTANT - base meals PRIMARILY on these): ${hasCuisinePrefs ? lovedCuisines.join(', ') : 'any global cuisine'}
+- Cuisines to avoid: ${dislikedCuisines.length > 0 ? dislikedCuisines.join(', ') : 'none'}
 - Preferred fruits: ${(goals.fruits || []).join(', ') || 'any'}
 - Preferred cooked vegs: ${(goals.cooked_vegs || []).join(', ') || 'any'}
 - Meal priorities: budget=${goals.priorities?.budget || 50}, weight_loss=${goals.priorities?.weight_loss || 70}, quick=${goals.priorities?.quick || 50}
 
-Rules:
+CRITICAL CUISINE RULES:
+${hasCuisinePrefs
+  ? `- The user loves: ${lovedCuisines.join(', ')}. MOST meals MUST be authentic dishes from these cuisines.
+- Example: if Nigerian is selected → use Jollof Rice, Egusi Soup, Suya, Pepper Soup, Moi Moi, Eba with soup, etc.
+- Example: if Korean is selected → use Bibimbap, Bulgogi, Kimchi Fried Rice, Japchae, Doenjang Jjigae, etc.
+- Mix the selected cuisines intelligently across the 7 days. Do NOT default to generic Western food.`
+  : `- Use a diverse mix of global cuisines (Nigerian, Ghanaian, Korean, Indian, Mediterranean, Caribbean, etc.)`}
+
+NON-REPETITION RULES:
+- NO meal name should repeat across the 7 days.
+- Each day must have completely different dishes from the previous day.
+- Vary protein sources: alternate between chicken, fish, beef, legumes, eggs, etc.
+
+Other rules:
 1. Distribute calories: breakfast ~25%, lunch ~30%, dinner ~35%, snacks ~10% of daily goal.
-2. Each meal must NOT include avoided foods. Use preferred cuisines.
-3. Include global diversity (Nigerian, Korean, African, Asian, Mediterranean, etc.) where user's cuisines allow.
-4. For EVERY meal, provide exact ingredients with precise quantities and types (e.g. "2 large eggs", "½ cup chopped red bell pepper", "30g cheddar cheese", "1 tbsp olive oil").
-5. Provide 3-5 step-by-step cooking instructions per meal.
+2. Each meal must NOT include avoided foods.
+3. For EVERY meal, provide exact ingredients with precise quantities (e.g. "2 large eggs", "½ cup chopped red bell pepper").
+4. Provide 3-5 step-by-step cooking instructions per meal.
 
 Return JSON with a "days" array of 7 objects, one per day in order: monday through sunday.`;
 
