@@ -880,7 +880,7 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
     if (!val || val.length < 1) { setSuggestions([]); return; }
 
     // Instant local results
-    const local = localSearch(val, 6);
+    const local = localSearch(val, 15);
     setSuggestions(local);
 
     // Debounced remote fetch (OFF API + AI)
