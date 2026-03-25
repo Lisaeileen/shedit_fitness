@@ -561,7 +561,7 @@ export const FOOD_DB = [
  * Local fuzzy search — instant, zero latency.
  * Scores by relevance: exact start > word-boundary start > substring match.
  */
-export function localSearch(query, limit = 10) {
+export function localSearch(query, limit = 20) {
   if (!query || query.length < 1) return [];
   const q = query.toLowerCase().trim();
   const scored = FOOD_DB
