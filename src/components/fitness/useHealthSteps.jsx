@@ -149,33 +149,14 @@ export function useHealthSteps(dateStr = TODAY) {
       if (delta > STEP_MAGNITUDE_DELTA && (now - lastStepTimeRef.current) > MIN_STEP_INTERVAL_MS) {
         lastStepTimeRef.current = now;
 
-        // ── Stair classification ──────────────────────────────────────────
-        const climbing = isStairStep(now);
-        const stairAllowed = (now - lastStairTimeRef.current) > MIN_STAIR_INTERVAL_MS;
-
-        if (climbing && stairAllowed) {
-          lastStairTimeRef.current = now;
-          triggerClimbing();
-          // Count stair + step together atomically
-          setSteps(prevSteps => {
-            setStairs(prevStairs => {
-              const ns = prevSteps + 1;
-              const nst = prevStairs + 1;
-              persistBoth(ns, nst);
-              return nst;
-            });
-            return prevSteps + 1;
-          });
-        } else {
-          // Flat step only
-          setSteps(prev => {
-            const ns = prev + 1;
-            // persist steps (leave stairs unchanged — read from closure-safe DailyLogs)
-            storageSet(stepsKey, ns);
-            DailyLogs.upsert(dateStr, { steps: ns });
-            return ns;
-          });
-        }
+        // Stair auto-detection disabled (too many false positives on web).
+        // Steps only — stairs tracked manually via Log Stairs button.
+        setSteps(prev => {
+          const ns = prev + 1;
+          storageSet(stepsKey, ns);
+          DailyLogs.upsert(dateStr, { steps: ns });
+          return ns;
+        });
       }
     };
 
