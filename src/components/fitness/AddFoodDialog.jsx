@@ -813,11 +813,45 @@ function BarcodeScanModal({ onConfirm, onClose }) {
   );
 }
 
+// ── Meal type picker (shown after scan/voice/barcode) ─────────────────────────
+function MealTypePicker({ onSelect }) {
+  return (
+    <div className="fixed inset-0 z-[95] flex items-end"
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}>
+      <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+        transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+        className="w-full max-w-md mx-auto rounded-t-3xl pt-5 pb-10 px-5"
+        style={{ background: '#1A0835', borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+        <div className="w-10 h-1 rounded-full bg-white/20 mx-auto mb-5" />
+        <p className="text-lg font-black text-white mb-2">Which meal is this for?</p>
+        <p className="text-sm text-gray-400 mb-5">Select where to add the logged food</p>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { type: 'breakfast', label: 'Breakfast',  icon: '🌅', color: '#f59e0b' },
+            { type: 'lunch',     label: 'Lunch',      icon: '☀️',  color: '#22c55e' },
+            { type: 'dinner',    label: 'Dinner',     icon: '🌙', color: '#a855f7' },
+            { type: 'snack',     label: 'Snack',      icon: '🍎', color: '#ec4899' },
+          ].map(m => (
+            <motion.button key={m.type} whileTap={{ scale: 0.95 }} onClick={() => onSelect(m.type)}
+              className="flex items-center gap-3 p-4 rounded-2xl text-left"
+              style={{ background: `${m.color}15`, border: `1px solid ${m.color}35` }}>
+              <span className="text-2xl">{m.icon}</span>
+              <p className="text-sm font-bold text-white">{m.label}</p>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 // ── Main AddFoodDialog ─────────────────────────────────────────────────────────
 export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'snack', date, initialMode = 'manual' }) {
   const [showCamera,  setShowCamera]  = useState(false);
   const [showVoice,   setShowVoice]   = useState(false);
   const [showBarcode, setShowBarcode] = useState(false);
+  const [pendingScanFoods, setPendingScanFoods] = useState(null); // for AI scan meal-type prompt
+  const [pendingFood, setPendingFood] = useState(null); // for voice/barcode meal-type prompt
   const [foodName, setFoodName]       = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(mealType);
