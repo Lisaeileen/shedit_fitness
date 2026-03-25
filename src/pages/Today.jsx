@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+// Nutrition totals are recalculated from actual meal entries (not accumulated) for accuracy
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Footprints, ArrowUp, Bell, Smartphone, MoveUp } from 'lucide-react';
