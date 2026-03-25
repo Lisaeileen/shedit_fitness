@@ -956,9 +956,41 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
 
   const handleClose = () => { resetForm(); onClose(); };
 
+  // Voice result: hold food, prompt for meal type
+  const handleVoiceResult = (r) => {
+    setShowVoice(false);
+    setPendingFood(r);
+  };
+
+  // Barcode result: hold food, prompt for meal type
+  const handleBarcodeResult = (r) => {
+    setShowBarcode(false);
+    setPendingFood(r);
+  };
+
+  const confirmPendingMealType = (mealTypeChosen) => {
+    if (pendingFood) {
+      onSave({
+        date,
+        meal_type: mealTypeChosen,
+        food_name: pendingFood.food_name || pendingFood.name || '',
+        serving_size: pendingFood.serving_size || pendingFood.serving || '1 serving',
+        calories: Math.round(Number(pendingFood.calories) || 0),
+        protein: Math.round(Number(pendingFood.protein) || 0),
+        carbs: Math.round(Number(pendingFood.carbs) || 0),
+        fat: Math.round(Number(pendingFood.fat) || 0),
+      });
+    }
+    setPendingFood(null);
+    resetForm();
+    onClose();
+  };
+
+  if (pendingScanFoods) return <MealTypePicker onSelect={confirmScanMealType} />;
+  if (pendingFood)      return <MealTypePicker onSelect={confirmPendingMealType} />;
   if (showCamera)  return <AIScanModal    onConfirm={handleAIScanSave}                              onClose={() => { setShowCamera(false); if (initialMode === 'scan') handleClose(); }} />;
-  if (showVoice)   return <VoiceModal     onResult={(r) => { applyFood(r); setShowVoice(false); }}  onClose={() => { setShowVoice(false);  if (initialMode === 'voice') handleClose(); }} />;
-  if (showBarcode) return <BarcodeScanModal onConfirm={(r) => { applyFood(r); setShowBarcode(false); }} onClose={() => { setShowBarcode(false); if (initialMode === 'barcode') handleClose(); }} />;
+  if (showVoice)   return <VoiceModal     onResult={handleVoiceResult}                              onClose={() => { setShowVoice(false);  if (initialMode === 'voice') handleClose(); }} />;
+  if (showBarcode) return <BarcodeScanModal onConfirm={handleBarcodeResult}                         onClose={() => { setShowBarcode(false); if (initialMode === 'barcode') handleClose(); }} />;
 
   return (
     <AnimatePresence>
