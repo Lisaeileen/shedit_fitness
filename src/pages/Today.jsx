@@ -66,27 +66,27 @@ export default function Today() {
     setFoodDialogOpen(true);
   };
 
+  // Recalculate totals from ALL meals for the day (single source of truth)
+  const recalcTotals = useCallback((datStr) => {
+    const allMeals = Meals.getByDate(datStr);
+    const totals = allMeals.reduce((acc, m) => ({
+      calories_consumed: acc.calories_consumed + (m.calories || 0),
+      carbs:   acc.carbs   + (m.carbs   || 0),
+      protein: acc.protein + (m.protein || 0),
+      fat:     acc.fat     + (m.fat     || 0),
+    }), { calories_consumed: 0, carbs: 0, protein: 0, fat: 0 });
+    DailyLogs.upsert(datStr, totals);
+    refresh();
+  }, [refresh]);
+
   const handleSaveFood = (data) => {
     Meals.add(data);
-    upsertLog({
-      calories_consumed: (dayLog.calories_consumed || 0) + (data.calories || 0),
-      carbs:   (dayLog.carbs   || 0) + (data.carbs   || 0),
-      protein: (dayLog.protein || 0) + (data.protein || 0),
-      fat:     (dayLog.fat     || 0) + (data.fat     || 0),
-    });
+    recalcTotals(data.date || dateStr);
   };
 
   const handleDeleteMeal = (id) => {
-    const deleted = meals.find(m => m.id === id);
     Meals.delete(id);
-    if (deleted) {
-      upsertLog({
-        calories_consumed: Math.max((dayLog.calories_consumed || 0) - (deleted.calories || 0), 0),
-        carbs:   Math.max((dayLog.carbs   || 0) - (deleted.carbs   || 0), 0),
-        protein: Math.max((dayLog.protein || 0) - (deleted.protein || 0), 0),
-        fat:     Math.max((dayLog.fat     || 0) - (deleted.fat     || 0), 0),
-      });
-    } else { refresh(); }
+    recalcTotals(dateStr);
   };
 
   const cals      = dayLog.calories_consumed || 0;
