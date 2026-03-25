@@ -916,21 +916,28 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
     setAiSuggested(true);
   };
 
-  // AI scan returns multiple foods — save each one
+  // AI scan: hold foods, show meal type picker
   const handleAIScanSave = (foods) => {
-    foods.forEach(food => {
-      onSave({
-        date,
-        meal_type: selectedMeal,
-        food_name: food.name,
-        serving_size: food.portion || '1 serving',
-        calories: Math.round(Number(food.calories) || 0),
-        protein: Math.round(Number(food.protein_g) || 0),
-        carbs: Math.round(Number(food.carbs_g) || 0),
-        fat: Math.round(Number(food.fat_g) || 0),
-      });
-    });
     setShowCamera(false);
+    setPendingScanFoods(foods);
+  };
+
+  const confirmScanMealType = (mealTypeChosen) => {
+    if (pendingScanFoods) {
+      pendingScanFoods.forEach(food => {
+        onSave({
+          date,
+          meal_type: mealTypeChosen,
+          food_name: food.name,
+          serving_size: food.portion || '1 serving',
+          calories: Math.round(Number(food.calories) || 0),
+          protein: Math.round(Number(food.protein_g) || 0),
+          carbs: Math.round(Number(food.carbs_g) || 0),
+          fat: Math.round(Number(food.fat_g) || 0),
+        });
+      });
+    }
+    setPendingScanFoods(null);
     resetForm();
     onClose();
   };
