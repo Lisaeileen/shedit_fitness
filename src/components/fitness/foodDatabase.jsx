@@ -34,6 +34,25 @@ export const FOOD_DB = [
   { name: 'Chicken Noodle Soup', calories: 120, protein: 10, carbs: 14, fat: 3, serving: '1 cup' },
   { name: 'Chicken Fried Rice', calories: 380, protein: 20, carbs: 50, fat: 10, serving: '1 serving' },
 
+  // ── More Chicken variations ────────────────────────────────────────────────
+  { name: 'Jerk Chicken', calories: 270, protein: 28, carbs: 6, fat: 14, serving: '100g' },
+  { name: 'Honey Garlic Chicken', calories: 310, protein: 28, carbs: 18, fat: 12, serving: '100g' },
+  { name: 'Baked Chicken Wings', calories: 203, protein: 30, carbs: 0, fat: 9, serving: '100g' },
+  { name: 'Chicken Adobo', calories: 280, protein: 28, carbs: 5, fat: 16, serving: '100g' },
+  { name: 'Chicken Sandwich', calories: 440, protein: 32, carbs: 40, fat: 14, serving: '1 sandwich' },
+  { name: 'Chicken Soup', calories: 130, protein: 14, carbs: 10, fat: 4, serving: '1 cup' },
+  { name: 'Chicken Pepper Soup (Nigerian)', calories: 185, protein: 24, carbs: 4, fat: 8, serving: '1 bowl' },
+  { name: 'Whole Roasted Chicken', calories: 215, protein: 29, carbs: 0, fat: 11, serving: '100g' },
+  { name: 'Chicken Salad', calories: 290, protein: 28, carbs: 8, fat: 16, serving: '1 bowl' },
+  { name: 'Chicken Quesadilla', calories: 500, protein: 34, carbs: 42, fat: 20, serving: '1 serving' },
+  { name: 'Chicken Parmigiana', calories: 520, protein: 40, carbs: 28, fat: 22, serving: '1 serving' },
+  { name: 'Chicken Korma', calories: 350, protein: 28, carbs: 12, fat: 22, serving: '1 serving' },
+  { name: 'Chicken Gyros', calories: 380, protein: 32, carbs: 28, fat: 14, serving: '1 wrap' },
+  { name: 'Chicken Suya Skewers', calories: 260, protein: 30, carbs: 4, fat: 13, serving: '100g' },
+  { name: 'Chicken and Rice (bowl)', calories: 450, protein: 36, carbs: 48, fat: 10, serving: '1 bowl' },
+  { name: 'Chicken Stew (Nigerian)', calories: 320, protein: 28, carbs: 10, fat: 18, serving: '1 serving' },
+  { name: 'Chicken Porridge', calories: 280, protein: 22, carbs: 34, fat: 6, serving: '1 bowl' },
+
   // ── Proteins: Turkey ──────────────────────────────────────────────────────
   { name: 'Turkey Breast (roasted)', calories: 135, protein: 30, carbs: 0, fat: 1, serving: '100g' },
   { name: 'Turkey Mince (lean)', calories: 170, protein: 22, carbs: 0, fat: 8, serving: '100g' },
