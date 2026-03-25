@@ -892,7 +892,7 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
         // Merge: remote first, then any local not already represented
         const remoteNames = new Set(remote.map(r => r.name.toLowerCase().slice(0, 20)));
         const extra = local.filter(l => !remoteNames.has(l.name.toLowerCase().slice(0, 20)));
-        const merged = [...remote, ...extra].slice(0, 14);
+        const merged = [...remote, ...extra].slice(0, 25);
         // If still nothing, fall back to AI
         if (merged.length === 0) {
           const ai = await searchAI(val);
