@@ -41,7 +41,7 @@ export default function StreakCard() {
   const flameSize = Math.min(32 + count * 1.2, 52);
 
   const handleFreeze = () => {
-    const result = Streak.useFreeze(todayStr);
+    const result = Streak.applyFreeze(todayStr);
     setFreezeMsg(result ? 'Streak freeze used. Protected for today.' : 'You have already used your freeze this month.');
     setTimeout(() => setFreezeMsg(''), 3000);
   };

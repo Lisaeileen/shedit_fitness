@@ -23,6 +23,8 @@ import DailyNutritionInsight from '../components/fitness/DailyNutritionInsight';
 import DailyCheckIn from '../components/fitness/DailyCheckIn';
 import TodaysPlan from '../components/fitness/TodaysPlan';
 import SmartReminders from '../components/fitness/SmartReminders';
+import HealthDisclaimerModal from '../components/fitness/HealthDisclaimerModal';
+import DailyCoachMessage from '../components/fitness/DailyCoachMessage';
 
 export default function Today() {
   const [selectedDate, setSelectedDate]   = useState(new Date());
@@ -105,6 +107,7 @@ export default function Today() {
 
   return (
     <div className="px-4 pt-2">
+      <HealthDisclaimerModal />
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between mb-5 pt-2">
@@ -124,6 +127,9 @@ export default function Today() {
       <div className="mb-5">
         <WeekSelector selectedDate={selectedDate} onSelect={setSelectedDate} />
       </div>
+
+      {/* Daily Coach Message */}
+      <DailyCoachMessage dayLog={dayLog} steps={steps} stepsGoal={stepsGoal} />
 
       {/* Daily Check-In */}
       <DailyCheckIn />

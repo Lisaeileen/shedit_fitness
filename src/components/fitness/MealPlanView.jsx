@@ -34,16 +34,8 @@ async function getMealImage(mealName) {
 // ── MealDetailModal ──────────────────────────────────────────────────────────
 
 function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, onSwap, onGetRecipe, swapping }) {
-  if (!dayPlan) return null;
-  const mealName = dayPlan[meal.key];
-  const cal = dayPlan[meal.calKey] || 0;
-  const prot = dayPlan[meal.protKey] || 0;
-  const carbs = dayPlan[meal.carbKey] || 0;
-  const fat = dayPlan[meal.fatKey] || 0;
-  const detailKey = `${meal.key}_detail`;
-  const detail = dayPlan[detailKey];
-  const isFav = favorites.includes(mealName);
-  const [mealImage, setMealImage] = useState(dayPlan[`${meal.key}_image`] || null);
+  const mealName = dayPlan ? dayPlan[meal.key] : null;
+  const [mealImage, setMealImage] = useState((dayPlan && dayPlan[`${meal.key}_image`]) || null);
   const [imgLoading, setImgLoading] = useState(!mealImage);
 
   useEffect(() => {
@@ -55,6 +47,16 @@ function MealDetailModal({ dayPlan, meal, onClose, onSaveFavorite, favorites, on
       });
     }
   }, [mealName]);
+
+  if (!dayPlan) return null;
+
+  const cal = dayPlan[meal.calKey] || 0;
+  const prot = dayPlan[meal.protKey] || 0;
+  const carbs = dayPlan[meal.carbKey] || 0;
+  const fat = dayPlan[meal.fatKey] || 0;
+  const detailKey = `${meal.key}_detail`;
+  const detail = dayPlan[detailKey];
+  const isFav = favorites.includes(mealName);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col" style={{ background: 'rgba(0,0,0,0.85)' }}>

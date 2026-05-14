@@ -110,7 +110,7 @@ export const Streak = {
     this.save(s);
     return s;
   },
-  useFreeze(dateStr) {
+  applyFreeze(dateStr) {
     const s = this.get();
     const month = dateStr.slice(0, 7);
     if (s.freezeUsed && s.lastFreezeMonth === month) return false;

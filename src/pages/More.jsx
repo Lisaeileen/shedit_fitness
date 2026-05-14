@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Scale, Timer, Moon, Dumbbell, Target, FileText,
   Bell, Footprints, Shield, HelpCircle, ChevronRight,
-  TrendingDown, Zap, X, Trash2, Users, Brain, Camera, Trophy, Share2
+  TrendingDown, Zap, X, Trash2, Users, Brain, Camera, Trophy, Share2, Mail, UserX
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -74,7 +74,9 @@ export default function More() {
         { id: 'privacy',   label: 'Privacy Policy',   icon: Shield,     color: '#6b7280', action: () => setActivePanel('privacy') },
         { id: 'terms',     label: 'Terms of Service', icon: FileText,   color: '#6b7280', action: () => setActivePanel('terms') },
         { id: 'help',      label: 'Help Center',      icon: HelpCircle, color: '#6366f1', action: () => setActivePanel('help') },
+        { id: 'support',   label: 'Contact Support',  icon: Mail,       color: '#3b82f6', action: () => setActivePanel('support') },
         { id: 'delete',    label: 'Delete My Data',   icon: Trash2,     color: '#f43f5e', action: () => setActivePanel('delete') },
+        { id: 'delacc',    label: 'Delete Account',   icon: UserX,      color: '#f43f5e', action: () => setActivePanel('delacc') },
       ]
     }
   ];
@@ -183,6 +185,8 @@ export default function More() {
                         : activePanel === 'sleep' ? 'Sleep Tracking'
                         : activePanel === 'body' ? 'Body Transformation'
                         : activePanel === 'achievements' ? 'Achievements'
+                        : activePanel === 'support' ? 'Contact Support'
+                        : activePanel === 'delacc' ? 'Delete Account'
                         : activePanel.replace(/_/g, ' ')}
                     </h3>
                     <button onClick={() => setActivePanel(null)} className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
@@ -271,6 +275,34 @@ export default function More() {
                     </div>
                   )}
 
+                  {activePanel === 'support' && (
+                    <div className="space-y-4">
+                      <p className="text-sm text-gray-400 leading-relaxed">Have a question, found a bug, or need help? Reach out and we'll get back to you.</p>
+                      <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase tracking-wider font-bold mb-1">Email Support</p>
+                          <a href="mailto:support@sheditapp.com?subject=Shedit Support Request"
+                            className="text-sm text-blue-400 font-semibold underline underline-offset-2">
+                            support@sheditapp.com
+                          </a>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase tracking-wider font-bold mb-1">Privacy Requests</p>
+                          <a href="mailto:privacy@sheditapp.com?subject=Privacy Request"
+                            className="text-sm text-blue-400 font-semibold underline underline-offset-2">
+                            privacy@sheditapp.com
+                          </a>
+                        </div>
+                      </div>
+                      <a href="mailto:support@sheditapp.com?subject=Shedit Support Request"
+                        className="w-full py-3.5 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                        style={{ background: 'linear-gradient(135deg,#3b82f6,#6366f1)' }}>
+                        <Mail className="w-4 h-4" /> Open Email
+                      </a>
+                      <p className="text-[10px] text-gray-600 text-center">We typically respond within 24–48 hours.</p>
+                    </div>
+                  )}
+
                   {activePanel === 'delete' && (
                     <div className="space-y-4">
                       <p className="text-sm text-gray-400">This will permanently erase all your logs, meals, progress and settings from this device. This cannot be undone.</p>
@@ -281,6 +313,26 @@ export default function More() {
                           style={{ background: 'rgba(244,63,94,0.2)', border: '1px solid rgba(244,63,94,0.3)' }}>
                           Delete All My Data
                         </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {activePanel === 'delacc' && (
+                    <div className="space-y-4">
+                      <p className="text-sm text-gray-400 leading-relaxed">Deleting your account will permanently remove all your data, including logs, meals, workouts, and preferences. This action cannot be undone.</p>
+                      <div className="rounded-2xl p-4" style={{ background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.25)' }}>
+                        <p className="text-sm text-red-400 font-semibold mb-1">⚠️ This is permanent</p>
+                        <p className="text-xs text-gray-500 mb-3">You will lose all your progress and data.</p>
+                        <button onClick={() => { deleteAllData(); refresh(); setActivePanel(null); }}
+                          className="w-full py-3 rounded-xl text-sm font-bold text-white mb-2"
+                          style={{ background: 'rgba(244,63,94,0.25)', border: '1px solid rgba(244,63,94,0.35)' }}>
+                          Delete Account & All Data
+                        </button>
+                        <p className="text-[10px] text-gray-600 text-center">
+                          Or email us at{' '}
+                          <a href="mailto:privacy@sheditapp.com" className="text-purple-400 underline">privacy@sheditapp.com</a>
+                          {' '}to request account deletion.
+                        </p>
                       </div>
                     </div>
                   )}
