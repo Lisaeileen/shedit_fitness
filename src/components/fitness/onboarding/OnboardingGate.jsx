@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { isOnboardingComplete, markOnboardingComplete } from './onboardingUtils';
+import { isOnboardingComplete } from './onboardingUtils';
 import NewOnboardingFlow from './NewOnboardingFlow';
+import PaywallScreen from '../PaywallScreen';
 import { DailyLogs } from '../../storage';
 import { calculatePlan } from './onboardingUtils';
+import { hasAccess, startTrial } from '@/lib/subscription';
 
 /**
- * Wraps children with the new onboarding flow.
- * Once complete, persists the plan to DailyLogs goals and renders children.
+ * Gate order:
+ *   1. Onboarding (collect user data)
+ *   2. Paywall (subscription / trial)
+ *   3. App
  */
 export default function OnboardingGate({ children }) {
-  const [done, setDone] = useState(() => isOnboardingComplete());
+  const [onboardingDone, setOnboardingDone] = useState(() => isOnboardingComplete());
+  const [subscribed, setSubscribed] = useState(() => hasAccess());
 
-  const handleComplete = (finalData) => {
-    // Persist calorie + macro goals into today's DailyLog so the Today screen picks them up immediately
+  const handleOnboardingComplete = (finalData) => {
     const plan = calculatePlan(finalData);
     const today = new Date().toISOString().split('T')[0];
     DailyLogs.upsert(today, {
@@ -21,11 +25,19 @@ export default function OnboardingGate({ children }) {
       carbs_goal:   plan.carbs,
       fat_goal:     plan.fat,
     });
-    setDone(true);
+    setOnboardingDone(true);
   };
 
-  if (!done) {
-    return <NewOnboardingFlow onComplete={handleComplete} />;
+  const handleSubscribed = () => {
+    setSubscribed(true);
+  };
+
+  if (!onboardingDone) {
+    return <NewOnboardingFlow onComplete={handleOnboardingComplete} />;
+  }
+
+  if (!subscribed) {
+    return <PaywallScreen onSubscribed={handleSubscribed} />;
   }
 
   return children;

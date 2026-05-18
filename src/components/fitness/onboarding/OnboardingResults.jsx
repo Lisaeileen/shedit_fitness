@@ -280,30 +280,14 @@ export function StepTrust() {
   );
 }
 
-// ── Step 31: Paywall ──────────────────────────────────────────────────────────
+// ── Step 31: Final CTA (paywall handled by OnboardingGate) ────────────────────
 export function StepPaywall({ onComplete }) {
-  const features = [
-    'Unlimited food logging',
-    'AI meal suggestions',
-    'Barcode & voice scanning',
-    'Step & activity tracking',
-    'Progress reports & streaks',
-    'Weekly meal planning',
-  ];
   return (
-    <div className="pt-4">
-      <h2 className="text-2xl font-black text-white mb-1">Try Shedit free</h2>
-      <p className="text-gray-400 text-sm mb-5">Everything you need to hit your goals</p>
-      <div className="rounded-2xl p-4 mb-5" style={{ background: 'linear-gradient(135deg, rgba(79,158,247,0.1), rgba(168,85,247,0.08))', border: '1px solid rgba(79,158,247,0.25)' }}>
-        {features.map(f => (
-          <div key={f} className="flex items-center gap-2.5 py-2">
-            <CheckCircle className="w-4 h-4 text-blue-400 flex-shrink-0" />
-            <span className="text-sm text-white">{f}</span>
-          </div>
-        ))}
-      </div>
-      <PrimaryButton onClick={onComplete}>Start Tracking — It's Free</PrimaryButton>
-      <p className="text-[11px] text-gray-600 text-center mt-3">No credit card required • Cancel anytime</p>
+    <div className="pt-12 text-center flex flex-col items-center">
+      <div className="text-5xl mb-5">🎉</div>
+      <h2 className="text-2xl font-black text-white mb-2">You're all set!</h2>
+      <p className="text-gray-400 text-sm mb-8">Your personalised plan is ready.</p>
+      <PrimaryButton onClick={onComplete}>Go to My Plan</PrimaryButton>
     </div>
   );
 }

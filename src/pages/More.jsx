@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Scale, Timer, Moon, Dumbbell, Target, FileText,
   Bell, Footprints, Shield, HelpCircle, ChevronRight,
-  TrendingDown, Zap, X, Trash2, Users, Brain, Camera, Trophy, Share2, Mail, UserX
+  TrendingDown, Zap, X, Trash2, Users, Brain, Camera, Trophy, Share2, Mail, UserX, Crown, RotateCcw
 } from 'lucide-react';
+import PaywallScreen from '../components/fitness/PaywallScreen';
+import { getSubscriptionStatus, restorePurchases, PLANS } from '@/lib/subscription';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { DailyLogs, deleteAllData } from '../components/storage';
@@ -23,7 +25,10 @@ import ShareProgressCard from '../components/fitness/ShareProgressCard';
 
 export default function More() {
   const [activePanel, setActivePanel]     = useState(null);
+  const [showPaywall, setShowPaywall]     = useState(false);
   const [showShare, setShowShare]         = useState(false);
+  const [subStatus, setSubStatus]         = useState(() => getSubscriptionStatus());
+  const [restoreMsg, setRestoreMsg]       = useState(null);
   const [stepsGoalDialog, setStepsGoalDialog] = useState(false);
   const [calsGoalDialog, setCalsGoalDialog]   = useState(false);
   const [tick, setTick] = useState(0);
@@ -70,6 +75,21 @@ export default function More() {
     {
       title: 'Settings & Support',
       items: [
+        ...(subStatus === 'active' || subStatus === 'trial' || subStatus === 'canceled'
+          ? [{ id: 'manage_sub', label: 'Manage Subscription', icon: Crown, color: '#a855f7', action: () => setActivePanel('manage_sub') }]
+          : [{ id: 'upgrade',    label: 'Upgrade to Premium',  icon: Crown, color: '#a855f7', action: () => setShowPaywall(true) }]
+        ),
+        { id: 'restore',   label: 'Restore Purchase',  icon: RotateCcw, color: '#6366f1', action: () => {
+          const sub = restorePurchases();
+          const s = getSubscriptionStatus();
+          if (sub && (s === 'active' || s === 'trial' || s === 'canceled')) {
+            setSubStatus(s);
+            setRestoreMsg('Purchase restored successfully!');
+          } else {
+            setRestoreMsg('No active subscription found.');
+          }
+          setTimeout(() => setRestoreMsg(null), 3000);
+        }},
         { id: 'reminders', label: 'Reminders',        icon: Bell,       color: '#f59e0b', action: () => setActivePanel('reminders') },
         { id: 'privacy',   label: 'Privacy Policy',   icon: Shield,     color: '#6b7280', action: () => setActivePanel('privacy') },
         { id: 'terms',     label: 'Terms of Service', icon: FileText,   color: '#6b7280', action: () => setActivePanel('terms') },
@@ -154,6 +174,30 @@ export default function More() {
 
       {showShare && <ShareProgressCard onClose={() => setShowShare(false)} />}
 
+      {/* Restore message toast */}
+      <AnimatePresence>
+        {restoreMsg && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-28 left-4 right-4 max-w-md mx-auto z-[80] rounded-2xl px-4 py-3 text-sm font-semibold text-center"
+            style={{ background: restoreMsg.includes('successfully') ? 'rgba(16,185,129,0.9)' : 'rgba(244,63,94,0.85)', color: 'white' }}>
+            {restoreMsg}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Paywall overlay */}
+      <AnimatePresence>
+        {showPaywall && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70]">
+            <PaywallScreen
+              onClose={() => setShowPaywall(false)}
+              onSubscribed={() => { setSubStatus(getSubscriptionStatus()); setShowPaywall(false); }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <LogValueDialog isOpen={stepsGoalDialog} onClose={() => setStepsGoalDialog(false)}
         title="Daily Steps Goal" unit="steps" value={todayLog.steps_goal || 10000}
         step={500} min={1000} max={50000} color="#a855f7" onSave={(v) => upsertTodayLog({ steps_goal: v })} />
@@ -187,12 +231,39 @@ export default function More() {
                         : activePanel === 'achievements' ? 'Achievements'
                         : activePanel === 'support' ? 'Contact Support'
                         : activePanel === 'delacc' ? 'Delete Account'
+                        : activePanel === 'manage_sub' ? 'Manage Subscription'
                         : activePanel.replace(/_/g, ' ')}
                     </h3>
                     <button onClick={() => setActivePanel(null)} className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
                       <X className="w-4 h-4 text-gray-400" />
                     </button>
                   </div>
+
+                  {activePanel === 'manage_sub' && (() => {
+                    const status = getSubscriptionStatus();
+                    const sub = restorePurchases();
+                    const plan = sub ? PLANS[sub.planId] : null;
+                    const trialEnd = sub?.trialEnd ? new Date(sub.trialEnd).toLocaleDateString() : null;
+                    const periodEnd = sub?.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : null;
+                    return (
+                      <div className="space-y-4 pb-4">
+                        <div className="rounded-2xl p-4" style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.25)' }}>
+                          <div className="flex items-center gap-2 mb-3">
+                            <Crown className="w-5 h-5 text-purple-400" />
+                            <p className="text-sm font-bold text-white">Shedit Premium</p>
+                            <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full capitalize"
+                              style={{ background: status === 'trial' ? 'rgba(79,158,247,0.2)' : 'rgba(16,185,129,0.2)', color: status === 'trial' ? '#4f9ef7' : '#10b981' }}>
+                              {status === 'trial' ? 'Free Trial' : status === 'canceled' ? 'Canceled' : 'Active'}
+                            </span>
+                          </div>
+                          {plan && <p className="text-xs text-gray-400 mb-1">Plan: {plan.label} · ${plan.price}/{plan.period}</p>}
+                          {status === 'trial' && trialEnd && <p className="text-xs text-gray-400">Trial ends: {trialEnd}</p>}
+                          {periodEnd && <p className="text-xs text-gray-400">{status === 'canceled' ? 'Access until' : 'Next billing'}: {periodEnd}</p>}
+                        </div>
+                        <p className="text-xs text-gray-500 leading-relaxed">To cancel your subscription, manage it through your App Store or Google Play account settings under "Subscriptions".</p>
+                      </div>
+                    );
+                  })()}
 
                   {activePanel === 'privacy' && (
                     <div className="space-y-5 text-sm text-gray-400 leading-relaxed pb-4">
