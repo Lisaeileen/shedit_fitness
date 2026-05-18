@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Home, CalendarDays, Plus, TrendingUp, MoreHorizontal } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import QuickAddModal from './components/fitness/QuickAddModal';
+import OnboardingGate from './components/fitness/onboarding/OnboardingGate';
 
 const navItems = [
   { label: 'Today',    icon: Home,          page: 'Today' },
@@ -18,6 +19,7 @@ export default function Layout({ children, currentPageName }) {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   return (
+    <OnboardingGate>
     <div className="bg-app min-h-screen text-white">
       <style>{`
         body { background: #12062A; }
@@ -79,5 +81,6 @@ export default function Layout({ children, currentPageName }) {
 
       <QuickAddModal isOpen={showQuickAdd} onClose={() => setShowQuickAdd(false)} />
     </div>
+    </OnboardingGate>
   );
 }
