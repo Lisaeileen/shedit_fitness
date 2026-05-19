@@ -23,11 +23,44 @@
   --input: 260 20% 14%;
   --ring: 270 80% 60%;
   --radius: 1rem;
+
+  /* App color tokens */
+  --app-bg-start:    #12062A;
+  --app-bg-mid:      #1E0A40;
+  --app-bg-end:      #2A0A4A;
+  --app-purple:      #a855f7;
+  --app-purple-deep: #7c3aed;
+  --app-purple-soft: #c084fc;
+  --app-pink:        #ec4899;
+  --app-cyan:        #22d3ee;
+  --app-nav-bg:      rgba(18, 6, 42, 0.99);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-bg-start:    #12062A;
+    --app-bg-mid:      #1E0A40;
+    --app-bg-end:      #2A0A4A;
+    --app-purple:      #a855f7;
+    --app-purple-deep: #7c3aed;
+    --app-purple-soft: #c084fc;
+    --app-pink:        #ec4899;
+    --app-cyan:        #22d3ee;
+    --app-nav-bg:      rgba(18, 6, 42, 0.99);
+  }
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+}
+
+/* Non-content UI elements: no text selection */
+button, a, nav, [role="button"], label,
+.nav-bg, .glass-card, .glass-card-purple, .glass-card-green,
+.btn-primary, .streak-badge {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Allow text selection in inputs everywhere */

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 // Nutrition totals are recalculated from actual meal entries (not accumulated) for accuracy
 import { format } from 'date-fns';
+import PullToRefresh from '../components/fitness/PullToRefresh';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Footprints, ArrowUp, Bell, Smartphone, MoveUp } from 'lucide-react';
 import { DailyLogs, Meals } from '../components/storage';
@@ -105,7 +106,15 @@ export default function Today() {
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 
+  const handleRefresh = useCallback(() => {
+    return new Promise(resolve => {
+      refresh();
+      setTimeout(resolve, 600);
+    });
+  }, [refresh]);
+
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="px-4 pt-2">
       <HealthDisclaimerModal />
       {/* Header */}
@@ -359,5 +368,6 @@ export default function Today() {
       <LogValueDialog isOpen={exerciseDialog} onClose={() => setExerciseDialog(false)} title="Log Exercise" unit="min"     value={dayLog.exercise_minutes || 0}   step={5}   min={0}   max={300}   color="#f43f5e" onSave={(v) => upsertLog({ exercise_minutes: v })} />
       <LogValueDialog isOpen={stairsDialog}   onClose={() => setStairsDialog(false)}   title="Log Stairs"   unit="flights" value={stairs}                          step={1}   min={0}   max={200}   color="#ec4899" onSave={(v) => { updateStairsManually(v); refresh(); }} />
     </div>
+    </PullToRefresh>
   );
 }

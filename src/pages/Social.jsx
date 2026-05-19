@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import PullToRefresh from '../components/fitness/PullToRefresh';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Footprints, Flame, Zap, Users, Target, Check, Star } from 'lucide-react';
 import { DailyLogs, Streak, Badges, Challenges } from '../components/storage';
@@ -134,8 +135,16 @@ const LB_COLORS = ['#a855f7', '#f59e0b', '#ec4899'];
 export default function Social() {
   const [tab, setTab]     = useState('Feed');
   const [lbKey, setLbKey] = useState(0);
+  const [tick, setTick]   = useState(0);
 
-  const logs = useMemo(() => DailyLogs.list(), []);
+  const handleRefresh = useCallback(() => {
+    return new Promise(resolve => {
+      setTick(t => t + 1);
+      setTimeout(resolve, 600);
+    });
+  }, []);
+
+  const logs = useMemo(() => DailyLogs.list(), [tick]);
   const streak = useMemo(() => Streak.get(), []);
   const mySteps = useMemo(() => logs.slice(-7).reduce((s, l) => s + (l.steps || 0), 0), [logs]);
   const myCals  = useMemo(() => logs.slice(-7).reduce((s, l) => s + (l.calories_consumed || 0), 0), [logs]);
@@ -146,6 +155,7 @@ export default function Social() {
   ).sort((a, b) => b[LB_KEYS[lbKey]] - a[LB_KEYS[lbKey]]).map((r, i) => ({ ...r, rank: i + 1 }));
 
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="px-4 pt-2">
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="pt-2 mb-5">
         <p className="text-[10px] text-purple-300/40 uppercase tracking-widest font-bold">Community</p>
@@ -238,5 +248,6 @@ export default function Social() {
 
       <div className="h-4" />
     </div>
+    </PullToRefresh>
   );
 }
