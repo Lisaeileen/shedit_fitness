@@ -269,10 +269,11 @@ export function StepTrust() {
         ))}
         <span className="text-xl font-black text-white ml-2">4.6</span>
       </div>
-      <p className="text-sm text-gray-500 mb-8">Trusted by over 13,000 users</p>
+      <p className="text-sm text-gray-500 mb-1">4.6 ★ (13,000 ratings)</p>
+      <p className="text-sm text-gray-500 mb-8">Trusted by over 1.5 million users</p>
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { val: '13K+', label: 'Users' },
+          { val: '1.5M+', label: 'Users' },
           { val: '4.6★', label: 'Rating' },
           { val: '98%', label: 'Satisfaction' },
         ].map(s => (

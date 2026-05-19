@@ -66,7 +66,7 @@ export default function PaywallScreen({ onClose, onSubscribed }) {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="flex items-center justify-center gap-1 mb-6">
           {[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4" fill="#f59e0b" style={{ color: '#f59e0b' }} />)}
-          <span className="text-xs text-gray-400 ml-2">4.6 · Trusted by 13,000+ users</span>
+          <span className="text-xs text-gray-400 ml-2">4.6 ★ (13,000 ratings) · Trusted by over 1.5 million users</span>
         </motion.div>
 
         {/* Plan selector */}
