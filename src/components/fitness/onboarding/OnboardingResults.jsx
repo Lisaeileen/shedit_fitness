@@ -82,6 +82,12 @@ export function StepResults({ data }) {
         <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Daily Calorie Goal</p>
         <p className="text-5xl font-black text-white">{plan.dailyCalories.toLocaleString()}</p>
         <p className="text-sm text-gray-400 mt-1">kcal / day</p>
+        <p className="text-[11px] text-gray-500 mt-2 px-2">Based on your profile, this calorie target supports safe and effective progress.</p>
+        {data.goal_speed === 'fast' && (
+          <p className="text-[11px] mt-2 px-2" style={{ color: '#f59e0b' }}>
+            ⚡ This is a faster pace. Staying consistent and eating balanced meals is important.
+          </p>
+        )}
       </div>
 
       {/* Macros */}
@@ -255,7 +261,7 @@ export function StepTrust() {
   return (
     <div className="pt-4 text-center">
       <div className="text-5xl mb-4">🏅</div>
-      <h2 className="text-2xl font-black text-white mb-2">Trusted by millions</h2>
+      <h2 className="text-2xl font-black text-white mb-2">Trusted by our community</h2>
       <div className="flex items-center justify-center gap-2 my-5">
         {[1,2,3,4,5].map(i => (
           <Star key={i} className="w-6 h-6" fill={i <= 5 ? '#f59e0b' : 'none'}
@@ -263,10 +269,10 @@ export function StepTrust() {
         ))}
         <span className="text-xl font-black text-white ml-2">4.6</span>
       </div>
-      <p className="text-sm text-gray-500 mb-8">180,000+ App Store ratings</p>
+      <p className="text-sm text-gray-500 mb-8">Trusted by over 13,000 users</p>
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { val: '2M+', label: 'Users' },
+          { val: '13K+', label: 'Users' },
           { val: '4.6★', label: 'Rating' },
           { val: '98%', label: 'Satisfaction' },
         ].map(s => (

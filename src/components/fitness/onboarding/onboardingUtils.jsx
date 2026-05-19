@@ -51,29 +51,42 @@ export function calculatePlan(data) {
   const desiredW = parseFloat(desired_weight_kg) || w;
   const weightDiff = w - desiredW; // positive = lose weight
 
+  // Safe minimum calories
+  const minCal = sex === 'female' ? 1200 : 1500;
+
   let deficit = 0;
   if (goal_type === 'lose_weight') {
-    deficit = goal_speed === 'slow' ? 250 : goal_speed === 'fast' ? 600 : 400;
+    // For fast: larger deficit but still safe. For slow: small deficit.
+    if (goal_speed === 'slow') deficit = 250;
+    else if (goal_speed === 'fast') deficit = Math.min(700, tdee - minCal); // never push below floor
+    else deficit = 400; // recommended: moderate
   } else if (goal_type === 'gain_weight') {
     deficit = goal_speed === 'slow' ? -150 : goal_speed === 'fast' ? -400 : -250;
   }
 
-  // Clamp: never below 1200 for female, 1500 for male
-  const minCal = sex === 'female' ? 1200 : 1500;
   const dailyCalories = Math.max(minCal, tdee - deficit);
 
-  // Macros (standard split: 30P / 40C / 30F for lose, 25P / 50C / 25F for maintain/gain)
-  const protein = Math.round((dailyCalories * 0.30) / 4);
-  const carbs   = Math.round((dailyCalories * 0.40) / 4);
-  const fat     = Math.round((dailyCalories * 0.30) / 9);
+  // Macros (30P / 40C / 30F for lose/maintain, 25P / 50C / 25F for gain)
+  const macroSplit = goal_type === 'gain_weight'
+    ? { p: 0.25, c: 0.50, f: 0.25 }
+    : { p: 0.30, c: 0.40, f: 0.30 };
+  const protein = Math.round((dailyCalories * macroSplit.p) / 4);
+  const carbs   = Math.round((dailyCalories * macroSplit.c) / 4);
+  const fat     = Math.round((dailyCalories * macroSplit.f) / 9);
 
-  // Timeline
+  // Timeline — realistic targets
   const absWeightDiff = Math.abs(weightDiff);
   let timelineMonths = 0;
   if (absWeightDiff > 0 && deficit !== 0) {
-    const weeklyChange = (Math.abs(deficit) * 7) / 7700; // kg per week
-    const weeks = absWeightDiff / weeklyChange;
+    const weeklyChangeKg = Math.abs(deficit) / 1100; // ~1100 kcal deficit ≈ 0.1kg/week (conservative)
+    const weeks = absWeightDiff / weeklyChangeKg;
     timelineMonths = Math.round(weeks / 4.3);
+    // Clamp to realistic ranges per speed
+    if (goal_type === 'lose_weight' || goal_type === 'gain_weight') {
+      if (goal_speed === 'recommended') timelineMonths = Math.max(timelineMonths, 6);
+      else if (goal_speed === 'fast') timelineMonths = Math.max(4, Math.min(timelineMonths, 6));
+      else timelineMonths = Math.max(timelineMonths, 8); // slow
+    }
   }
 
   // Goal date
