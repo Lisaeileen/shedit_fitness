@@ -1,0 +1,65 @@
+{
+  "name": "MealPlan",
+  "type": "object",
+  "properties": {
+    "week_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "day_of_week": {
+      "type": "string",
+      "enum": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    },
+    "breakfast": {
+      "type": "string"
+    },
+    "breakfast_calories": {
+      "type": "number",
+      "default": 0
+    },
+    "lunch": {
+      "type": "string"
+    },
+    "lunch_calories": {
+      "type": "number",
+      "default": 0
+    },
+    "dinner": {
+      "type": "string"
+    },
+    "dinner_calories": {
+      "type": "number",
+      "default": 0
+    },
+    "snacks": {
+      "type": "string"
+    },
+    "snacks_calories": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "day_of_week"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
