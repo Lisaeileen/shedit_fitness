@@ -1,0 +1,98 @@
+{
+  "name": "DailyLog",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date for this log entry"
+    },
+    "calories_consumed": {
+      "type": "number",
+      "default": 0
+    },
+    "calories_goal": {
+      "type": "number",
+      "default": 2000
+    },
+    "carbs": {
+      "type": "number",
+      "default": 0
+    },
+    "carbs_goal": {
+      "type": "number",
+      "default": 250
+    },
+    "protein": {
+      "type": "number",
+      "default": 0
+    },
+    "protein_goal": {
+      "type": "number",
+      "default": 120
+    },
+    "fat": {
+      "type": "number",
+      "default": 0
+    },
+    "fat_goal": {
+      "type": "number",
+      "default": 65
+    },
+    "steps": {
+      "type": "number",
+      "default": 0
+    },
+    "steps_goal": {
+      "type": "number",
+      "default": 10000
+    },
+    "stairs_climbed": {
+      "type": "number",
+      "default": 0
+    },
+    "stairs_goal": {
+      "type": "number",
+      "default": 20
+    },
+    "water_glasses": {
+      "type": "number",
+      "default": 0
+    },
+    "water_goal": {
+      "type": "number",
+      "default": 8
+    },
+    "weight": {
+      "type": "number",
+      "description": "Weight in kg"
+    },
+    "exercise_minutes": {
+      "type": "number",
+      "default": 0
+    },
+    "exercise_goal": {
+      "type": "number",
+      "default": 30
+    },
+    "sleep_hours": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "date"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
