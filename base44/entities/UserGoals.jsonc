@@ -1,0 +1,68 @@
+{
+  "name": "UserGoals",
+  "type": "object",
+  "properties": {
+    "primary_goal": {
+      "type": "string",
+      "enum": [
+        "lose_weight",
+        "hit_macros",
+        "eat_healthy",
+        "gain_weight",
+        "save_time",
+        "meal_prep",
+        "spend_less",
+        "eat_out_less"
+      ]
+    },
+    "motivation_level": {
+      "type": "string",
+      "enum": [
+        "ready_to_tackle",
+        "willing_to_try",
+        "small_changes",
+        "not_ready"
+      ]
+    },
+    "biggest_challenge": {
+      "type": "string",
+      "enum": [
+        "time",
+        "budget",
+        "cravings",
+        "cooking_skills",
+        "consistency"
+      ]
+    },
+    "target_weight": {
+      "type": "number"
+    },
+    "current_weight": {
+      "type": "number"
+    },
+    "height_cm": {
+      "type": "number"
+    },
+    "daily_calorie_target": {
+      "type": "number",
+      "default": 2000
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [],
+  "rls": {
+    "create": {},
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
