@@ -149,7 +149,7 @@ export default function PaywallScreen({ onClose, onSubscribed }) {
           {loading ? 'Starting...' : 'Start Free Trial'}
         </motion.button>
         <p className="text-center text-[10px] text-gray-600 mb-2">
-          7-day free trial, then billed automatically unless canceled.
+          7-day free trial, then billed automatically unless canceled. Subscription renews automatically unless canceled at least 24 hours before the end of the current period. Cancel anytime in your App Store or Google Play settings.
         </p>
         <button onClick={handleRestore} className="w-full text-center text-xs text-gray-500 py-1 active:opacity-70">
           Restore Purchase

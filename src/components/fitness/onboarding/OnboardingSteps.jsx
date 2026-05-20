@@ -437,7 +437,7 @@ export function StepGoalSpeed({ value, onChange, data }) {
               <span className="text-xl">{s.emoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-white">{s.label}</p>
-                <p className="text-xs text-gray-500">{getTimeline(s.deficitKcal)} · {getDailyCal(s.deficitKcal)} kcal/day</p>
+                <p className="text-xs text-gray-500">{getTimeline(s.deficitKcal)} · Your personalised calorie target</p>
               </div>
               <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
                 style={{
@@ -612,7 +612,7 @@ export function StepHealthIntegration({ value, onChange }) {
   return (
     <div className="pt-4">
       <h2 className="text-2xl font-black text-white mb-2">Connect to Apple Health</h2>
-      <p className="text-gray-400 text-sm mb-6">Get more accurate data by syncing your health stats</p>
+      <p className="text-gray-400 text-sm mb-6">We use your activity data to track steps and personalise your fitness plan. This is optional — you can enable or disable it anytime in Settings.</p>
       <div className="rounded-2xl p-5 mb-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
         {[
           { emoji: '👟', text: 'Sync steps automatically' },
@@ -721,7 +721,7 @@ export function StepSocialProof() {
         ))}
         <span className="text-2xl font-black text-white ml-2">4.6</span>
       </div>
-      <p className="text-sm text-gray-500 mb-8">Based on 180,000+ ratings</p>
+      <p className="text-sm text-gray-500 mb-8">4.6 ★ (13,000 ratings) · Trusted by over 1.5 million users</p>
       <div className="space-y-3 text-left">
         {[
           { text: '"Lost 8kg in 3 months — the easiest app I\'ve used!"', name: 'Sarah K.' },
