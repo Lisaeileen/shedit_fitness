@@ -557,23 +557,99 @@ export const FOOD_DB = [
   { name: 'Nutella', calories: 100, protein: 1.2, carbs: 11, fat: 6, serving: '1 tbsp' },
 ];
 
+// Common search aliases — maps what the user types to canonical search terms
+const SEARCH_ALIASES = {
+  'chiken': 'chicken', 'chikken': 'chicken', 'chiken breast': 'chicken breast',
+  'chcken': 'chicken', 'chiken thigh': 'chicken thigh',
+  'brocolli': 'broccoli', 'brocoli': 'broccoli',
+  'yougurt': 'yogurt', 'yoghurt': 'yogurt', 'youghurt': 'yogurt',
+  'bannana': 'banana', 'bananana': 'banana',
+  'sandwhich': 'sandwich', 'sandwitch': 'sandwich',
+  'icecream': 'ice cream', 'ice-cream': 'ice cream',
+  'potatoe': 'potato', 'potatos': 'potato',
+  'tomatoe': 'tomato',
+  'chocolat': 'chocolate',
+  'spinich': 'spinach', 'spinich': 'spinach',
+  'avacado': 'avocado', 'avocardo': 'avocado',
+  'spaggetti': 'spaghetti', 'spagetti': 'spaghetti',
+  'burrito': 'burrito', 'burro': 'burrito',
+  'hummos': 'hummus', 'humus': 'hummus',
+  'pb': 'peanut butter', 'peanutbutter': 'peanut butter',
+  'oj': 'orange juice',
+  'gg': 'egg', 'egs': 'egg', 'egss': 'eggs',
+  'bred': 'bread', 'breat': 'bread',
+  'ceral': 'cereal', 'granolla': 'granola',
+  'beens': 'beans', 'benas': 'beans',
+  'samon': 'salmon', 'salman': 'salmon',
+  'letuce': 'lettuce', 'lettice': 'lettuce',
+  'cuccumber': 'cucumber', 'cucumbar': 'cucumber',
+  'tuna fish': 'tuna', 'tinned tuna': 'tuna',
+  'ground turkey': 'turkey mince', 'minced turkey': 'turkey mince',
+  'minced beef': 'ground beef', 'mince': 'ground beef',
+  'steak': 'beef steak', 'sirloin': 'beef steak',
+  'chips': 'french fries', 'fries': 'french fries',
+  'coke': 'coca-cola', 'cola': 'coca-cola',
+  'oatmeal': 'oats', 'porridge': 'oats',
+  'greek yog': 'greek yogurt', 'greekyogurt': 'greek yogurt',
+  'whole milk': 'milk whole', '2% milk': 'milk 2%', 'skim milk': 'milk skim',
+  'almond milk': 'almond milk', 'oat milk': 'oat milk',
+};
+
 /**
- * Local fuzzy search — instant, zero latency.
- * Scores by relevance: exact start > word-boundary start > substring match.
+ * Generic-first scoring — items where the query word appears at the START
+ * of the name (without brand/country qualifiers in parens) rank highest.
+ * Longer matches and bracket-free names score higher (they're generic).
  */
 export function localSearch(query, limit = 20) {
   if (!query || query.length < 1) return [];
-  const q = query.toLowerCase().trim();
+
+  // Correct spelling via alias map
+  const rawQ = query.toLowerCase().trim();
+  const q = SEARCH_ALIASES[rawQ] || rawQ;
+
+  const terms = q.split(/\s+/).filter(Boolean);
+
   const scored = FOOD_DB
     .map(f => {
       const n = f.name.toLowerCase();
+      const nameBase = n.replace(/\s*\(.*?\)/g, '').trim(); // strip parenthetical qualifiers
+      const words = nameBase.split(/[\s,/]+/);
+
       let score = 0;
-      if (n.startsWith(q)) score = 3;
-      else if (n.split(/[\s(,/]+/).some(w => w.startsWith(q))) score = 2;
-      else if (n.includes(q)) score = 1;
+
+      // Full query matches
+      if (nameBase === q) score = 100;                          // exact match on clean name
+      else if (n === q) score = 95;                            // exact full match
+      else if (nameBase.startsWith(q)) score = 80;            // clean name starts with query
+      else if (n.startsWith(q)) score = 75;                   // full name starts with query
+
+      // All terms present check
+      const allTermsPresent = terms.every(t => n.includes(t));
+
+      if (score === 0 && allTermsPresent) {
+        // First word of clean name is the first search term → generic
+        if (words[0] === terms[0]) score = 60;
+        // First word of full name starts with query term
+        else if (words.some(w => w.startsWith(terms[0]))) score = 45;
+        else score = 30;
+      } else if (score === 0) {
+        // Partial match: at least one term found
+        const someTermPresent = terms.some(t => n.includes(t));
+        if (!someTermPresent) return { item: f, score: 0 };
+
+        if (nameBase.startsWith(terms[0])) score = 25;
+        else if (words.some(w => w === terms[0])) score = 20;
+        else if (words.some(w => w.startsWith(terms[0]))) score = 15;
+        else if (n.includes(terms[0])) score = 10;
+      }
+
+      // Boost: no parenthetical = cleaner/more generic entry
+      if (score > 0 && !f.name.includes('(')) score += 5;
+
       return { item: f, score };
     })
     .filter(x => x.score > 0)
     .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name));
+
   return scored.slice(0, limit).map(x => x.item);
 }

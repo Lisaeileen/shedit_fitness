@@ -889,11 +889,28 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
       setSearchLoading(true);
       searchTimerRef.current = setTimeout(async () => {
         const remote = await searchOpenFoodFacts(val);
-        // Merge: remote first, then any local not already represented
-        const remoteNames = new Set(remote.map(r => r.name.toLowerCase().slice(0, 20)));
-        const extra = local.filter(l => !remoteNames.has(l.name.toLowerCase().slice(0, 20)));
-        const merged = [...remote, ...extra].slice(0, 25);
-        // If still nothing, fall back to AI
+
+        // Filter remote: only include items that have a reasonable name match
+        // and mark them as branded so they sort below local generic results
+        const q = val.toLowerCase().trim();
+        const relevantRemote = remote
+          .filter(r => {
+            const n = (r.name || '').toLowerCase();
+            // Must contain at least one search word to be relevant
+            return q.split(/\s+/).some(t => t.length >= 3 && n.includes(t));
+          })
+          .map(r => ({ ...r, source: 'openfoodfacts' }));
+
+        // Local results take priority — keep all of them at the top
+        // Append remote results that aren't already covered by local
+        const localNames = new Set(local.map(l => l.name.toLowerCase().slice(0, 25)));
+        const extraRemote = relevantRemote.filter(
+          r => !localNames.has(r.name.toLowerCase().slice(0, 25))
+        );
+
+        // Local generic first, then relevant branded results
+        const merged = [...local, ...extraRemote].slice(0, 30);
+
         if (merged.length === 0) {
           const ai = await searchAI(val);
           setSuggestions(ai);
@@ -901,7 +918,7 @@ export default function AddFoodDialog({ isOpen, onClose, onSave, mealType = 'sna
           setSuggestions(merged);
         }
         setSearchLoading(false);
-      }, 500);
+      }, 600);
     }
   }, []);
 
