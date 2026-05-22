@@ -54,8 +54,8 @@ function GeneratingScreen({ userName }) {
 // ── Ready Banner ─────────────────────────────────────────────────────────────
 
 function ReadyBanner({ userName, goals, onView }) {
-  const currentWeight = goals?.current_weight || 80;
-  const targetWeight = goals?.target_weight || (currentWeight - 9);
+  const currentWeight = goals?.current_weight || goals?.weight_kg || 80;
+  const targetWeight = goals?.target_weight || goals?.desired_weight_kg || (currentWeight - 8);
   const diff = Math.abs(currentWeight - targetWeight);
   const weeksNeeded = Math.round(diff / 0.5);
   const months = Math.max(1, Math.round(weeksNeeded / 4));
@@ -103,37 +103,73 @@ async function generateAIPlan(goals) {
   const dislikedCuisines = Object.entries(goals.cuisine_prefs || {}).filter(([,v])=>v==='dislike').map(([k])=>k);
   const hasCuisinePrefs = lovedCuisines.length > 0;
 
+  const dietStyles = goals.diet_styles || [];
+  const isVegan        = dietStyles.includes('vegan');
+  const isVegetarian   = dietStyles.includes('vegetarian') || dietStyles.includes('plant_based');
+  const isPescatarian  = dietStyles.includes('pescatarian');
+  const isNigerian     = lovedCuisines.some(c => ['nigerian','west_african','ghanaian'].includes(c))
+                        || dietStyles.includes('african_style');
+  const isKeto         = dietStyles.includes('keto');
+  const isHighProtein  = dietStyles.includes('high_protein');
+  const isLowCarb      = dietStyles.includes('low_carb') || isKeto;
+
+  const allAvoid = [...(goals.disliked_foods || [])];
+  if (isVegan)       allAvoid.push('meat', 'chicken', 'fish', 'seafood', 'eggs', 'dairy', 'milk', 'cheese', 'yogurt', 'butter', 'cream');
+  if (isVegetarian)  allAvoid.push('meat', 'chicken', 'beef', 'pork', 'lamb', 'fish', 'seafood');
+  if (isPescatarian) allAvoid.push('meat', 'chicken', 'beef', 'pork', 'lamb');
+
+  const goalDesc = goals.primary_goal === 'lose_weight' ? 'weight loss (calorie deficit, high protein)'
+    : goals.primary_goal === 'gain_weight' ? 'muscle gain (calorie surplus, high protein)'
+    : 'maintain weight and eat healthy';
+
   const prompt = `You are an expert nutritionist. Create a detailed 7-day personalized meal plan.
 
-User profile:
-- Goal: ${goals.primary_goal || 'eat healthy'}
-- Diet style: ${(goals.diet_styles || []).join(', ') || 'balanced'}
+USER PROFILE:
+- Fitness goal: ${goalDesc}
 - Daily calorie target: ${goals.daily_calorie_target || 2000} kcal
-- Foods to avoid: ${(goals.disliked_foods || []).join(', ') || 'none'}
-- PREFERRED CUISINES (VERY IMPORTANT - base meals PRIMARILY on these): ${hasCuisinePrefs ? lovedCuisines.join(', ') : 'any global cuisine'}
+- Diet style: ${dietStyles.join(', ') || 'balanced'}
+- FOODS TO ABSOLUTELY AVOID (HARD RULE): ${allAvoid.length > 0 ? allAvoid.join(', ') : 'none'}
+- PREFERRED CUISINES: ${hasCuisinePrefs ? lovedCuisines.join(', ') : 'diverse global mix'}
 - Cuisines to avoid: ${dislikedCuisines.length > 0 ? dislikedCuisines.join(', ') : 'none'}
 - Preferred fruits: ${(goals.fruits || []).join(', ') || 'any'}
 - Preferred cooked vegs: ${(goals.cooked_vegs || []).join(', ') || 'any'}
-- Meal priorities: budget=${goals.priorities?.budget || 50}, weight_loss=${goals.priorities?.weight_loss || 70}, quick=${goals.priorities?.quick || 50}
 
-CRITICAL CUISINE RULES:
-${hasCuisinePrefs
-  ? `- The user loves: ${lovedCuisines.join(', ')}. MOST meals MUST be authentic dishes from these cuisines.
-- Example: if Nigerian is selected → use Jollof Rice, Egusi Soup, Suya, Pepper Soup, Moi Moi, Eba with soup, etc.
-- Example: if Korean is selected → use Bibimbap, Bulgogi, Kimchi Fried Rice, Japchae, Doenjang Jjigae, etc.
-- Mix the selected cuisines intelligently across the 7 days. Do NOT default to generic Western food.`
-  : `- Use a diverse mix of global cuisines (Nigerian, Ghanaian, Korean, Indian, Mediterranean, Caribbean, etc.)`}
+STRICT DIET RULES (follow these exactly):
+${isVegan ? '- VEGAN: Use ONLY plant-based foods. No meat, chicken, fish, eggs, dairy, honey, or any animal products whatsoever.' : ''}
+${isVegetarian ? '- VEGETARIAN: No meat, chicken, fish, or seafood. Eggs and dairy are allowed.' : ''}
+${isPescatarian ? '- PESCATARIAN: Fish and seafood are allowed. NO chicken, beef, pork, lamb, or other meat.' : ''}
+${isKeto ? '- KETO: Very low carb (<50g/day total). High fat, moderate protein. No rice, pasta, bread, sugar, potatoes.' : ''}
+${isHighProtein ? '- HIGH PROTEIN: Each meal should have high protein. Prioritize lean meats, eggs, legumes, Greek yogurt.' : ''}
+${isLowCarb && !isKeto ? '- LOW CARB: Keep carbs minimal. No rice, pasta, or bread. Use cauliflower rice, zucchini noodles, etc.' : ''}
+
+CUISINE RULES:
+${isNigerian
+  ? `- NIGERIAN FOOD REQUIRED: ALL meals must be authentic Nigerian/West African dishes.
+  Breakfast options: Oats with banana and groundnuts, Akara with pap, Moi Moi, Boiled egg with sweet potato, Custard with fruit, Yam and egg sauce, Corn porridge.
+  Lunch/Dinner options: Jollof rice with grilled chicken, Ofada rice with stew, Beans and plantain, Efo Riro with eba, Egusi soup with swallow, Okra soup with fish, Afang soup, Vegetable soup with chicken, Grilled fish with fried plantain, Pepper soup with yam, Beans porridge, Yam porridge, Moi Moi with rice, Chicken stew with rice, Nigerian fried rice.
+  Snack options: Fresh fruit, Groundnuts (peanuts), Boiled corn, Tiger nuts, Smoothie, Roasted plantain, Akara.
+  Use portion-controlled, health-appropriate versions.`
+  : hasCuisinePrefs
+  ? `- The user loves: ${lovedCuisines.join(', ')}. MOST meals MUST be authentic dishes from these cuisines. Do NOT default to generic Western food.`
+  : `- Use a diverse mix of global cuisines.`}
 
 NON-REPETITION RULES:
 - NO meal name should repeat across the 7 days.
-- Each day must have completely different dishes from the previous day.
-- Vary protein sources: alternate between chicken, fish, beef, legumes, eggs, etc.
+- Each day must have completely different dishes.
+- Vary protein sources: alternate between different proteins each day.
 
-Other rules:
-1. Distribute calories: breakfast ~25%, lunch ~30%, dinner ~35%, snacks ~10% of daily goal.
-2. Each meal must NOT include avoided foods.
-3. For EVERY meal, provide exact ingredients with precise quantities (e.g. "2 large eggs", "½ cup chopped red bell pepper").
-4. Provide 3-5 step-by-step cooking instructions per meal.
+CALORIE DISTRIBUTION per day:
+- Breakfast: ~${Math.round((goals.daily_calorie_target || 2000) * 0.25)} kcal
+- Lunch: ~${Math.round((goals.daily_calorie_target || 2000) * 0.30)} kcal
+- Dinner: ~${Math.round((goals.daily_calorie_target || 2000) * 0.35)} kcal
+- Snacks: ~${Math.round((goals.daily_calorie_target || 2000) * 0.10)} kcal
+
+REQUIREMENTS:
+1. Each meal must NOT include any avoided foods.
+2. For EVERY meal, provide exact ingredients with precise quantities (e.g. "2 large eggs", "200g chicken breast").
+3. Provide 3-5 step-by-step cooking instructions per meal.
+4. Macros must add up correctly to the calorie target.
+5. Include a short serving size description per meal.
 
 Return JSON with a "days" array of 7 objects, one per day in order: monday through sunday.`;
 
@@ -228,15 +264,25 @@ export default function Plan() {
     } catch (err) {
       // Fallback to static plan
       setAiError(true);
-      const fallback = getFallbackPlan(goals?.primary_goal);
+      const fallback = getFallbackPlan(goals?.primary_goal, goals);
       MealPlans.replaceAll(fallback);
       setPhase('ready');
     }
   };
 
   const handleOnboardingComplete = (data) => {
-    UserGoals.save(data);
-    runGeneration(data);
+    // Merge with any existing data from the main onboarding (NewOnboardingFlow)
+    // so we keep calorie targets, weight goals, etc.
+    const existing = UserGoals.get() || {};
+    const merged = {
+      ...existing,
+      ...data,
+      onboarding_complete: true,
+      // Preserve calorie target from main onboarding if Plan quiz didn't set one
+      daily_calorie_target: data.daily_calorie_target || existing.daily_calorie_target || 2000,
+    };
+    UserGoals.save(merged);
+    runGeneration(merged);
   };
 
   const handleRegenerate = () => {
@@ -305,8 +351,27 @@ export default function Plan() {
 
 // ── Fallback static plan ─────────────────────────────────────────────────────
 
-function getFallbackPlan(goal) {
-  const base = [
+function getFallbackPlan(goal, goals) {
+  const isNigerian = (() => {
+    const prefs = goals?.cuisine_prefs || {};
+    const loved = Object.entries(prefs).filter(([,v]) => v === 'love').map(([k]) => k);
+    return loved.some(c => ['nigerian','west_african','ghanaian'].includes(c))
+      || (goals?.diet_styles || []).includes('african_style');
+  })();
+
+  if (isNigerian) {
+    return [
+      { day_of_week: 'monday',    breakfast: 'Oats porridge with banana and groundnuts', breakfast_calories: 380, breakfast_protein: 14, breakfast_carbs: 58, breakfast_fat: 10, lunch: 'Jollof rice with grilled chicken and fried plantain', lunch_calories: 580, lunch_protein: 32, lunch_carbs: 70, lunch_fat: 14, dinner: 'Egusi soup with eba and fish', dinner_calories: 520, dinner_protein: 28, dinner_carbs: 60, dinner_fat: 20, snacks: 'Fresh fruit mix (banana, pineapple)', snacks_calories: 140, snacks_protein: 2, snacks_carbs: 34, snacks_fat: 1 },
+      { day_of_week: 'tuesday',   breakfast: 'Akara (bean cakes) with pap (ogi)', breakfast_calories: 360, breakfast_protein: 16, breakfast_carbs: 52, breakfast_fat: 10, lunch: 'White rice with chicken stew and steamed vegetables', lunch_calories: 560, lunch_protein: 30, lunch_carbs: 68, lunch_fat: 14, dinner: 'Okra soup with grilled fish and semovita', dinner_calories: 500, dinner_protein: 30, dinner_carbs: 58, dinner_fat: 16, snacks: 'Roasted groundnuts (peanuts)', snacks_calories: 160, snacks_protein: 7, snacks_carbs: 6, snacks_fat: 14 },
+      { day_of_week: 'wednesday', breakfast: 'Boiled yam with egg sauce', breakfast_calories: 400, breakfast_protein: 18, breakfast_carbs: 60, breakfast_fat: 10, lunch: 'Beans porridge with fried plantain', lunch_calories: 520, lunch_protein: 22, lunch_carbs: 80, lunch_fat: 12, dinner: 'Efo Riro (spinach stew) with beef and pounded yam', dinner_calories: 560, dinner_protein: 32, dinner_carbs: 65, dinner_fat: 20, snacks: 'Boiled corn on the cob', snacks_calories: 120, snacks_protein: 4, snacks_carbs: 26, snacks_fat: 2 },
+      { day_of_week: 'thursday',  breakfast: 'Moi Moi with custard', breakfast_calories: 350, breakfast_protein: 18, breakfast_carbs: 46, breakfast_fat: 8, lunch: 'Ofada rice with ayamase stew and boiled egg', lunch_calories: 580, lunch_protein: 28, lunch_carbs: 72, lunch_fat: 18, dinner: 'Chicken pepper soup with boiled yam', dinner_calories: 460, dinner_protein: 36, dinner_carbs: 44, dinner_fat: 12, snacks: 'Tiger nuts', snacks_calories: 130, snacks_protein: 2, snacks_carbs: 18, snacks_fat: 6 },
+      { day_of_week: 'friday',    breakfast: 'Sweet potato porridge with groundnut oil', breakfast_calories: 370, breakfast_protein: 8, breakfast_carbs: 64, breakfast_fat: 8, lunch: 'Nigerian fried rice with turkey and coleslaw', lunch_calories: 560, lunch_protein: 30, lunch_carbs: 68, lunch_fat: 16, dinner: 'Afang soup with fufu and beef', dinner_calories: 540, dinner_protein: 30, dinner_carbs: 62, dinner_fat: 20, snacks: 'Banana smoothie with milk', snacks_calories: 180, snacks_protein: 6, snacks_carbs: 32, snacks_fat: 4 },
+      { day_of_week: 'saturday',  breakfast: 'Custard with evaporated milk and banana', breakfast_calories: 340, breakfast_protein: 10, breakfast_carbs: 56, breakfast_fat: 8, lunch: 'Grilled fish with boiled plantain and pepper sauce', lunch_calories: 520, lunch_protein: 36, lunch_carbs: 58, lunch_fat: 14, dinner: 'Oha soup with eba and goat meat', dinner_calories: 560, dinner_protein: 34, dinner_carbs: 64, dinner_fat: 18, snacks: 'Puff puff (2 small pieces)', snacks_calories: 190, snacks_protein: 3, snacks_carbs: 26, snacks_fat: 8 },
+      { day_of_week: 'sunday',    breakfast: 'Yam and egg sauce with vegetables', breakfast_calories: 420, breakfast_protein: 16, breakfast_carbs: 68, breakfast_fat: 10, lunch: 'Jollof spaghetti with chicken and vegetables', lunch_calories: 540, lunch_protein: 28, lunch_carbs: 72, lunch_fat: 14, dinner: 'Groundnut soup with swallow and assorted meat', dinner_calories: 580, dinner_protein: 32, dinner_carbs: 68, dinner_fat: 22, snacks: 'Fresh pineapple chunks', snacks_calories: 100, snacks_protein: 1, snacks_carbs: 26, snacks_fat: 0 },
+    ];
+  }
+
+  return [
     { day_of_week: 'monday',    breakfast: 'Greek yogurt parfait with mixed berries and granola', breakfast_calories: 310, breakfast_protein: 20, breakfast_carbs: 38, breakfast_fat: 8, lunch: 'Grilled chicken salad with olive oil vinaigrette', lunch_calories: 370, lunch_protein: 35, lunch_carbs: 12, lunch_fat: 14, dinner: 'Baked salmon with roasted broccoli and sweet potato', dinner_calories: 450, dinner_protein: 38, dinner_carbs: 28, dinner_fat: 16, snacks: 'Apple with almond butter', snacks_calories: 190, snacks_protein: 4, snacks_carbs: 24, snacks_fat: 10 },
     { day_of_week: 'tuesday',   breakfast: 'Oatmeal with banana, chia seeds and cinnamon', breakfast_calories: 340, breakfast_protein: 12, breakfast_carbs: 58, breakfast_fat: 7, lunch: 'Turkey wrap with lettuce, tomato and mustard on wholegrain', lunch_calories: 380, lunch_protein: 32, lunch_carbs: 34, lunch_fat: 10, dinner: 'Stir-fried tofu with mixed vegetables and brown rice', dinner_calories: 420, dinner_protein: 22, dinner_carbs: 52, dinner_fat: 12, snacks: 'Carrot sticks with hummus', snacks_calories: 140, snacks_protein: 5, snacks_carbs: 18, snacks_fat: 6 },
     { day_of_week: 'wednesday', breakfast: 'Scrambled eggs with spinach and wholegrain toast', breakfast_calories: 320, breakfast_protein: 22, breakfast_carbs: 28, breakfast_fat: 12, lunch: 'Lentil soup with a side salad', lunch_calories: 360, lunch_protein: 18, lunch_carbs: 48, lunch_fat: 8, dinner: 'Chicken breast with quinoa and steamed green beans', dinner_calories: 460, dinner_protein: 44, dinner_carbs: 38, dinner_fat: 10, snacks: 'Mixed nuts (1 small handful)', snacks_calories: 160, snacks_protein: 5, snacks_carbs: 6, snacks_fat: 14 },
@@ -315,5 +380,4 @@ function getFallbackPlan(goal) {
     { day_of_week: 'saturday',  breakfast: 'Veggie omelette with mushrooms, peppers and feta', breakfast_calories: 330, breakfast_protein: 24, breakfast_carbs: 8, breakfast_fat: 22, lunch: 'Chicken and vegetable minestrone soup', lunch_calories: 340, lunch_protein: 28, lunch_carbs: 30, lunch_fat: 8, dinner: 'Grilled steak with roasted root vegetables', dinner_calories: 490, dinner_protein: 44, dinner_carbs: 28, dinner_fat: 20, snacks: 'Rice cake with peanut butter', snacks_calories: 185, snacks_protein: 6, snacks_carbs: 22, snacks_fat: 9 },
     { day_of_week: 'sunday',    breakfast: 'Chia pudding with mango and coconut', breakfast_calories: 300, breakfast_protein: 10, breakfast_carbs: 44, breakfast_fat: 11, lunch: 'Roasted vegetable and feta salad with quinoa', lunch_calories: 380, lunch_protein: 16, lunch_carbs: 44, lunch_fat: 16, dinner: 'Herb-baked chicken thighs with roasted broccoli', dinner_calories: 440, dinner_protein: 42, dinner_carbs: 12, dinner_fat: 22, snacks: 'Fresh fruit salad', snacks_calories: 110, snacks_protein: 2, snacks_carbs: 28, snacks_fat: 1 },
   ];
-  return base;
 }
