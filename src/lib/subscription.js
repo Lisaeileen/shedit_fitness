@@ -14,7 +14,7 @@ export const PLANS = {
     period: 'month',
     pricePerMonth: 9.99,
     trialDays: 7,
-    productId: 'com.shedit.monthly', // App Store / Play Store product ID
+    productId: 'com.shedit.monthly',
   },
   yearly: {
     id: 'yearly',
@@ -26,7 +26,54 @@ export const PLANS = {
     productId: 'com.shedit.yearly',
     badge: 'Save 74%',
     bestValue: true,
+    mostPopular: true,
   },
+};
+
+/**
+ * FREE features — always accessible, no subscription needed.
+ */
+export const FREE_FEATURES = [
+  'step_tracking',
+  'weight_logging',
+  'basic_progress',
+  'basic_workout',
+  'water_tracking',
+  'exercise_logging',
+  'food_manual_log',   // basic manual food entry is free
+];
+
+/**
+ * PREMIUM features — require trial or paid subscription.
+ */
+export const PREMIUM_FEATURES = [
+  'ai_food_scan',
+  'ai_voice_log',
+  'ai_barcode',
+  'meal_plans',
+  'advanced_insights',
+  'ai_coaching',
+  'advanced_calories',
+  'smart_recommendations',
+  'custom_nutrition',
+  'premium_workouts',
+  'detailed_analytics',
+  'body_scan',
+];
+
+export const PREMIUM_FEATURE_LABELS = {
+  ai_food_scan:          'AI Food Scan',
+  ai_voice_log:          'AI Voice Log',
+  ai_barcode:            'Barcode Scanner',
+  meal_plans:            'Personalized Meal Plans',
+  advanced_insights:     'Advanced Nutrition Insights',
+  ai_coaching:           'AI Coaching',
+  advanced_calories:     'Smart Calorie Tracking',
+  smart_recommendations: 'Smart Recommendations',
+  custom_nutrition:      'Custom Nutrition Plans',
+  premium_workouts:      'Premium Workout Plans',
+  detailed_analytics:    'Detailed Analytics',
+  body_scan:             'AI Body Scan',
 };
 
 function load() {
@@ -75,10 +122,17 @@ export function getSubscriptionStatus() {
   return sub.status || 'none';
 }
 
-/** True if the user has full access (trial or active) */
+/** True if the user has full premium access (trial or active/canceled within period) */
 export function hasAccess() {
   const s = getSubscriptionStatus();
   return s === 'trial' || s === 'active' || s === 'canceled';
+}
+
+/** True if a specific feature is available to the current user */
+export function canAccessFeature(featureId) {
+  if (FREE_FEATURES.includes(featureId)) return true;
+  if (PREMIUM_FEATURES.includes(featureId)) return hasAccess();
+  return true; // unknown feature — allow by default
 }
 
 /**
@@ -129,10 +183,21 @@ export function cancelSubscription() {
 
 /**
  * Restore purchases — in production calls the native restore flow.
- * Here we just re-check the stored state and return it.
+ * Re-checks stored state and returns it.
  */
 export function restorePurchases() {
   const sub = load();
   if (!sub) return null;
   return sub;
+}
+
+/**
+ * Returns days remaining in trial, or null if not in trial.
+ */
+export function getTrialDaysRemaining() {
+  const sub = load();
+  if (!sub || sub.status !== 'trial') return null;
+  const remaining = sub.trialEnd - Date.now();
+  if (remaining <= 0) return 0;
+  return Math.ceil(remaining / (24 * 60 * 60 * 1000));
 }

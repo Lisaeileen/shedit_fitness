@@ -6,7 +6,7 @@ import {
   TrendingDown, Zap, X, Trash2, Users, Brain, Camera, Trophy, Share2, Mail, UserX, Crown, RotateCcw
 } from 'lucide-react';
 import PaywallScreen from '../components/fitness/PaywallScreen';
-import { getSubscriptionStatus, restorePurchases, PLANS } from '@/lib/subscription';
+import { getSubscriptionStatus, restorePurchases, PLANS, getTrialDaysRemaining } from '@/lib/subscription';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { DailyLogs, deleteAllData } from '../components/storage';
@@ -76,8 +76,8 @@ export default function More() {
       title: 'Settings & Support',
       items: [
         ...(subStatus === 'active' || subStatus === 'trial' || subStatus === 'canceled'
-          ? [{ id: 'manage_sub', label: 'Manage Subscription', icon: Crown, color: '#a855f7', action: () => setActivePanel('manage_sub') }]
-          : [{ id: 'upgrade',    label: 'Upgrade to Premium',  icon: Crown, color: '#a855f7', action: () => setShowPaywall(true) }]
+          ? [{ id: 'manage_sub', label: subStatus === 'trial' ? `Free Trial · ${getTrialDaysRemaining() ?? 0}d left` : 'Manage Subscription', icon: Crown, color: '#a855f7', action: () => setActivePanel('manage_sub') }]
+          : [{ id: 'upgrade',    label: 'Upgrade to Premium',  icon: Crown, color: '#f59e0b', action: () => setShowPaywall(true) }]
         ),
         { id: 'restore',   label: 'Restore Purchase',  icon: RotateCcw, color: '#6366f1', action: () => {
           const sub = restorePurchases();
@@ -245,6 +245,7 @@ export default function More() {
                     const plan = sub ? PLANS[sub.planId] : null;
                     const trialEnd = sub?.trialEnd ? new Date(sub.trialEnd).toLocaleDateString() : null;
                     const periodEnd = sub?.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : null;
+                    const trialDaysLeft = getTrialDaysRemaining();
                     return (
                       <div className="space-y-4 pb-4">
                         <div className="rounded-2xl p-4" style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.25)' }}>
@@ -257,10 +258,28 @@ export default function More() {
                             </span>
                           </div>
                           {plan && <p className="text-xs text-gray-400 mb-1">Plan: {plan.label} · ${plan.price}/{plan.period}</p>}
-                          {status === 'trial' && trialEnd && <p className="text-xs text-gray-400">Trial ends: {trialEnd}</p>}
-                          {periodEnd && <p className="text-xs text-gray-400">{status === 'canceled' ? 'Access until' : 'Next billing'}: {periodEnd}</p>}
+                          {status === 'trial' && trialDaysLeft !== null && (
+                            <p className="text-xs font-semibold mb-1" style={{ color: trialDaysLeft <= 2 ? '#f87171' : '#4f9ef7' }}>
+                              {trialDaysLeft === 0 ? 'Trial ends today' : `${trialDaysLeft} day${trialDaysLeft !== 1 ? 's' : ''} left in free trial`}
+                            </p>
+                          )}
+                          {status === 'trial' && trialEnd && <p className="text-xs text-gray-500">Trial ends: {trialEnd}</p>}
+                          {periodEnd && status !== 'trial' && <p className="text-xs text-gray-400">{status === 'canceled' ? 'Access until' : 'Next billing'}: {periodEnd}</p>}
                         </div>
-                        <p className="text-xs text-gray-500 leading-relaxed">To cancel your subscription, manage it through your App Store or Google Play account settings under "Subscriptions".</p>
+                        {status === 'trial' && (
+                          <div className="rounded-2xl p-3.5 text-center" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                            <p className="text-xs text-yellow-400 font-semibold mb-1">Your free trial ends soon</p>
+                            <p className="text-[11px] text-gray-500 leading-relaxed">Continue your journey without interruption. Subscribe before your trial ends to keep full access.</p>
+                          </div>
+                        )}
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                          To cancel or manage your subscription, go to your{' '}
+                          <span className="text-purple-400">App Store → Subscriptions</span>{' '}
+                          or <span className="text-purple-400">Google Play → Subscriptions</span>.
+                        </p>
+                        <p className="text-[11px] text-gray-600 leading-relaxed">
+                          Subscription renews automatically unless canceled at least 24 hours before the end of the current period.
+                        </p>
                       </div>
                     );
                   })()}

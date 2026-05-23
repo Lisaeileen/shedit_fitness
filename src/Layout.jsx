@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, CalendarDays, Plus, TrendingUp, MoreHorizontal } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import QuickAddModal from './components/fitness/QuickAddModal';
-import OnboardingGate from './components/fitness/onboarding/OnboardingGate';
+import QuickAddModal from './components/fitness/QuickAddModal.jsx';
+import OnboardingGate from './components/fitness/onboarding/OnboardingGate.jsx';
 
 // Root tab paths and their nav labels
 const TAB_ROUTES = [

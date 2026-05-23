@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, CalendarDays, Plus, TrendingUp, MoreHorizontal } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import QuickAddModal from './QuickAddModal';
+import QuickAddModal from './QuickAddModal.jsx';
 
 const navItems = [
   { label: 'Today', icon: Home, page: 'Today' },
